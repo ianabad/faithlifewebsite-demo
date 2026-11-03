@@ -27,5 +27,5 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
       }
     }
   });
-  document.querySelectorAll('main section > .wrap').forEach(section => observer.observe(section));
+  document.querySelectorAll('main section > .wrap, footer .footer-grid > div, footer .footer-bottom').forEach(section => observer.observe(section));
 }

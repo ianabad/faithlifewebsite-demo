@@ -42,3 +42,24 @@
     max-width: 100%;
   }
 }
+
+/* Footer calls to action use the same restrained motion as the page links. */
+footer .footer-grid a[href="contact.html"],
+footer .footer-bottom a[href="#top"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  footer a[href="contact.html"] .site-icon,
+  footer a[href="#top"] .site-icon {
+    transition: transform .25s ease;
+  }
+  footer a[href="contact.html"]:is(:hover, :focus-visible, :active) .site-icon {
+    transform: translate(3px, -3px);
+  }
+  footer a[href="#top"]:is(:hover, :focus-visible, :active) .site-icon {
+    transform: translateY(-4px);
+  }
+}
