@@ -100,8 +100,9 @@ header { border-bottom:1px solid rgba(255,255,255,.42) }
 .hero-image > img { transition:opacity .85s ease;animation:none }
 .hero-image > .gallery-next,.hero-image > .gallery-inactive { opacity:0 }
 .hero-image > .gallery-active { opacity:1 }
-.gallery-controls { position:absolute;top:16px;right:16px;display:flex;align-items:center;background:#172249de;color:white }
+/* Small visible controls inside full-size touch targets. */
+.gallery-controls { position:absolute;top:6px;right:6px;display:flex;color:white }
 .gallery-controls[hidden] { display:none }
-.gallery-controls button { min-width:44px;min-height:44px;padding:5px 10px;background:transparent;color:inherit;border:0;font:inherit }
-.gallery-controls button:hover,.gallery-controls button:focus-visible { background:#ffffff26 }
-.gallery-controls button[data-prev],.gallery-controls button[data-next] { font-size:26px }
+.gallery-controls button { display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;background:transparent;color:inherit }
+.gallery-controls svg { width:24px;height:24px;padding:5px;border-radius:50%;background:#15203dcc;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round }
+.gallery-controls button:is(:hover,:focus-visible) svg { background:var(--navy) }
