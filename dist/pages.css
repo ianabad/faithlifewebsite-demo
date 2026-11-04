@@ -91,7 +91,7 @@ main .closing-cta .button.white { background: white; color: var(--navy); border-
 .bulletin-home-photo { width:100%;aspect-ratio:2.7;object-fit:cover }
 .notice-card:not(:first-child) > .notice-photo { height:auto;min-height:0;aspect-ratio:16/9;object-fit:cover }
 
-header { border-bottom:1px solid rgba(255,255,255,.42) }
+header { background:#1e2b57;border-bottom:0 }
 .beliefs-list .belief-references { background:transparent;border:0;padding:0;margin:22px 0 8px }
 .belief-reference-label { font-weight:500;color:var(--muted) }
 .bulletin-links { gap:32px }
@@ -106,3 +106,12 @@ header { border-bottom:1px solid rgba(255,255,255,.42) }
 .gallery-controls button { display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;background:transparent;color:inherit }
 .gallery-controls svg { width:24px;height:24px;padding:5px;border-radius:50%;background:#15203dcc;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round }
 .gallery-controls button:is(:hover,:focus-visible) svg { background:var(--navy) }
+
+.home-announcements { min-width:0 }
+.bulletin-links { position:relative;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;margin:16px 0;scrollbar-width:thin }
+.bulletin-links .bulletin-link { flex:0 0 100%;min-width:0;scroll-snap-align:start;align-content:start;padding:4px 0 12px }
+.bulletin-home-photo { height:auto;aspect-ratio:16/9;object-fit:contain }
+.bulletin-nav { display:flex;align-items:center;gap:12px;margin-top:16px }
+.bulletin-nav[hidden] { display:none }
+.bulletin-nav button { color:inherit;background:transparent;border:0;min-width:44px;min-height:44px }
+.bulletin-nav button:disabled { opacity:.4 }
