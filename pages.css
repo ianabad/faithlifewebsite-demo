@@ -85,3 +85,8 @@ main .closing-cta .button.white { background: white; color: var(--navy); border-
 .bulletin-read { text-decoration:underline;text-underline-offset:4px }
 .bulletin-link:is(:hover,:focus-visible) strong { text-decoration:underline }
 @media(max-width:760px){.notice-board,.notice-card:first-child{grid-template-columns:1fr}.notice-photo{min-height:0;height:auto;aspect-ratio:16/9}}
+
+.bulletin-poster { width:100%;height:auto;display:block }
+.notice-board > .notice-card:first-child > a { align-self:center }
+.bulletin-home-photo { width:100%;aspect-ratio:2.7;object-fit:cover }
+.notice-card:not(:first-child) > .notice-photo { height:auto;min-height:0;aspect-ratio:16/9;object-fit:cover }
