@@ -115,3 +115,23 @@ header { background:#1e2b57;border-bottom:0 }
 .bulletin-nav[hidden] { display:none }
 .bulletin-nav button { color:inherit;background:transparent;border:0;min-width:44px;min-height:44px }
 .bulletin-nav button:disabled { opacity:.4 }
+
+/* One bulletin sheet, with a lead story and ruled listings. */
+.home-announcements.paper-bulletin {
+  background:#f7f7f5;color:var(--ink);border:0;
+  padding:clamp(22px,3vw,40px);min-width:0;
+}
+.paper-bulletin h3 { color:var(--navy);padding-bottom:16px;border-bottom:2px solid currentColor }
+.paper-notices { margin:0;padding:0;list-style:none }
+.paper-notices li { border-bottom:1px solid #c6c9cd }
+.paper-notice { display:flex;align-items:center;gap:16px;padding:14px 0;min-height:48px }
+.paper-notice img { width:78px;height:auto;flex:none }
+.paper-notice strong,.paper-notice small { display:block }
+.paper-notice strong { font-size:20px;line-height:1.25;font-weight:500 }
+.paper-notice small { color:var(--muted);font-size:17px;line-height:1.4;margin-top:4px }
+.paper-notices li:first-child .paper-notice { display:grid;gap:14px;padding:20px 0 }
+.paper-notices li:first-child img { width:100%;max-height:205px;object-fit:contain;object-position:left }
+.paper-notices li:first-child strong { font-size:clamp(24px,2.4vw,32px) }
+.paper-notice:is(:hover,:focus-visible) strong { text-decoration:underline;text-underline-offset:4px }
+.paper-bulletin > .text-link { margin-top:14px }
+@media(max-width:420px){.paper-notice img{width:60px}.paper-notice{gap:10px}}
