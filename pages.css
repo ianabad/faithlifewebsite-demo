@@ -135,3 +135,17 @@ header { background:#1e2b57;border-bottom:0 }
 .paper-notice:is(:hover,:focus-visible) strong { text-decoration:underline;text-underline-offset:4px }
 .paper-bulletin > .text-link { margin-top:14px }
 @media(max-width:420px){.paper-notice img{width:60px}.paper-notice{gap:10px}}
+
+/* Both column headings sit on the same baseline and carry their own rule. */
+.church-life-grid { --bulletin-inset:clamp(22px,3vw,40px) }
+.church-life-grid > div > h3 {
+  margin:0;
+  padding-bottom:16px;
+  border-bottom:2px solid currentColor;
+}
+.home-gatherings > h3 { border-bottom-color:#ffffff60 }
+.home-gatherings .gathering-preview-list { margin-top:0;border-top:0 }
+@media (min-width:761px) {
+  .church-life-grid > .home-gatherings { padding-top:var(--bulletin-inset) }
+  .church-life-grid > .paper-bulletin { padding-top:var(--bulletin-inset) }
+}
