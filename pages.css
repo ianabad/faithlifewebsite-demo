@@ -69,3 +69,19 @@ main .closing-cta .button.white { background: white; color: var(--navy); border-
  .church-life h3 { font-size: 29px; }
  .gathering-preview { padding-block: 22px; }
 }
+
+.notice-board { display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:44px }
+.notice-card { min-width:0;background:white;border-top:3px solid var(--navy) }
+.notice-copy { padding:clamp(24px,4vw,48px) }
+.notice-copy h3 { margin:12px 0 18px;font-size:clamp(28px,3vw,42px) }
+.notice-copy .text-link { margin-top:20px }
+.notice-copy .notice-when { font-weight:600;color:var(--navy) }
+.notice-card:first-child { grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;background:var(--navy);color:white;border:0 }
+.notice-card:first-child p { color:white }
+.notice-photo { height:100%;min-height:280px;max-height:440px;object-fit:cover }
+.bulletin-links { display:grid;gap:18px;margin:30px 0 18px }
+.bulletin-link { background:white;color:var(--navy);padding:24px 28px;display:grid;gap:8px;border-left:5px solid #b6bbcc }
+.bulletin-link strong { font-weight:500;font-size:26px;line-height:1.25 }
+.bulletin-read { text-decoration:underline;text-underline-offset:4px }
+.bulletin-link:is(:hover,:focus-visible) strong { text-decoration:underline }
+@media(max-width:760px){.notice-board,.notice-card:first-child{grid-template-columns:1fr}.notice-photo{min-height:0;height:auto;aspect-ratio:16/9}}
