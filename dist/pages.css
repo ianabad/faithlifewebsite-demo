@@ -15,3 +15,57 @@ main .closing-cta { background: #343435; color: white; border: 0; }
 main .closing-cta p { color: #ededed; }
 main .closing-cta .button.white { background: white; color: var(--navy); border-color: white; }
 .church-inquiry{display:grid;gap:20px}.church-inquiry label{display:grid;gap:6px}.church-inquiry input:not([type=hidden]),.church-inquiry textarea{width:100%;min-width:0;box-sizing:border-box;font:inherit;color:var(--ink);padding:12px;border:1px solid #959ba6;background:white}.church-inquiry textarea{resize:vertical}.church-inquiry button{justify-self:start}
+
+/* Scripture citations are visually separate from the doctrinal statement. */
+.beliefs-list .belief-references { margin: 24px 0 8px; padding: 20px 24px; border-left: 3px solid var(--navy); background: white; }
+.belief-reference-label { display: block; font-size: 17px; font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+.beliefs-list .belief-references p { font-size: 17px; line-height: 1.8; font-style: italic; color: #3e475a; margin: 0; overflow-wrap: anywhere; }
+.beliefs-list .belief-references p + p { margin-top: 12px; }
+/* A church noticeboard, with samples explicitly identified. */
+.announcement-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 90px; align-items: start; }
+.announcement-intro > p { margin-top: 28px; }
+.announcement-intro .text-link { margin-top: 24px; }
+.sample-notice { padding: 20px 24px; border-left: 3px solid var(--navy); background: white; font-size: 17px; color: var(--ink); }
+.announcement-list { display: grid; gap: 32px; }
+.announcement-item { padding: 36px; background: white; border-top: 2px solid var(--navy); scroll-margin-top: 30px; }
+.announcement-item h3 { font-size: clamp(29px, 3vw, 38px); margin-top: 24px; }
+.announcement-item > p { margin-top: 20px; }
+.announcement-item .announcement-deck { font-size: 21px; color: var(--ink); }
+.announcement-item .announcement-detail { margin-top: 26px; padding-top: 20px; border-top: 1px solid #d3d6dc; font-size: 17px; }
+.sample-label { display: inline-block; padding: 4px 12px; border: 1px solid currentColor; font-size: 17px; line-height: 1.5; color: var(--navy); }
+/* Homepage highlights connect directly to the full notices and gatherings. */
+.church-life { background: var(--navy); color: white; }
+.church-life p { color: #e1e5f0; }
+.church-life-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 80px; align-items: start; }
+.church-life h3 { font-size: 32px; }
+.church-life h4 { font-size: 25px; font-weight: 500; line-height: 1.3; letter-spacing: -.025em; margin: 0; }
+.home-announcements { border-left: 1px solid #ffffff50; padding-left: 48px; }
+.gathering-preview-list { margin: 30px 0 20px; border-top: 1px solid #ffffff50; }
+.gathering-preview { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid #ffffff50; padding: 24px 0; min-height: 44px; }
+.gathering-preview h4 { margin: 6px 0; }
+.gathering-preview p, .gathering-day { font-size: 17px; }
+.gathering-preview > .site-icon { width: 24px; height: 24px; }
+.home-sample-note { font-size: 17px; margin: 20px 0 28px; }
+.home-announcement { padding: 28px 0; border-top: 1px solid #ffffff50; }
+.church-life .sample-label { color: white; }
+.home-announcement h4 { margin-top: 20px; }
+.home-announcement p { margin: 12px 0 16px; }
+.home-announcement h4 a:hover { text-decoration: underline; text-underline-offset: 5px; }
+.home-announcements > .text-link { margin-top: 8px; }
+@media (prefers-reduced-motion: no-preference) {
+ .gathering-preview .site-icon { transition: transform .25s ease; }
+ .gathering-preview:is(:hover, :focus-visible, :active) .site-icon { transform: translate(3px, -3px); }
+}
+@media (max-width: 1000px) {
+ .announcement-layout { gap: 50px; }
+ .church-life-grid { gap: 40px; }
+ .home-announcements { padding-left: 32px; }
+}
+@media (max-width: 760px) {
+ .announcement-layout, .church-life-grid { grid-template-columns: 1fr; gap: 48px; }
+ .announcement-item { padding: 28px 24px; }
+ .home-announcements { padding: 40px 0 0; border-left: 0; border-top: 1px solid #ffffff50; }
+ .beliefs-list .belief-references { padding: 18px; }
+ .church-life h3 { font-size: 29px; }
+ .gathering-preview { padding-block: 22px; }
+}
