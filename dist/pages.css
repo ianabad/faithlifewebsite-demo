@@ -90,3 +90,18 @@ main .closing-cta .button.white { background: white; color: var(--navy); border-
 .notice-board > .notice-card:first-child > a { align-self:center }
 .bulletin-home-photo { width:100%;aspect-ratio:2.7;object-fit:cover }
 .notice-card:not(:first-child) > .notice-photo { height:auto;min-height:0;aspect-ratio:16/9;object-fit:cover }
+
+header { border-bottom:1px solid rgba(255,255,255,.42) }
+.beliefs-list .belief-references { background:transparent;border:0;padding:0;margin:22px 0 8px }
+.belief-reference-label { font-weight:500;color:var(--muted) }
+.bulletin-links { gap:32px }
+.bulletin-link { background:transparent;color:white;border:0;padding:0;gap:12px }
+.bulletin-link strong { font-size:clamp(26px,2.3vw,34px) }
+.hero-image > img { transition:opacity .85s ease;animation:none }
+.hero-image > .gallery-next,.hero-image > .gallery-inactive { opacity:0 }
+.hero-image > .gallery-active { opacity:1 }
+.gallery-controls { position:absolute;top:16px;right:16px;display:flex;align-items:center;background:#172249de;color:white }
+.gallery-controls[hidden] { display:none }
+.gallery-controls button { min-width:44px;min-height:44px;padding:5px 10px;background:transparent;color:inherit;border:0;font:inherit }
+.gallery-controls button:hover,.gallery-controls button:focus-visible { background:#ffffff26 }
+.gallery-controls button[data-prev],.gallery-controls button[data-next] { font-size:26px }
