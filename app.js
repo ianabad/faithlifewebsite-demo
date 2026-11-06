@@ -29,24 +29,3 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   });
   document.querySelectorAll('main section > .wrap, footer .footer-grid > div, footer .footer-bottom').forEach(section => observer.observe(section));
 }
-
-// Optional third-party content stays disconnected until the visitor chooses it.
-(() => {
- const key='flcm-external-content-v1', maxAge=183*24*60*60*1000;
- let choices={spotify:false,maps:false};
- try {const saved=JSON.parse(localStorage.getItem(key));if(saved?.version===1 && typeof saved.savedAt==='number' && Date.now()-saved.savedAt>=0 && Date.now()-saved.savedAt<maxAge)choices={spotify:saved.spotify===true,maps:saved.maps===true};else if(saved)localStorage.removeItem(key)} catch {}
- const embeds=[...document.querySelectorAll('.external-content')];
- function showEmbed(box,load,focus=false){
-  const existing=box.querySelector('iframe'),placeholder=box.querySelector('.embed-choice');
-  if(!load){existing?.remove();placeholder.hidden=false;return}
-  if(existing)return;
-  const frame=document.createElement('iframe');frame.src=box.dataset.src;frame.title=box.dataset.title;frame.loading='lazy';frame.referrerPolicy='no-referrer';frame.allow='encrypted-media; fullscreen; picture-in-picture';frame.allowFullscreen=true;
-  placeholder.hidden=true;box.append(frame);if(focus)frame.focus();
- }
- embeds.forEach(box=>{const button=box.querySelector('.load-embed');button.hidden=false;button.addEventListener('click',()=>showEmbed(box,true,true));showEmbed(box,choices[box.dataset.provider]===true)});
- const form=document.querySelector('#privacy-preferences'),status=document.querySelector('#privacy-status');
- function sync(){if(form)for(const name of ['spotify','maps'])form.elements[name].checked=choices[name];embeds.forEach(box=>showEmbed(box,choices[box.dataset.provider]===true))}
- function save(next){choices=next;let stored=true;try{localStorage.setItem(key,JSON.stringify({version:1,savedAt:Date.now(),...choices}))}catch{stored=false}sync();if(status)status.textContent=stored?'Your choices are saved. You can change them here at any time.':'Browser storage is unavailable. These choices apply only to this page.'}
- if(form){sync();form.querySelectorAll('button').forEach(button=>button.disabled=false);form.addEventListener('submit',event=>{event.preventDefault();save({spotify:form.elements.spotify.checked,maps:form.elements.maps.checked})});document.querySelector('#disable-optional').addEventListener('click',()=>save({spotify:false,maps:false}))}
- window.addEventListener('storage',event=>{if(event.key!==key&&event.key!==null)return;choices={spotify:false,maps:false};try{const data=JSON.parse(event.newValue);if(data?.version===1&&Date.now()-data.savedAt<maxAge&&Date.now()-data.savedAt>=0)choices={spotify:data.spotify===true,maps:data.maps===true}}catch{}sync()});
-})();
