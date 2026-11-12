@@ -1719,3 +1719,5 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .wk-day.is-key::before { position:absolute;left:-3px;top:18px;margin:0 }
   .wk-steps { grid-template-columns:1fr }
 }
+.howto li { grid-template-columns:22px 1fr }
+.howto-n { width:10px;height:10px;margin-top:8px;padding:0;border-radius:50%;background:#f6c768;box-shadow:0 0 0 5px #f6c76833 }
