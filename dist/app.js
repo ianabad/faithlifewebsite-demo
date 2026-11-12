@@ -744,7 +744,7 @@ document.addEventListener('click', e => {
   const strip = document.querySelector('[data-year]');
   if (strip) {
     const li = strip.querySelector(`[data-month="${month}"]`);
-    if (li) { li.classList.add('is-now'); li.insertAdjacentHTML('beforeend', '<span class="gt-now">Now</span>'); }
+    if (li) li.classList.add('is-now');
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { strip.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.35 });
       io.observe(strip);
@@ -760,4 +760,49 @@ document.addEventListener('click', e => {
     ticket.querySelector('[data-gt-when]').textContent = when;
     ticket.querySelector('[data-gt-soon]').textContent = soon;
   }
+})();
+
+// Growth Track: the hero photos take turns; paused with the motion toggle or reduced motion.
+(function gtSlides() {
+  const box = document.querySelector('[data-slides]');
+  if (!box) return;
+  const imgs = [...box.querySelectorAll('.gt-slide')], ticks = [...box.querySelectorAll('.gt-ticks span')];
+  if (imgs.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) { box.querySelector('.gt-ticks')?.remove(); return; }
+  const dur = 6500; let i = 0, left = dur, last = performance.now(), visible = true;
+  box.style.setProperty('--gt-dur', dur + 'ms');
+  function show(n) {
+    imgs[i].classList.remove('is-on'); ticks[i].classList.remove('is-on'); ticks[i].classList.add('is-done');
+    i = n % imgs.length;
+    if (i === 0) ticks.forEach(t => t.classList.remove('is-done'));
+    imgs[i].classList.add('is-on'); void ticks[i].offsetWidth; ticks[i].classList.add('is-on');
+    left = dur;
+  }
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(box);
+  (function frame(now) {
+    const paused = document.documentElement.classList.contains('motion-paused') || document.hidden || !visible;
+    if (!paused) { left -= now - last; if (left <= 0) show(i + 1); }
+    box.classList.toggle('is-paused', paused);
+    last = now; requestAnimationFrame(frame);
+  })(last);
+})();
+
+// Growth Track: questions as tabs on wide screens, one open answer at a time everywhere.
+(function gtAsk() {
+  const box = document.querySelector('[data-ask]');
+  if (!box) return;
+  const qs = [...box.querySelectorAll('.gt-q')], as = [...box.querySelectorAll('.gt-a')];
+  function open(n, focus) {
+    qs.forEach((q, k) => { const on = k === n; q.classList.toggle('is-on', on); q.setAttribute('aria-selected', on); q.tabIndex = on ? 0 : -1; as[k].classList.toggle('is-on', on); });
+    if (focus) qs[n].focus();
+    if (innerWidth <= 760) { const r = qs[n].getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * 0.6) scrollTo({ top: scrollY + r.top - 20, behavior: 'smooth' }); }
+  }
+  qs.forEach((q, k) => {
+    q.tabIndex = k === 0 ? 0 : -1;
+    q.addEventListener('click', () => open(k));
+    q.addEventListener('keydown', e => {
+      const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (d) { e.preventDefault(); open((k + d + qs.length) % qs.length, true); }
+    });
+  });
+  box.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => open(+b.dataset.next, true)));
 })();
