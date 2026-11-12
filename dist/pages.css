@@ -1758,3 +1758,10 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .msg-hero2-copy .msg-wave { position:absolute;inset:0;width:100%;height:100%;z-index:0 }
 @media (max-width:760px) { .msg-hero2-copy { padding-bottom:110px } }
 @media (max-width:760px) { .msg-hero2-copy { padding-bottom:44px } }
+/* Messages hero: the second line stands on its own */
+.msg-hero2 .visit-hero2-lead { margin-bottom:12px }
+.msg-hero-note { margin:0 0 34px;color:#f6c768;font-size:clamp(17px,1.3vw,19px);font-weight:500 }
+.msg-hero-note { color:#dfe4f3;font-weight:400;font-size:clamp(16px,1.15vw,17px);line-height:1.55 }
+/* Messages hero: room between the lead and the buttons */
+.msg-hero2 .visit-hero2-lead { margin-bottom:38px }
+@media (max-width:760px) { .msg-hero2 .visit-hero2-lead { margin-bottom:30px } }
