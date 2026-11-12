@@ -1620,3 +1620,4 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .story-zig.is-dark .season-group .min-ask { color:#fff }
 .story-zig.is-dark .heading-row h2, .story-zig.is-dark .heading-row p { transition:color .9s ease }
 .story-zig.is-dark .story-media.is-drawing { box-shadow:inset 0 0 0 1px #ffffff2e }
+.min-every .every-copy h3 + p { color:#f6c768 }
