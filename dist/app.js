@@ -421,36 +421,80 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   });
 })();
 
-// Ministries: the season line fills as you scroll, and each group's picture wipes in when it is reached.
-(function ministryPath() {
-  const list = document.querySelector('[data-path]');
-  if (!list) return;
-  const stops = Array.from(list.querySelectorAll('.path-stop'));
-  list.classList.add('js-path');
+// Ministries: the season stage holds still while you scroll; each season's drawing redraws in turn.
+(function ministryStage() {
+  const stage = document.querySelector('[data-stage]');
+  const seasons = stage ? Array.from(stage.querySelectorAll('.stage-season')) : [];
+  const buttons = stage ? Array.from(stage.querySelectorAll('[data-stage-go]')) : [];
+  const desktop = matchMedia('(min-width: 961px)');
+  let current = -1;
+  function show(i) {
+    if (i === current) return;
+    current = i;
+    seasons.forEach((s, n) => { s.classList.toggle('is-active', n === i); s.classList.toggle('is-in', n === i); });
+    buttons.forEach((btn, n) => { btn.classList.toggle('is-done', n < i); if (n === i) btn.setAttribute('aria-current', 'step'); else btn.removeAttribute('aria-current'); });
+  }
+  function progress() {
+    const box = stage.getBoundingClientRect();
+    return Math.min(0.999, Math.max(0, -box.top / (box.height - innerHeight)));
+  }
+  function scrollToSeason(i) {
+    if (!desktop.matches) { seasons[i].scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    const top = stage.getBoundingClientRect().top + scrollY;
+    const travel = stage.offsetHeight - innerHeight;
+    scrollTo({ top: top + travel * (i + 0.5) / seasons.length, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
   function update() {
-    const box = list.getBoundingClientRect();
-    const fill = Math.min(1, Math.max(0, (innerHeight * 0.6 - box.top) / box.height));
-    list.style.setProperty('--path-fill', (fill * 100) + '%');
-    let active = -1;
-    stops.forEach((stop, i) => {
-      const top = stop.getBoundingClientRect().top;
-      const reached = top < innerHeight * 0.6;
-      stop.classList.toggle('is-reached', reached);
-      if (reached) active = i;
-      if (top < innerHeight * 0.85) stop.classList.add('is-in');
-    });
-    const past = box.bottom < innerHeight * 0.35;
-    stops.forEach((stop, i) => stop.classList.toggle('is-active', i === active && !past));
+    if (stage) {
+      if (desktop.matches) {
+        const p = progress();
+        stage.style.setProperty('--progress', p);
+        show(Math.floor(p * seasons.length));
+      } else {
+        seasons.forEach(s => { if (s.getBoundingClientRect().top < innerHeight * 0.85) s.classList.add('is-in'); });
+      }
+    }
     document.querySelectorAll('.every-card').forEach(card => { if (card.getBoundingClientRect().top < innerHeight * 0.85) card.classList.add('is-in'); });
     const connect = document.querySelector('.min-connect');
     if (connect && connect.getBoundingClientRect().top < innerHeight * 0.8) connect.classList.add('is-in');
   }
   const connect = document.querySelector('.min-connect');
   if (connect) connect.classList.add('js-connect');
+  if (stage) {
+    stage.classList.add('js-stage');
+    buttons.forEach(btn => btn.addEventListener('click', () => scrollToSeason(Number(btn.dataset.stageGo))));
+    // Links like #youth or #girls jump to the right season instead of a hidden panel.
+    document.addEventListener('click', e => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const target = document.getElementById(link.getAttribute('href').slice(1));
+      const season = target && target.closest('.stage-season');
+      if (!season) return;
+      e.preventDefault();
+      scrollToSeason(seasons.indexOf(season));
+    });
+    desktop.addEventListener('change', () => { current = -1; seasons.forEach(s => s.classList.remove('is-active')); update(); });
+  }
   addEventListener('scroll', update, { passive: true });
   addEventListener('resize', update);
   update();
-  setTimeout(() => { stops.forEach(s => { if (s.getBoundingClientRect().top < innerHeight) s.classList.add('is-in'); }); }, 1500);
+})();
+
+// Ministries: point at or tap a star to read that serving team.
+(function serveSky() {
+  const sky = document.querySelector('[data-sky]');
+  if (!sky) return;
+  const stars = Array.from(sky.querySelectorAll('[data-star]'));
+  const teams = Array.from(document.querySelectorAll('[data-teams] .team'));
+  function pick(key) {
+    stars.forEach(s => { const on = s.dataset.star === key; s.classList.toggle('is-active', on); s.setAttribute('aria-pressed', String(on)); });
+    teams.forEach(t => t.classList.toggle('is-active', t.dataset.team === key));
+  }
+  stars.forEach(star => {
+    star.addEventListener('click', () => pick(star.dataset.star));
+    star.addEventListener('pointerenter', () => pick(star.dataset.star));
+    star.addEventListener('focus', () => pick(star.dataset.star));
+  });
 })();
 
 // Ministries: serving icons draw themselves when the grid comes into view.
