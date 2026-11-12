@@ -150,3 +150,46 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
       'Bringing kids: ' + data.get('visit-kids') + (note ? '\nNote: ' + note : '');
   });
 })();
+
+// Plan your visit: the next-Sunday ticket and the arrival path.
+(function visitPage() {
+  const ticket = document.querySelector('[data-ticket]');
+  if (ticket && window.Intl) {
+    try {
+      const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric', day: 'numeric', weekday: 'short', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'
+      }).formatToParts(new Date()).map(p => [p.type, p.value]));
+      const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(parts.weekday.replace('.', ''));
+      const minutes = Number(parts.hour) * 60 + Number(parts.minute);
+      if (weekday >= 0) {
+        let days = (7 - weekday) % 7;
+        if (days === 0 && minutes >= 15 * 60 + 30) days = 7;
+        const date = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day) + days));
+        ticket.querySelector('[data-ticket-day]').textContent = date.getUTCDate();
+        ticket.querySelector('[data-ticket-month]').textContent = new Intl.DateTimeFormat('en-CA', { timeZone: 'UTC', month: 'long' }).format(date);
+        ticket.querySelector('[data-ticket-soon]').textContent = days === 0 ? (minutes < 13 * 60 + 30 ? 'Today' : 'Happening now') : days === 1 ? 'Tomorrow' : 'In ' + days + ' days';
+        ticket.setAttribute('aria-label', 'Next Sunday gathering: ' + new Intl.DateTimeFormat('en-CA', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' }).format(date) + ' at 1:30 PM, 427 Matheson Avenue');
+      }
+    } catch (error) { /* keep the static text */ }
+  }
+  const path = document.querySelector('[data-arrive]');
+  if (path) {
+    Array.from(path.children).forEach((step, i) => step.querySelector('.arrive-icon').style.setProperty('--i', i));
+    let observed = false;
+    const reveal = () => path.classList.add('is-in');
+    const check = () => {
+      const box = path.getBoundingClientRect();
+      if (box.top < innerHeight * 0.75 && box.bottom > 0) { reveal(); removeEventListener('scroll', check); }
+    };
+    addEventListener('scroll', check, { passive: true });
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        observed = true;
+        if (entries[0].isIntersecting) { reveal(); io.disconnect(); }
+      }, { threshold: 0.35 });
+      io.observe(path);
+    }
+    check();
+    setTimeout(() => { if (!observed) reveal(); }, 1500);
+  }
+})();

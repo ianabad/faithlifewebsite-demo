@@ -482,3 +482,76 @@ html { scroll-behavior:smooth }
 @media (max-width:480px) { .visit-form-row { grid-template-columns:1fr } .visit-details-list > div { grid-template-columns:1fr;gap:4px } }
 .visit-timeline.is-compact .visit-step { padding-bottom:30px }
 .visit-timeline.is-compact .visit-step:last-of-type { padding-bottom:0 }
+
+/* ---- Plan your visit: hero with a next-Sunday ticket ---- */
+.visit-hero2 { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);background:var(--navy);color:#fff;min-height:clamp(560px,calc(100vh - 112px),900px);min-height:clamp(560px,calc(100svh - 112px),900px) }
+.visit-hero2-copy { padding:clamp(56px,7vw,96px) clamp(32px,4vw,64px) clamp(56px,7vw,96px) max(48px,calc((100vw - 1280px)/2));display:flex;flex-direction:column;justify-content:center }
+.visit-hero2 h1 { font-size:clamp(56px,7vw,104px);line-height:1.02 }
+.visit-hero2-lead { color:#dfe4f3;font-size:clamp(18px,1.4vw,20px);line-height:1.55;max-width:30ch;margin:26px 0 34px }
+.visit-hero2 .actions { display:flex;flex-wrap:wrap;gap:12px }
+.visit-hero2-photo { position:relative;overflow:hidden;min-height:420px }
+.visit-hero2-photo img { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 38% }
+.visit-ticket { position:absolute;left:clamp(16px,2.5vw,36px);bottom:clamp(16px,2.5vw,36px);display:grid;gap:4px;min-width:230px;padding:20px 24px 22px;background:#fff;color:var(--navy);box-shadow:0 22px 44px -18px #0f1733a6 }
+.visit-ticket-label { font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500 }
+.visit-ticket-date { display:flex;align-items:baseline;gap:10px;margin:2px 0 }
+.visit-ticket-date strong { font-size:clamp(46px,4.6vw,64px);line-height:1;font-weight:500;letter-spacing:-.04em;font-variant-numeric:tabular-nums }
+.visit-ticket-date span { font-size:20px;font-weight:500 }
+.visit-ticket-time { font-size:15.5px;color:var(--ink) }
+.visit-ticket-soon:empty { display:none }
+.visit-ticket-soon { justify-self:start;margin-top:8px;font-size:14px;line-height:1;padding:6px 10px;border-radius:999px;background:#dfe6fb;color:var(--navy);font-weight:500 }
+@media (prefers-reduced-motion:no-preference) {
+  .visit-hero2 h1 { animation:heroRise .9s cubic-bezier(.16,1,.3,1) both }
+  .visit-hero2-lead { animation:heroFade .8s cubic-bezier(.16,1,.3,1) .15s both }
+  .visit-hero2 .actions { animation:heroFade .8s cubic-bezier(.16,1,.3,1) .25s both }
+  .visit-hero2-photo { animation:heroUnveil 1.25s cubic-bezier(.65,0,.15,1) both }
+  .visit-hero2-photo img { animation:visitZoom 2.4s cubic-bezier(.16,1,.3,1) both }
+  .visit-ticket { animation:ticketIn .9s cubic-bezier(.16,1,.3,1) .85s both }
+}
+@keyframes visitZoom { from { transform:scale(1.08) } }
+@keyframes ticketIn { from { opacity:0;transform:translateY(24px) rotate(-2deg) } }
+@media (max-width:760px) {
+  .visit-hero2 { grid-template-columns:1fr;min-height:0 }
+  .visit-hero2-copy { padding:48px 20px 44px }
+  .visit-hero2 .actions { display:grid }
+  .visit-hero2-photo { min-height:0;aspect-ratio:4/5 }
+  .visit-ticket { min-width:0;padding:16px 18px 18px }
+}
+
+/* ---- Getting here: an arrival path that draws itself ---- */
+.arrive-path { --p:0;list-style:none;margin:clamp(40px,5vw,64px) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,40px);position:relative }
+.arrive-path::before, .arrive-path::after { content:"";position:absolute;top:31px;left:32px;right:calc(25% - 8px);height:2px;background:#cbd0db }
+.arrive-path::after { background:var(--navy);transform-origin:left;transform:scaleX(var(--p));transition:transform 1.6s cubic-bezier(.65,0,.25,1) }
+.arrive-path li { position:relative;z-index:1 }
+.arrive-icon { display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:#fff;border:2px solid #cbd0db;color:var(--navy);transition:border-color .5s ease,background .5s ease,color .5s ease;transition-delay:calc(var(--i) * .4s) }
+.arrive-icon .site-icon { width:28px;height:28px }
+.arrive-path h3 { font-size:clamp(22px,1.9vw,26px);margin:22px 0 8px }
+.arrive-path p { color:var(--muted);max-width:28ch }
+.arrive-path.is-in { --p:1 }
+.arrive-path.is-in .arrive-icon { border-color:var(--navy);background:var(--navy);color:#fff }
+.arrive-map { margin-top:clamp(48px,6vw,80px) }
+.arrive-map .map-frame { height:clamp(300px,32vw,420px) }
+.arrive-map .text-link { margin-top:16px }
+@media (max-width:860px) {
+  .arrive-path { grid-template-columns:1fr;gap:28px;padding-left:0 }
+  .arrive-path::before, .arrive-path::after { top:32px;bottom:32px;left:31px;right:auto;width:2px;height:auto }
+  .arrive-path::after { transform-origin:top;transform:scaleY(var(--p)) }
+  .arrive-path li { display:grid;grid-template-columns:64px 1fr;column-gap:20px }
+  .arrive-icon { grid-row:1/3 }
+  .arrive-path h3 { margin:6px 0 4px }
+}
+@media (prefers-reduced-motion:reduce) {
+  .arrive-path { --p:1 }
+  .arrive-path::after, .arrive-icon { transition:none }
+  .arrive-icon { border-color:var(--navy);background:var(--navy);color:#fff }
+}
+
+/* ---- RSVP: deep navy with a slow, soft light ---- */
+.visit-rsvp-dark { position:relative;overflow:hidden;background:#1e2b57;color:#fff }
+.visit-rsvp-dark > .wrap { position:relative;z-index:1 }
+.visit-rsvp-dark h2 { color:#fff }
+.visit-rsvp-dark .visit-rsvp-lead { color:#c9d1ec }
+.rsvp-light { position:absolute;inset:-25%;background:radial-gradient(38% 46% at 22% 32%,#3c55a85c,#3c55a800 70%),radial-gradient(32% 40% at 78% 72%,#bccaf22e,#bccaf200 70%);animation:rsvpDrift 22s ease-in-out infinite alternate;pointer-events:none }
+@keyframes rsvpDrift { to { transform:translate(6%,-5%) rotate(8deg) } }
+.visit-rsvp-dark .visit-form { background:#fff;color:var(--ink);padding:clamp(24px,3vw,40px);box-shadow:0 28px 60px -28px #0b1230cc }
+.motion-paused .rsvp-light { animation-play-state:paused }
+@media (prefers-reduced-motion:reduce) { .rsvp-light { animation:none } }
