@@ -1453,3 +1453,40 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .every-when2 span { display:grid;gap:1px;color:#c9d2ec;font-size:14px;line-height:1.4 }
 .every-when2 strong { color:#fff;font-size:18px;font-weight:500 }
 .every-list-label { margin-top:18px !important }
+
+/* ===== Ministries v9 ===== */
+/* Two-group seasons: one full drawing at a time, redrawn when you switch */
+.scene-swap { position:relative;width:min(94%,600px);aspect-ratio:4/3 }
+.scene-layer { position:absolute;inset:0;opacity:0;transform:scale(.97);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform 1s cubic-bezier(.16,1,.3,1) }
+.scene-layer.is-on { opacity:1;transform:none }
+.scene-layer svg { width:100%;height:100% }
+.scene-layer:not(.is-on) .draw-lines path { stroke-dashoffset:1 !important;transition:none !important }
+.scene-layer:not(.is-on) .draw-warm, .scene-layer:not(.is-on) .draw-glow { opacity:0 !important;transition:none !important }
+@media (max-width:960px) { .scene-swap { width:100% } }
+
+/* Discovery and Prayer: copy carries the time, cards stay balanced */
+.every-copy p { max-width:46ch }
+
+/* Serve with us on navy, with a light that follows the pointer */
+.min-serve.is-dark { background:#141d3d;color:#fff }
+.min-serve.is-dark h2 { color:#fff }
+.min-serve.is-dark .heading-row p, .min-serve.is-dark .serve-note { color:#c9d2ec }
+.min-serve.is-dark .serve-note a { color:#fff }
+.serve-glow { position:absolute;inset:-30%;pointer-events:none;background:radial-gradient(30% 36% at 22% 28%,#3c55a870,#3c55a800 70%),radial-gradient(26% 32% at 80% 72%,#bccaf21f,#bccaf200 70%);animation:rsvpDrift 28s ease-in-out infinite alternate }
+.motion-paused .serve-glow { animation-play-state:paused }
+.min-serve.is-dark .serve-tile { position:relative;overflow:hidden;background:#ffffff08;border-color:#ffffff1f;color:#fff }
+.min-serve.is-dark .serve-tile::before { content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(220px circle at var(--mx,50%) var(--my,-40%),#bccaf229,#bccaf200 70%);opacity:0;transition:opacity .4s ease }
+.min-serve.is-dark .serve-tile > * { position:relative }
+.min-serve.is-dark .serve-icon { color:#f6c768 }
+.min-serve.is-dark .serve-tile p { color:#c9d2ec }
+.min-serve.is-dark .min-ask { color:#fff }
+@media (hover:hover) {
+  .min-serve.is-dark .serve-tile:hover { background:#ffffff12;border-color:#bccaf266;color:#fff;transform:translateY(-2px) }
+  .min-serve.is-dark .serve-tile:hover::before { opacity:1 }
+  .min-serve.is-dark .serve-tile:hover p { color:#dfe4f3 }
+  .min-serve.is-dark .serve-tile:hover .serve-icon { color:#f6c768 }
+}
+@media (prefers-reduced-motion:reduce) { .serve-glow { animation:none } }
+/* Stage dots sit exactly on the line (line centre 5.5px from the list edge) */
+.stage-nav-btn::before { box-sizing:border-box;width:17px;height:17px;left:-25px;top:12px }
+@media (max-width:960px) { .scene-swap { width:auto;height:100% } }

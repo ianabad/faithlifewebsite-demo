@@ -513,11 +513,11 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   document.querySelectorAll('.stage-season.is-pair').forEach(season => {
     const buttons = Array.from(season.querySelectorAll('[data-pair]'));
     const groups = Array.from(season.querySelectorAll('.stage-group'));
-    const parts = Array.from(season.querySelectorAll('.scene-part'));
+    const parts = Array.from(season.querySelectorAll('.scene-layer'));
     function pick(i) {
       buttons.forEach((b, n) => b.setAttribute('aria-pressed', String(n === i)));
       groups.forEach((g, n) => g.classList.toggle('is-shown', n === i));
-      parts.forEach((p, n) => p.classList.toggle('is-lit', n === i));
+      parts.forEach((p, n) => p.classList.toggle('is-on', n === i));
       season.style.setProperty('--pair', i);
     }
     buttons.forEach((b, i) => b.addEventListener('click', () => pick(i)));
@@ -530,5 +530,18 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
       if (i >= 0) pick(i);
     });
     pick(groups.findIndex(g => '#' + g.id === location.hash) > 0 ? groups.findIndex(g => '#' + g.id === location.hash) : 0);
+  });
+})();
+
+// Ministries: on the dark Serve section, a soft light follows the pointer across each team tile.
+(function serveLight() {
+  const grid = document.querySelector('.min-serve.is-dark [data-serve]');
+  if (!grid || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  grid.addEventListener('pointermove', e => {
+    const tile = e.target.closest('.serve-tile');
+    if (!tile) return;
+    const box = tile.getBoundingClientRect();
+    tile.style.setProperty('--mx', (e.clientX - box.left) + 'px');
+    tile.style.setProperty('--my', (e.clientY - box.top) + 'px');
   });
 })();
