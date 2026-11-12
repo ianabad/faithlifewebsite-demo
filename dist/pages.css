@@ -149,3 +149,6 @@ header { background:#1e2b57;border-bottom:0 }
   .church-life-grid > .home-gatherings { padding-top:var(--bulletin-inset) }
   .church-life-grid > .paper-bulletin { padding-top:var(--bulletin-inset) }
 }
+
+.person .person-bio { margin-top:16px;line-height:1.6;color:inherit;opacity:.85 }
+@media (max-width:760px) { .person .person-bio { grid-column:1/-1;margin-top:18px } }
