@@ -507,3 +507,28 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   addEventListener('scroll', check, { passive: true });
   check();
 })();
+
+// Ministries: in seasons with two groups, the switch picks one group and lights its half of the shared drawing.
+(function pairSwitch() {
+  document.querySelectorAll('.stage-season.is-pair').forEach(season => {
+    const buttons = Array.from(season.querySelectorAll('[data-pair]'));
+    const groups = Array.from(season.querySelectorAll('.stage-group'));
+    const parts = Array.from(season.querySelectorAll('.scene-part'));
+    function pick(i) {
+      buttons.forEach((b, n) => b.setAttribute('aria-pressed', String(n === i)));
+      groups.forEach((g, n) => g.classList.toggle('is-shown', n === i));
+      parts.forEach((p, n) => p.classList.toggle('is-lit', n === i));
+      season.style.setProperty('--pair', i);
+    }
+    buttons.forEach((b, i) => b.addEventListener('click', () => pick(i)));
+    // A link to the second group (for example #girls) opens that group.
+    groups.forEach((g, i) => { if (location.hash === '#' + g.id) pick(i); });
+    document.addEventListener('click', e => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const i = groups.findIndex(g => '#' + g.id === link.getAttribute('href'));
+      if (i >= 0) pick(i);
+    });
+    pick(groups.findIndex(g => '#' + g.id === location.hash) > 0 ? groups.findIndex(g => '#' + g.id === location.hash) : 0);
+  });
+})();

@@ -1422,3 +1422,34 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 }
 .stage-pin > .wrap { flex:none }
 .stage-group .path-meta { color:var(--navy);font-weight:500;font-size:15px }
+
+/* ===== Ministries v8 ===== */
+/* Season stage: no background word; one shared scene for two groups */
+.stage-word { display:none }
+.stage-art > svg { width:min(94%,600px);height:auto }
+.is-scene .scene-part { opacity:.32;transition:opacity .9s cubic-bezier(.4,0,.2,1) }
+.is-scene .scene-part.is-lit { opacity:1 }
+.is-scene .loop-sway { transform-box:fill-box;transform-origin:50% 100% !important }
+.pair-switch { position:relative;display:inline-grid;grid-template-columns:1fr 1fr;margin-top:14px;padding:4px;border:1px solid #cbd0db;border-radius:999px;background:#fff }
+.pair-switch-btn { position:relative;z-index:1;min-height:40px;padding:8px 18px;border:0;border-radius:999px;background:none;font:inherit;font-size:15px;font-weight:500;color:var(--muted);cursor:pointer;transition:color .4s ease }
+.pair-switch-btn[aria-pressed="true"] { color:#fff }
+.pair-switch-btn:focus-visible { outline:2px solid var(--navy);outline-offset:2px }
+.pair-switch-thumb { position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--navy);transform:translateX(calc(var(--pair,0) * 100%));transition:transform .55s cubic-bezier(.65,0,.35,1) }
+.stage-season.is-pair .stage-group { display:none }
+.stage-season.is-pair .stage-group.is-shown { display:block;animation:finderIn .6s cubic-bezier(.16,1,.3,1) }
+.stage-season.is-pair .stage-group h3 { font-size:clamp(24px,2.2vw,32px) }
+.stage-season.is-pair .stage-group p { font-size:inherit }
+@media (max-width:960px) {
+  .pair-switch { display:none }
+  .stage-season.is-pair .stage-group { display:block }
+  .stage-season.is-pair .stage-group + .stage-group { margin-top:8px;padding-top:22px;border-top:1px solid #dfe2e8 }
+  .is-scene .scene-part { opacity:1 }
+}
+@media (prefers-reduced-motion:reduce) { .pair-switch-thumb, .is-scene .scene-part { transition:none } }
+
+/* Discovery and Prayer: the time sits under the text as a quiet detail row */
+.every-when2 { display:flex;align-items:center;gap:14px;margin-top:20px;padding:14px 0;border-top:1px solid #ffffff26;border-bottom:1px solid #ffffff26 }
+.every-when-icon { width:30px;height:30px;flex:none;color:#f6c768 }
+.every-when2 span { display:grid;gap:1px;color:#c9d2ec;font-size:14px;line-height:1.4 }
+.every-when2 strong { color:#fff;font-size:18px;font-weight:500 }
+.every-list-label { margin-top:18px !important }
