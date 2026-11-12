@@ -1640,3 +1640,11 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .min-every.dot-field::after { background-image:radial-gradient(#bccaf2 1.5px,transparent 1.7px);-webkit-mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%);mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%) }
 .min-every.dot-field .every-light { z-index:0 }
 .min-every.dot-field > .wrap { z-index:1 }
+
+/* ---- Ministries: a visible warm glow around each season picture (the reveal no longer clips it) ---- */
+.js-story.min-seasons .story-row.is-in .story-media { clip-path:inset(-160px) }
+.min-seasons .story-media.is-drawing { box-shadow:0 0 0 1px #ffffff14 inset,0 30px 90px -18px #f6c76873,0 0 70px 4px #f6c76826 }
+.min-seasons .story-row.is-in .story-media.is-drawing { animation:pictureGlow 6s ease-in-out infinite alternate }
+@keyframes pictureGlow { to { box-shadow:0 0 0 1px #ffffff14 inset,0 36px 110px -14px #f6c7688c,0 0 90px 8px #f6c76833 } }
+.motion-paused .min-seasons .story-media.is-drawing { animation-play-state:paused }
+@media (prefers-reduced-motion:reduce) { .min-seasons .story-row.is-in .story-media.is-drawing { animation:none } }
