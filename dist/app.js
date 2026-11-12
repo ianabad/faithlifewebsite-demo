@@ -730,7 +730,7 @@ document.addEventListener('click', e => {
       current = stage;
       fig.dataset.stage = stage;
       items.forEach((li, i) => { li.classList.toggle('is-active', i === stage - 1); li.classList.toggle('is-done', i < stage - 1); });
-      if (label) label.textContent = 'Session 0' + Math.max(1, stage);
+      if (label) label.textContent = 'Class 0' + Math.max(1, stage);
     }
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
     addEventListener('resize', update);
@@ -744,7 +744,7 @@ document.addEventListener('click', e => {
   const strip = document.querySelector('[data-year]');
   if (strip) {
     const li = strip.querySelector(`[data-month="${month}"]`);
-    if (li) li.classList.add('is-now');
+    if (li) { li.classList.add('is-today'); li.insertAdjacentHTML('beforeend', '<span class="wk-today">This month</span>'); }
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { strip.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.35 });
       io.observe(strip);
@@ -791,8 +791,21 @@ document.addEventListener('click', e => {
   const box = document.querySelector('[data-ask]');
   if (!box) return;
   const qs = [...box.querySelectorAll('.gt-q')], as = [...box.querySelectorAll('.gt-a')];
+  let cur = 0;
+  // On wide screens the answer panel glides to sit level with the chosen question, its notch pointing at it.
+  function place() {
+    const a = as[cur];
+    if (innerWidth <= 760) { a.style.removeProperty('--gt-y'); return; }
+    const top = qs[0].offsetTop, bottom = qs[qs.length - 1].offsetTop + qs[qs.length - 1].offsetHeight;
+    const mid = qs[cur].offsetTop + qs[cur].offsetHeight / 2;
+    const h = a.offsetHeight, room = bottom - top;
+    const y = h >= room ? 0 : Math.max(0, Math.min(room - h, mid - top - h / 2));
+    as.forEach(x => { x.style.setProperty('--gt-y', y + 'px'); x.style.setProperty('--gt-notch', Math.max(28, Math.min(h - 28, mid - top - y)) + 'px'); });
+  }
   function open(n, focus) {
+    cur = n;
     qs.forEach((q, k) => { const on = k === n; q.classList.toggle('is-on', on); q.setAttribute('aria-selected', on); q.tabIndex = on ? 0 : -1; as[k].classList.toggle('is-on', on); });
+    place();
     if (focus) qs[n].focus();
     if (innerWidth <= 760) { const r = qs[n].getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * 0.6) scrollTo({ top: scrollY + r.top - 20, behavior: 'smooth' }); }
   }
@@ -805,4 +818,7 @@ document.addEventListener('click', e => {
     });
   });
   box.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => open(+b.dataset.next, true)));
+  addEventListener('resize', place);
+  if (document.fonts) document.fonts.ready.then(place);
+  place();
 })();
