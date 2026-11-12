@@ -1285,3 +1285,17 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 @media (prefers-reduced-motion:reduce) { .every-check path { stroke-dashoffset:0;transition:none } }
 .min-every .every-when, .min-every .every-when strong { color:var(--navy) } .min-every .every-when span { color:var(--muted) }
 @media (max-width:600px) { .every-when { position:static;grid-auto-flow:row;padding:12px 18px;border-bottom:1px solid #dfe2e8 } }
+
+/* ---- Ministries v5: hero matches the other page heroes (one screen under the header) ---- */
+.min-hero2 { --hero-h:clamp(560px,calc(100svh - 112px),900px);--hero-pad:clamp(36px,5.5vh,64px);min-height:var(--hero-h);padding-block:var(--hero-pad);display:flex;align-items:center }
+.min-hero2 h1 { font-size:clamp(44px,4.8vw,72px) }
+.finder2 { margin-top:clamp(24px,4vh,44px);font-size:clamp(22px,2.3vw,34px) }
+.finder2-card { display:flex;flex-direction:column;height:calc(var(--hero-h) - var(--hero-pad) * 2);max-height:620px }
+.finder2-art { aspect-ratio:auto;flex:1;min-height:0 }
+.finder2-body { flex:none;height:auto;min-height:0;padding:18px 24px 22px }
+.finder2-actions { margin-top:14px }
+@media (max-width:900px) {
+  .min-hero2 { min-height:0;display:block }
+  .finder2-card { height:auto;max-height:none }
+  .finder2-art { flex:none;aspect-ratio:16/10 }
+}
