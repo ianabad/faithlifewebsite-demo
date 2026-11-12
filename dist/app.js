@@ -545,3 +545,37 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     tile.style.setProperty('--my', (e.clientY - box.top) + 'px');
   });
 })();
+
+// Ministries: chapel doors. Opening a door shows that season's groups and redraws its picture.
+(function chapelDoors() {
+  const list = document.querySelector('[data-doors]');
+  if (!list) return;
+  const doors = Array.from(list.querySelectorAll('.door'));
+  const phone = matchMedia('(max-width: 760px)');
+  function redraw(door) { door.classList.remove('is-in'); void door.offsetWidth; door.classList.add('is-in'); }
+  function open(door, toggle) {
+    const closing = toggle && phone.matches && door.classList.contains('is-open');
+    doors.forEach(d => {
+      const on = d === door && !closing;
+      d.classList.toggle('is-open', on);
+      d.querySelector('.door-arch').setAttribute('aria-expanded', String(on));
+    });
+    if (!closing) redraw(door);
+  }
+  doors.forEach(door => door.querySelector('.door-arch').addEventListener('click', () => open(door, true)));
+  const reveal = () => { if (list.getBoundingClientRect().top < innerHeight * 0.85) { doors.forEach(d => d.classList.add('is-in')); removeEventListener('scroll', reveal); } };
+  addEventListener('scroll', reveal, { passive: true });
+  reveal();
+  setTimeout(() => doors.forEach(d => d.classList.add('is-in')), 2000);
+  // Links such as #youth or #girls open the right door.
+  document.addEventListener('click', e => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    const target = document.getElementById(link.getAttribute('href').slice(1));
+    const door = target && target.closest('.door');
+    if (!door) return;
+    e.preventDefault();
+    open(door, false);
+    (phone.matches ? door : list.closest('section')).scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  });
+})();
