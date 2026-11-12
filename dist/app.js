@@ -30,3 +30,34 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   document.querySelectorAll('main section > .wrap, footer .footer-layout > *, footer .footer-base').forEach(section => observer.observe(section));
 }
 
+
+
+// Footer tagline: the four lines rise in when the footer arrives, then a soft light moves through them.
+(function footerTagline() {
+  const list = document.querySelector('[data-tagline]');
+  if (!list) return;
+  const footer = list.closest('footer');
+  Array.from(list.children).forEach((item, i) => item.style.setProperty('--i', i));
+  footer.classList.add('js-tagline');
+  let done = false, observed = false;
+  const reveal = () => {
+    if (done) return;
+    done = true;
+    footer.classList.add('is-in');
+    setTimeout(() => footer.classList.add('is-glowing'), 1100);
+  };
+  const check = () => {
+    const box = list.getBoundingClientRect();
+    if (box.top < innerHeight * 0.92 && box.bottom > 0) reveal();
+  };
+  addEventListener('scroll', check, { passive: true });
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      observed = true;
+      if (entries[0].isIntersecting) { reveal(); io.disconnect(); }
+    }, { threshold: 0.2 });
+    io.observe(list);
+  }
+  check();
+  setTimeout(() => { if (!observed) reveal(); }, 1500);
+})();

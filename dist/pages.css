@@ -365,7 +365,7 @@ html { scroll-behavior:smooth }
 .footer-tagline { list-style:none;margin:30px 0 0;padding:0;color:#fff;font-size:clamp(22px,1.9vw,26px);line-height:1.25;font-weight:500;letter-spacing:-.02em }
 .footer-tagline li:last-child { color:#bccaf2 }
 .footer-about { color:#c4cdea;font-size:16px;line-height:1.55;margin:22px 0 0;max-width:28ch }
-.footer-links { display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.3fr);gap:28px }
+.footer-links { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px }
 .site-footer h3 { font-size:17px;font-weight:500;letter-spacing:0;color:#aebcea;margin:0 0 14px }
 .footer-links ul { list-style:none;margin:0;padding:0 }
 .footer-links a { display:inline-flex;align-items:center;gap:10px;min-height:40px;color:#e6eaf6;text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 calc(100% - 8px)/0 1px no-repeat;transition:background-size .35s cubic-bezier(.16,1,.3,1),color .2s }
@@ -389,8 +389,43 @@ html { scroll-behavior:smooth }
   .footer-brand { display:block }
   .footer-links { grid-template-columns:1fr 1fr;row-gap:36px }
   .footer-brand .brand img { width:300px }
-  .footer-visit-col { grid-column:1/-1 }
 }
 @media (max-width:420px) {
   .footer-base { flex-direction:column;align-items:flex-start }
+}
+
+/* ---- Hero lead: smaller and lighter so the headline leads ---- */
+.hero-copy .hero-lead { font-size:clamp(17px,1.3vw,19px);font-weight:400;line-height:1.6;color:#dfe4f3;letter-spacing:0;max-width:36ch;margin-top:26px }
+@media (max-width:760px) { .hero-copy .hero-lead { font-size:17px } }
+
+/* ---- Values strip: the church's four words drift left on a loop ---- */
+.values-strip { position:relative;background:#dfe6fb;color:var(--navy);overflow:hidden;border-bottom:1px solid #c9d3f1 }
+.values-track { display:flex;width:max-content;animation:valuesDrift 38s linear infinite }
+.values-strip:hover .values-track, .values-strip.is-paused .values-track { animation-play-state:paused }
+.values-group { display:flex;list-style:none;margin:0;padding:0 }
+.values-group li { display:flex;align-items:center;gap:clamp(28px,3.2vw,48px);padding:clamp(20px,2.2vw,28px) 0 clamp(20px,2.2vw,28px) clamp(28px,3.2vw,48px);font-size:clamp(24px,2.6vw,38px);font-weight:500;letter-spacing:-.03em;line-height:1;white-space:nowrap }
+.values-mark { width:clamp(14px,1.35vw,20px);height:auto;flex:none;fill:none;stroke:#8a9bd6;stroke-width:1.8;stroke-linecap:round }
+@keyframes valuesDrift { to { transform:translateX(-25%) } }
+.values-strip::before, .values-strip::after { content:"";position:absolute;top:0;bottom:0;width:clamp(32px,6vw,96px);z-index:1;pointer-events:none }
+.values-strip::before { left:0;background:linear-gradient(90deg,#dfe6fb,#dfe6fb00) }
+.values-strip::after { right:0;background:linear-gradient(270deg,#dfe6fb,#dfe6fb00) }
+.values-toggle { position:absolute;right:max(8px,calc((100vw - 1280px)/2 - 36px));top:50%;transform:translateY(-50%);z-index:2;width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;background:transparent;color:var(--navy);cursor:pointer;opacity:.55;transition:opacity .2s }
+.values-toggle svg { width:28px;height:28px;padding:7px;border-radius:50%;background:#fff;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round }
+.values-toggle:is(:hover,:focus-visible), .values-strip:hover .values-toggle { opacity:1 }
+.values-toggle:focus-visible { outline:2px solid var(--navy);outline-offset:-2px;border-radius:50% }
+@media (prefers-reduced-motion:reduce) {
+  .values-track { animation:none }
+  .values-toggle { display:none }
+}
+
+/* ---- Footer tagline: rises in line by line, then a soft light moves through the words ---- */
+.footer-tagline li:last-child { color:inherit }
+.js-tagline .footer-tagline li { opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1);transition-delay:calc(var(--i) * 110ms) }
+.js-tagline.is-in .footer-tagline li { opacity:1;transform:none }
+.js-tagline.is-glowing .footer-tagline li { animation:taglineGlow 8s ease-in-out infinite;animation-delay:calc(var(--i) * 2s) }
+@keyframes taglineGlow { 0%,100% { color:#fff } 10%,22% { color:#bccaf2 } 34% { color:#fff } }
+@media (prefers-reduced-motion:reduce) {
+  .js-tagline .footer-tagline li { opacity:1;transform:none;transition:none }
+  .js-tagline.is-glowing .footer-tagline li { animation:none }
+  .footer-tagline li:last-child { color:#bccaf2 }
 }
