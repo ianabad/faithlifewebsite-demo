@@ -399,14 +399,11 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   const chips = Array.from(finder.querySelectorAll('[data-find]'));
   const result = finder.querySelector('[data-finder-result]');
   const layers = Array.from(document.querySelectorAll('.finder-layer'));
-  const loadAll = () => layers.forEach(layer => { if (layer.dataset.src && !layer.src) layer.src = layer.dataset.src; });
-  ['pointerover', 'focusin'].forEach(type => finder.addEventListener(type, loadAll, { once: true }));
   chips.forEach(chip => chip.addEventListener('click', () => {
     const key = chip.dataset.find;
     const on = chip.getAttribute('aria-pressed') !== 'true';
     chips.forEach(c => c.setAttribute('aria-pressed', String(on && c === chip)));
     const show = on ? key : 'default';
-    loadAll();
     layers.forEach(layer => layer.classList.toggle('is-on', layer.dataset.layer === show));
     document.querySelectorAll('.is-highlight').forEach(el => el.classList.remove('is-highlight'));
     if (!on) { result.hidden = true; return; }
@@ -445,4 +442,15 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   addEventListener('resize', update);
   update();
   setTimeout(() => { stops.forEach(s => { if (s.getBoundingClientRect().top < innerHeight) s.classList.add('is-in'); }); }, 1500);
+})();
+
+// Ministries: serving icons draw themselves when the grid comes into view.
+(function serveGrid() {
+  const grid = document.querySelector('[data-serve]');
+  if (!grid) return;
+  grid.querySelectorAll('.serve-tile').forEach((tile, i) => tile.style.setProperty('--i', i));
+  grid.classList.add('js-serve');
+  const check = () => { if (grid.getBoundingClientRect().top < innerHeight * 0.85) { grid.classList.add('is-in'); removeEventListener('scroll', check); } };
+  addEventListener('scroll', check, { passive: true });
+  check();
 })();
