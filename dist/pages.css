@@ -1758,3 +1758,6 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .msg-hero2-copy .msg-wave { position:absolute;inset:0;width:100%;height:100%;z-index:0 }
 @media (max-width:760px) { .msg-hero2-copy { padding-bottom:110px } }
 @media (max-width:760px) { .msg-hero2-copy { padding-bottom:44px } }
+/* Messages hero: the second line stands on its own */
+.msg-hero2 .visit-hero2-lead { margin-bottom:12px }
+.msg-hero-note { margin:0 0 34px;color:#f6c768;font-size:clamp(17px,1.3vw,19px);font-weight:500 }
