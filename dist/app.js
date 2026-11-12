@@ -579,3 +579,18 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     (phone.matches ? door : list.closest('section')).scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   });
 })();
+
+// Ministries: bento tiles draw when the grid comes into view and redraw when you point at one.
+(function bentoTiles() {
+  const grid = document.querySelector('[data-bento]');
+  if (!grid) return;
+  const tiles = Array.from(grid.querySelectorAll('.bento-tile'));
+  const reveal = () => { if (grid.getBoundingClientRect().top < innerHeight * 0.85) { tiles.forEach(t => t.classList.add('is-in')); removeEventListener('scroll', reveal); } };
+  addEventListener('scroll', reveal, { passive: true });
+  reveal();
+  setTimeout(() => tiles.forEach(t => t.classList.add('is-in')), 2000);
+  tiles.forEach(tile => tile.addEventListener('pointerenter', () => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    tile.classList.remove('is-in'); void tile.offsetWidth; tile.classList.add('is-in');
+  }));
+})();
