@@ -246,3 +246,60 @@ header { background:#1e2b57;border-bottom:0 }
 @media (prefers-reduced-motion:reduce) { .hero-scroll .site-icon { animation:none } }
 html { scroll-behavior:smooth }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto } }
+
+/* ---- Hero entrance: one short, choreographed moment on load ---- */
+@media (prefers-reduced-motion:no-preference) {
+  .hero h1 > span:first-child { animation:heroRise .9s cubic-bezier(.16,1,.3,1) both }
+  .hero-rotator { animation:heroRise .9s cubic-bezier(.16,1,.3,1) .09s both }
+  .hero-lead { animation:heroFade .8s cubic-bezier(.16,1,.3,1) .22s both }
+  .hero-facts { animation:heroFade .8s cubic-bezier(.16,1,.3,1) .3s both }
+  .hero-copy .actions { animation:heroFade .8s cubic-bezier(.16,1,.3,1) .38s both }
+  .hero-scroll { animation:heroFade .8s ease .9s both }
+  .hero-image { animation:heroUnveil 1.25s cubic-bezier(.65,0,.15,1) both }
+}
+@keyframes heroRise { from { transform:translateY(.35em);opacity:0;filter:blur(6px) } }
+@keyframes heroFade { from { transform:translateY(12px);opacity:0 } }
+@keyframes heroUnveil { from { clip-path:inset(0 0 0 100%) } to { clip-path:inset(0 0 0 0) } }
+
+/* ---- Your first Sunday: a walk through the afternoon ---- */
+.first-sunday-grid { display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(48px,7vw,110px);align-items:start }
+.first-sunday-intro { position:sticky;top:48px }
+.first-sunday-intro h2 + p { color:var(--muted);max-width:36ch;margin:24px 0 0 }
+.first-sunday-facts { list-style:none;margin:32px 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:460px }
+.first-sunday-facts li { border-top:2px solid var(--navy);padding-top:14px }
+.first-sunday-facts strong { display:block;font-weight:500;color:var(--navy) }
+.first-sunday-facts span { display:block;color:var(--muted);font-size:16px;margin-top:2px }
+.first-sunday .actions { display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px }
+.visit-timeline { --progress:1;position:relative;list-style:none;margin:0;padding:0 0 0 52px }
+.visit-timeline::before, .visit-timeline::after { content:"";position:absolute;left:11px;top:14px;bottom:14px;width:2px;border-radius:2px;background:#cbd0db }
+.visit-timeline::after { background:var(--navy);transform-origin:top;transform:scaleY(var(--progress)) }
+.visit-step { position:relative;padding:0 0 44px }
+.visit-step:last-of-type { padding-bottom:0 }
+.visit-dot { position:absolute;z-index:1;left:-52px;top:6px;width:24px;height:24px;border-radius:50%;background:var(--gray);border:2px solid #cbd0db;transition:border-color .4s ease,background .4s ease,transform .5s cubic-bezier(.16,1,.3,1) }
+.visit-dot::after { content:"";position:absolute;inset:5px;border-radius:50%;background:var(--navy);transform:scale(0);transition:transform .45s cubic-bezier(.16,1,.3,1) }
+.visit-step.is-reached .visit-dot { border-color:var(--navy);transform:scale(1.05) }
+.visit-step.is-reached .visit-dot::after { transform:scale(1) }
+.visit-time { display:inline-block;font-size:15px;color:var(--navy);font-weight:500;margin-bottom:6px;letter-spacing:.01em }
+.visit-step h3 { font-size:clamp(24px,2.2vw,30px);line-height:1.2 }
+.visit-step p { color:var(--muted);margin-top:10px;max-width:46ch }
+.js-timeline .visit-step { opacity:.45;transition:opacity .5s ease }
+.js-timeline .visit-step.is-reached { opacity:1 }
+@media (max-width:900px) {
+  .first-sunday-grid { grid-template-columns:1fr;gap:56px }
+  .first-sunday-intro { position:static }
+}
+@media (max-width:480px) {
+  .first-sunday-facts { grid-template-columns:1fr }
+  .visit-timeline { padding-left:44px }
+  .visit-timeline::before, .visit-timeline::after { left:11px }
+  .visit-dot { left:-44px }
+  .visit-step { padding-bottom:36px }
+}
+@media (prefers-reduced-motion:reduce) {
+  .js-timeline .visit-step { opacity:1 }
+  .visit-dot, .visit-dot::after { transition:none }
+}
+
+/* Ministry cards: the arrow leans in with the photo on hover */
+.ministry-grid .text-link .site-icon { transition:transform .3s cubic-bezier(.16,1,.3,1) }
+.ministry-grid article:hover .text-link .site-icon { transform:translate(3px,-3px) }

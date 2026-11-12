@@ -139,3 +139,39 @@ show(0);
     // Keep the default "Sundays at 1:30 PM".
   }
 })();
+
+// "Your first Sunday": the line fills and each step lights up as you scroll through it.
+(function visitTimeline() {
+  const list = document.querySelector('[data-timeline]');
+  if (!list) return;
+  const steps = Array.from(list.querySelectorAll('.visit-step'));
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  list.closest('section').classList.add('js-timeline');
+  let ticking = false;
+  function update() {
+    const marker = innerHeight * 0.62;
+    if (still.matches) {
+      list.style.setProperty('--progress', 1);
+      steps.forEach(step => step.classList.add('is-reached'));
+      return;
+    }
+    const box = list.getBoundingClientRect();
+    const progress = Math.min(1, Math.max(0, (marker - box.top) / box.height));
+    list.style.setProperty('--progress', progress.toFixed(3));
+    steps.forEach(step => {
+      const dot = step.querySelector('.visit-dot').getBoundingClientRect();
+      step.classList.toggle('is-reached', dot.top + dot.height / 2 <= marker);
+    });
+  }
+  function request() {
+    if (ticking) return;
+    ticking = true;
+    update();
+    requestAnimationFrame(() => { ticking = false; });
+    setTimeout(() => { if (ticking) { ticking = false; update(); } }, 100);
+  }
+  addEventListener('scroll', request, { passive: true });
+  addEventListener('resize', request);
+  still.addEventListener('change', request);
+  update();
+})();
