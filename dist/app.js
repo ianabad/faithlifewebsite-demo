@@ -223,7 +223,7 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   const arrow = '<svg class="site-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h16m-7-7 7 7-7 7"/></svg>';
   const ui = document.createElement('div');
   ui.className = 'chat-ui';
-  ui.innerHTML = '<ul class="chat-menu"></ul><div class="chat-window"><div class="chat-head"><span class="chat-avatar"><img src="assets/logo.png" alt=""></span><div><strong>Faith Life</strong><span>Answers to common questions</span></div></div><div class="chat-log" aria-live="polite"></div></div>';
+  ui.innerHTML = '<ul class="chat-menu"></ul><div class="chat-window"><div class="chat-head"><span class="chat-avatar"><img src="assets/icon-192.png" alt=""></span><div><strong>Faith Life</strong><span>Answers to common questions</span></div></div><div class="chat-log" aria-live="polite"></div></div>';
   const menu = ui.querySelector('.chat-menu');
   const log = ui.querySelector('.chat-log');
   const buttons = items.map((item, i) => {
