@@ -1757,3 +1757,4 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .msg-hero2-copy > :not(canvas) { position:relative;z-index:1 }
 .msg-hero2-copy .msg-wave { position:absolute;inset:0;width:100%;height:100%;z-index:0 }
 @media (max-width:760px) { .msg-hero2-copy { padding-bottom:110px } }
+@media (max-width:760px) { .msg-hero2-copy { padding-bottom:44px } }
