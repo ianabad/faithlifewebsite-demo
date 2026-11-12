@@ -1765,3 +1765,13 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 /* Messages hero: room between the lead and the buttons */
 .msg-hero2 .visit-hero2-lead { margin-bottom:38px }
 @media (max-width:760px) { .msg-hero2 .visit-hero2-lead { margin-bottom:30px } }
+
+/* ---- Messages week strip: every dot sits exactly on the line (line centre at 45px) ---- */
+@media (min-width:761px) {
+  .wk-day { padding-top:0 }
+  .wk-name { display:block;min-height:66px }
+  .wk-dot { position:absolute;left:0;top:39px;margin:0 }
+  .wk-day.is-key::before { position:absolute;left:-3px;top:36px;margin:0 }
+  .wk-today { position:absolute;left:-10px;top:62px;margin:0 }
+}
+@media (max-width:760px) { .wk-day.is-key { grid-auto-flow:row;justify-items:start;gap:2px } .wk-day.is-key .wk-what { font-size:20px } }
