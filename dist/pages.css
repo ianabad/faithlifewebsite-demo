@@ -999,3 +999,633 @@ html { scroll-behavior:smooth }
 .motion-paused .story-line-base, .motion-paused .story-line-halo { animation-play-state:paused }
 @media (prefers-reduced-motion:reduce) { .story-zig .story-line-base, .story-line.is-moving .story-line-halo { animation:none } }
 .story-row h3 { text-wrap:balance }
+
+/* ===== Ministries ===== */
+/* Hero with a group finder; the photo changes to match the choice */
+.min-hero { display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);background:var(--navy);color:#fff;min-height:clamp(600px,calc(100svh - 112px),920px) }
+.min-hero-copy { padding:clamp(56px,7vw,96px) clamp(32px,4vw,64px) clamp(56px,7vw,96px) max(48px,calc((100vw - 1280px)/2));display:flex;flex-direction:column;justify-content:center }
+.min-hero h1 { font-size:clamp(44px,4.8vw,72px);line-height:1.05 }
+.min-hero-lead { color:#dfe4f3;font-size:clamp(18px,1.4vw,20px);line-height:1.55;max-width:40ch;margin:22px 0 30px }
+.finder-q { font-size:clamp(19px,1.5vw,22px);font-weight:500;margin-bottom:14px }
+.finder-chips { display:flex;flex-wrap:wrap;gap:8px }
+.finder-chip { min-height:44px;padding:9px 16px;border:1px solid #ffffff55;border-radius:999px;background:transparent;color:#fff;font:inherit;font-size:16px;cursor:pointer;transition:background .25s,color .25s,border-color .25s,transform .25s }
+.finder-chip:hover { background:#ffffff1a;border-color:#ffffffaa;transform:translateY(-1px) }
+.finder-chip[aria-pressed="true"] { background:#fff;color:var(--navy);border-color:#fff }
+.finder-chip:focus-visible { outline:2px solid #fff;outline-offset:3px }
+.finder-result { margin-top:22px;padding:18px 20px;background:#fff;color:var(--ink);display:grid;gap:4px;max-width:480px;animation:finderIn .5s cubic-bezier(.16,1,.3,1) }
+.finder-result[hidden] { display:none }
+.finder-result-name { font-size:20px;font-weight:500;color:var(--navy) }
+.finder-result-short { color:var(--muted);font-size:16px }
+.finder-result-actions { display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:8px }
+.finder-result-actions a { display:inline-flex;align-items:center;gap:6px;color:var(--navy);font-weight:500;font-size:16px;text-decoration:underline;text-underline-offset:4px;min-height:32px }
+.finder-result-actions .site-icon { width:16px;height:16px }
+@keyframes finderIn { from { opacity:0;transform:translateY(10px) } }
+.min-hero-media { position:relative;overflow:hidden;min-height:420px;background:#1e2b57 }
+.finder-layer { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.06);transition:opacity .8s ease,transform 1.6s cubic-bezier(.16,1,.3,1) }
+.finder-layer.is-on { opacity:1;transform:none }
+.finder-layer.is-drawing { display:grid;place-items:center;background:#1e2b57 }
+.finder-layer.is-drawing svg { width:min(80%,520px);height:auto }
+@media (prefers-reduced-motion:no-preference) {
+  .min-hero h1 { animation:heroRise .9s cubic-bezier(.16,1,.3,1) both }
+  .min-hero-lead, .finder { animation:heroFade .8s cubic-bezier(.16,1,.3,1) .15s both }
+  .min-hero-media { animation:heroUnveil 1.25s cubic-bezier(.65,0,.15,1) both }
+}
+@media (max-width:860px) {
+  .min-hero { grid-template-columns:1fr;min-height:0 }
+  .min-hero-copy { padding:44px 20px 40px }
+  .min-hero-media { min-height:0;aspect-ratio:4/3;order:-1 }
+}
+
+/* Line drawings (couples, prayer) */
+.min-drawing { display:block;width:100%;height:100% }
+.min-drawing .draw-lines path { stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.5s cubic-bezier(.65,0,.35,1) }
+.min-drawing .draw-lines path:nth-child(2) { transition-delay:.2s } .min-drawing .draw-lines path:nth-child(3) { transition-delay:.35s }
+.min-drawing .draw-lines path:nth-child(4) { transition-delay:.5s } .min-drawing .draw-lines path:nth-child(5) { transition-delay:.65s } .min-drawing .draw-lines path:nth-child(6) { transition-delay:.8s }
+.min-drawing .draw-warm, .min-drawing .draw-glow { opacity:0;transition:opacity 1s ease 1.4s }
+.is-in .min-drawing .draw-lines path, .finder-layer.is-on .min-drawing .draw-lines path { stroke-dashoffset:0 }
+.is-in .min-drawing .draw-warm, .is-in .min-drawing .draw-glow, .finder-layer.is-on .draw-warm, .finder-layer.is-on .draw-glow { opacity:1 }
+.is-in .draw-flame, .finder-layer.is-on .draw-flame { transform-box:fill-box;transform-origin:50% 100%;animation:flameFlicker 2.6s ease-in-out 2s infinite alternate }
+@keyframes flameFlicker { 0% { transform:scale(1) } 50% { transform:scale(.94,1.05) } 100% { transform:scale(1.03,.96) } }
+.motion-paused .draw-flame { animation-play-state:paused !important }
+@media (prefers-reduced-motion:reduce) { .min-drawing .draw-lines path { stroke-dashoffset:0;transition:none } .min-drawing .draw-warm, .min-drawing .draw-glow { opacity:1;transition:none } .draw-flame { animation:none !important } }
+
+/* Life path: a line runs through every season */
+.path-list { position:relative;list-style:none;margin:0;padding:0 }
+.path-list::before, .path-list::after { content:"";position:absolute;left:11px;top:0;width:3px;background:#2635701f }
+.path-list::before { bottom:0 }
+.path-list::after { height:var(--path-fill,0%);background:var(--navy);transition:height .2s linear }
+.path-stop { position:relative;display:grid;grid-template-columns:minmax(150px,.7fr) minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center;padding:clamp(36px,6vh,64px) 0 clamp(36px,6vh,64px) 52px;border-top:1px solid #dfe2e8 }
+.path-stop:first-child { border-top:0 }
+.path-season { display:grid;gap:4px;align-self:start;padding-top:6px }
+.path-dot { position:absolute;left:3px;top:calc(clamp(36px,6vh,64px) + 12px);width:19px;height:19px;border-radius:50%;background:#fff;border:3px solid #c4cbdc;transition:background .4s,border-color .4s,transform .4s cubic-bezier(.16,1,.3,1) }
+.path-stop.is-reached .path-dot { background:var(--navy);border-color:var(--navy);transform:scale(1.15) }
+.path-season-name { font-size:clamp(26px,2.4vw,34px);font-weight:500;letter-spacing:-.03em;line-height:1.1;color:var(--navy) }
+.path-season-tag { font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted) }
+.path-copy h3 { font-size:clamp(22px,1.9vw,27px);line-height:1.2 }
+.path-copy p { margin-top:10px;color:var(--muted);line-height:1.65;max-width:46ch }
+.path-copy .path-meta, .every-copy .path-meta { margin-top:12px;color:var(--navy);font-weight:500;font-size:15px }
+.path-pair { display:grid;grid-template-columns:1fr 1fr;gap:24px }
+.min-ask { margin-top:14px;display:inline-flex;align-items:center;gap:8px;color:var(--navy);font-weight:500;min-height:32px }
+.min-ask > span { background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .4s cubic-bezier(.16,1,.3,1) }
+.min-ask .site-icon { width:18px;height:18px;transition:transform .4s cubic-bezier(.16,1,.3,1) }
+.min-ask:hover > span { background-size:100% 1px }
+.min-ask:hover .site-icon { transform:translateX(3px) }
+.min-media { position:relative;aspect-ratio:4/3;overflow:hidden;background:#d9deea }
+.min-media img { display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.16,1,.3,1) }
+.min-media.is-drawing { background:#1e2b57 }
+.min-media.is-pair { display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#fff }
+.min-media.is-pair img { min-width:0 }
+.path-stop:hover .min-media img { transform:scale(1.03) }
+.path-stop.is-highlight { background:linear-gradient(90deg,#e9eefb,#e9eefb00 80%) }
+.js-path .path-stop .min-media { clip-path:inset(0 0 100% 0);transition:clip-path 1s cubic-bezier(.65,0,.15,1) }
+.js-path .path-stop.is-in .min-media { clip-path:inset(0) }
+@media (max-width:960px) {
+  .path-stop { grid-template-columns:1fr;gap:16px;padding-left:44px }
+  .path-dot { top:calc(clamp(36px,6vh,64px) + 8px) }
+  .path-pair { grid-template-columns:1fr }
+}
+@media (prefers-reduced-motion:reduce) { .js-path .path-stop .min-media { clip-path:none;transition:none } }
+
+/* For everyone: Discovery and prayer */
+.every-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.5vw,32px) }
+.every-card { background:#ffffff0d;border:1px solid #ffffff26;transition:background .3s,transform .4s cubic-bezier(.16,1,.3,1) }
+.every-card:hover { background:#ffffff17;transform:translateY(-2px) }
+.every-card .min-media { aspect-ratio:16/9 }
+.every-copy { padding:24px clamp(20px,2.4vw,32px) 28px }
+.every-tag { font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#bccaf2 }
+.every-copy h3 { margin-top:6px;font-size:clamp(24px,2.2vw,30px) }
+.every-copy p { margin-top:10px;color:#dfe4f3;line-height:1.65 }
+.min-every .every-copy .path-meta { color:#fff }
+.min-every .min-ask { color:#fff }
+.min-every .every-card.is-highlight { border-color:#fff;background:#ffffff1f }
+@media (max-width:760px) { .every-grid { grid-template-columns:1fr } }
+
+/* Connect Groups: what happens on Sunday */
+.min-connect { background:#e9eefb }
+.connect-steps { list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;counter-reset:step;position:relative }
+.connect-steps li { position:relative;padding:28px clamp(16px,2.4vw,32px) 8px 0;border-top:3px solid var(--navy) }
+.connect-steps li::before { content:"";position:absolute;left:0;top:-9px;width:15px;height:15px;border-radius:50%;background:var(--navy) }
+.connect-time { font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500 }
+.connect-steps h3 { margin-top:8px;font-size:clamp(21px,1.8vw,26px) }
+.connect-steps p { margin-top:8px;color:var(--muted);line-height:1.6;max-width:34ch }
+.js-connect .connect-steps li { opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .8s cubic-bezier(.16,1,.3,1) }
+.js-connect .connect-steps li:nth-child(2) { transition-delay:.18s } .js-connect .connect-steps li:nth-child(3) { transition-delay:.36s }
+.js-connect.is-in .connect-steps li { opacity:1;transform:none }
+@media (max-width:760px) { .connect-steps { grid-template-columns:1fr;gap:28px } }
+@media (prefers-reduced-motion:reduce) { .js-connect .connect-steps li { opacity:1;transform:none;transition:none } }
+.min-close { background:#fff }
+.min-hero .finder-q { color:#fff }
+
+/* ---- Ministries v2: every group as an animated line drawing ---- */
+.min-hero-media { background:#1e2b57 }
+.finder-layer { display:grid;place-items:center;background:#1e2b57 }
+.finder-layer svg { width:min(82%,560px);height:auto }
+.min-media.is-drawing svg { width:100%;height:100% }
+.min-drawing .draw-lines path:nth-child(7) { transition-delay:.95s } .min-drawing .draw-lines path:nth-child(8) { transition-delay:1.1s }
+.min-drawing .draw-lines path:nth-child(9) { transition-delay:1.2s } .min-drawing .draw-lines path:nth-child(10) { transition-delay:1.3s }
+.loop-float, .loop-pulse, .loop-sway, .loop-spin, .loop-twinkle { animation-play-state:paused }
+.loop-float { transform-box:fill-box;animation:drawFloat 3.2s ease-in-out infinite }
+.loop-float.loop-delay { animation-delay:1.4s }
+.loop-pulse { transform-box:fill-box;transform-origin:center;animation:drawPulse 2.8s ease-in-out infinite }
+.loop-sway { animation:drawSway 4.5s ease-in-out infinite alternate }
+.loop-spin { animation:drawSpin 24s linear infinite }
+.loop-twinkle { animation:drawTwinkle 2.6s ease-in-out infinite alternate }
+.is-in .min-drawing [class*="loop-"], .finder-layer.is-on [class*="loop-"] { animation-play-state:running }
+html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !important }
+@keyframes drawFloat { 0% { transform:translateY(6px);opacity:0 } 25% { opacity:1 } 100% { transform:translateY(-18px);opacity:0 } }
+@keyframes drawPulse { 50% { transform:scale(1.08) } }
+@keyframes drawSway { from { transform:rotate(-3deg) } to { transform:rotate(3deg) } }
+@keyframes drawSpin { to { transform:rotate(360deg) } }
+@keyframes drawTwinkle { to { opacity:.25 } }
+.finder-layer .min-drawing .draw-lines path { stroke-dashoffset:1 }
+.finder-layer.is-on .min-drawing .draw-lines path { stroke-dashoffset:0 }
+.finder-layer .draw-warm, .finder-layer .draw-glow { opacity:0 }
+.finder-layer.is-on .draw-warm, .finder-layer.is-on .draw-glow { opacity:1 }
+@media (prefers-reduced-motion:reduce) { .min-drawing [class*="loop-"] { animation:none !important } .finder-layer .min-drawing .draw-lines path { stroke-dashoffset:0 } }
+.path-note { margin-top:14px;color:var(--muted);font-size:15px;line-height:1.6;max-width:56ch }
+.path-stop.is-double .path-pair .path-meta { margin-top:8px }
+
+/* ---- Ministries v2: serve with us ---- */
+.min-serve { position:relative;overflow:hidden;background:#fff }
+.min-serve > .wrap { position:relative;z-index:1 }
+.min-serve .mission-light { background:radial-gradient(34% 40% at 20% 30%,#dfe6fbcc,#dfe6fb00 70%),radial-gradient(30% 36% at 80% 70%,#e9eefb,#e9eefb00 70%) }
+.serve-grid { list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px }
+.serve-tile { display:flex;flex-direction:column;padding:26px 24px 24px;background:#ffffffd9;border:1px solid #dfe2e8;transition:background .4s,color .4s,transform .4s cubic-bezier(.16,1,.3,1),border-color .4s }
+.serve-icon { width:52px;height:52px;color:var(--navy);transition:color .4s }
+.serve-tile h3 { margin-top:22px;font-size:clamp(21px,1.8vw,25px) }
+.serve-tile p { margin-top:8px;color:var(--muted);line-height:1.6;transition:color .4s }
+.serve-tile .min-ask { margin-top:auto;padding-top:14px }
+.serve-note { margin-top:28px;color:var(--muted) }
+.serve-note a { color:var(--navy);font-weight:500;text-decoration:underline;text-underline-offset:3px }
+.js-serve .serve-icon path { stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.3s cubic-bezier(.65,0,.35,1) calc(var(--i,0) * .14s) }
+.js-serve.is-in .serve-icon path { stroke-dashoffset:0 }
+@media (hover:hover) {
+  .serve-tile:hover { background:var(--navy);border-color:var(--navy);color:#fff;transform:translateY(-2px) }
+  .serve-tile:hover p { color:#c9d2ec }
+  .serve-tile:hover .serve-icon { color:#bccaf2 }
+  .serve-tile:hover .min-ask { color:#fff }
+  .js-serve.is-in .serve-tile:hover .serve-icon path { animation:beliefRedraw 1.1s cubic-bezier(.65,0,.35,1) }
+}
+@media (max-width:960px) { .serve-grid { grid-template-columns:repeat(2,minmax(0,1fr)) } }
+@media (max-width:600px) { .serve-grid { grid-template-columns:1fr } }
+@media (prefers-reduced-motion:reduce) { .js-serve .serve-icon path { stroke-dashoffset:0;transition:none } }
+.min-close { background:#e9eefb }
+
+/* ---- Ministries v3: hero with a sentence picker and an answer card ---- */
+.min-hero2 { position:relative;overflow:hidden;background:var(--navy);color:#fff;padding-block:clamp(56px,9vh,112px) }
+.min-hero2-bg { position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(#ffffff14 1.2px,transparent 1.4px);background-size:26px 26px }
+.hero-orb { position:absolute;border-radius:50%;filter:blur(40px);opacity:.55 }
+.orb-a { width:42vw;height:42vw;left:-12vw;top:-18vw;background:#3c55a8;animation:orbDrift 26s ease-in-out infinite alternate }
+.orb-b { width:34vw;height:34vw;right:-8vw;bottom:-16vw;background:#bccaf233;animation:orbDrift 32s ease-in-out infinite alternate-reverse }
+@keyframes orbDrift { to { transform:translate(8vw,6vw) scale(1.1) } }
+.motion-paused .hero-orb { animation-play-state:paused }
+.min-hero2-grid { position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(40px,6vw,96px);align-items:center }
+.min-hero2 h1 { font-size:clamp(48px,5.6vw,84px);line-height:1.02;letter-spacing:-.04em }
+.min-hero2-lead { margin-top:22px;max-width:44ch;color:#dfe4f3;font-size:clamp(18px,1.4vw,20px);line-height:1.6 }
+.finder2 { margin-top:clamp(32px,5vh,52px);display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;font-size:clamp(24px,2.6vw,38px);font-weight:500;letter-spacing:-.02em;line-height:1.3 }
+.finder2-sentence { color:#fff }
+.finder2-select { position:relative;display:inline-flex;align-items:center;max-width:100% }
+.finder2-select select { appearance:none;-webkit-appearance:none;max-width:100%;padding:0 40px 4px 0;border:0;border-bottom:3px solid #bccaf2;background:transparent;color:#bccaf2;font:inherit;letter-spacing:inherit;cursor:pointer;text-overflow:ellipsis }
+.finder2-select select:hover { color:#fff;border-color:#fff }
+.finder2-select select:focus-visible { outline:2px solid #fff;outline-offset:6px }
+.finder2-select select option { color:var(--ink);background:#fff;font-size:17px }
+.finder2-select .site-icon { position:absolute;right:4px;width:26px;height:26px;pointer-events:none;color:#bccaf2 }
+.finder2-browse { flex-basis:100%;margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:400;letter-spacing:0;color:#dfe4f3;text-decoration:underline;text-underline-offset:4px }
+.finder2-browse .site-icon { width:16px;height:16px }
+.finder2-card { background:#fff;color:var(--ink);box-shadow:0 40px 80px -40px #0b1230cc }
+.finder2-art { position:relative;aspect-ratio:4/3;background:#1e2b57;overflow:hidden }
+.finder2-art .finder-layer { position:absolute;inset:0 }
+.finder2-body { padding:22px 26px 26px }
+.finder2-name { font-size:clamp(22px,2vw,28px);font-weight:500;color:var(--navy);line-height:1.2 }
+.finder2-short { margin-top:8px;color:var(--muted);line-height:1.55 }
+.finder2-actions { margin-top:18px;display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px }
+.finder2-actions[hidden] { display:none }
+.finder2-ask { display:inline-flex;align-items:center;gap:6px;color:var(--navy);font-weight:500;text-decoration:underline;text-underline-offset:4px }
+.finder2-ask .site-icon { width:16px;height:16px }
+.finder2-card.is-swapping .finder2-body { animation:finderIn .5s cubic-bezier(.16,1,.3,1) }
+@media (prefers-reduced-motion:no-preference) {
+  .min-hero2 h1 { animation:heroRise .9s cubic-bezier(.16,1,.3,1) both }
+  .min-hero2-lead, .finder2 { animation:heroFade .8s cubic-bezier(.16,1,.3,1) .15s both }
+  .finder2-card { animation:ticketIn .9s cubic-bezier(.16,1,.3,1) .35s both }
+}
+@media (prefers-reduced-motion:reduce) { .hero-orb { animation:none } }
+@media (max-width:900px) { .min-hero2-grid { grid-template-columns:1fr } .finder2-card { max-width:560px } }
+@media (max-width:600px) { .finder2 { font-size:24px } .finder2-select { width:100% } .finder2-select select { width:100% } }
+
+/* ---- Ministries v3: paired groups get room, each with its own drawing ---- */
+.path-stop.is-double { grid-template-columns:minmax(150px,.7fr) minmax(0,2.2fr) }
+.path-stop.is-double .path-pair { grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,3.5vw,48px) }
+.pair-card .min-media { aspect-ratio:16/9;margin-bottom:20px }
+.pair-card p { max-width:42ch }
+.pair-card.is-highlight { outline:2px solid var(--navy);outline-offset:10px }
+@media (max-width:960px) { .path-stop.is-double { grid-template-columns:1fr } }
+@media (max-width:640px) { .path-stop.is-double .path-pair { grid-template-columns:1fr;gap:36px } }
+
+/* ---- Ministries v3: big season word behind each stop ---- */
+.path-stop { isolation:isolate }
+.path-stop::after { content:attr(data-word);position:absolute;right:0;top:50%;z-index:-1;font-size:clamp(80px,12vw,190px);font-weight:500;letter-spacing:-.05em;line-height:1;color:#2635700b;white-space:nowrap;pointer-events:none;transform:translate(6%,-50%);opacity:0;transition:opacity 1s ease,transform 1.4s cubic-bezier(.16,1,.3,1) }
+.path-stop.is-in::after { opacity:1;transform:translate(0,-50%) }
+@media (max-width:960px) { .path-stop::after { top:24px;transform:none;font-size:clamp(64px,20vw,110px) } .path-stop.is-in::after { transform:none } }
+
+/* ---- Ministries v3: drifting light on the navy band, pulse along the Sunday line ---- */
+.min-every { position:relative;overflow:hidden }
+.min-every > .wrap { position:relative;z-index:1 }
+.every-light { position:absolute;inset:-30%;pointer-events:none;background:radial-gradient(30% 36% at 25% 30%,#3c55a880,#3c55a800 70%),radial-gradient(26% 32% at 78% 72%,#bccaf226,#bccaf200 70%);animation:rsvpDrift 26s ease-in-out infinite alternate }
+.motion-paused .every-light { animation-play-state:paused }
+.connect-steps::after { content:"";position:absolute;left:0;top:-3px;width:90px;height:3px;background:linear-gradient(90deg,#bccaf200,#fff,#bccaf200);animation:connectPulse 4.5s ease-in-out infinite;pointer-events:none }
+@keyframes connectPulse { from { transform:translateX(-90px) } to { transform:translateX(calc(min(100vw, 1280px) - 40px)) } }
+.min-connect { overflow:hidden }
+.motion-paused .connect-steps::after { animation-play-state:paused }
+@media (max-width:760px) { .connect-steps::after { display:none } }
+@media (prefers-reduced-motion:reduce) { .every-light, .connect-steps::after { animation:none } }
+.min-serve.is-highlight .serve-grid { outline:2px solid var(--navy);outline-offset:12px }
+.min-path { overflow-x:clip }
+@media (max-width:960px) { .path-stop::after { display:none } }
+
+/* ---- Ministries v4: hero answer card keeps one size ---- */
+.finder2 { display:block }
+.finder2-sentence { display:block }
+.finder2-select { display:flex;width:100%;margin-top:6px }
+.finder2-select select { width:100%;white-space:nowrap;overflow:hidden }
+.finder2-browse { display:inline-flex;margin-top:16px }
+.finder2-body { height:clamp(212px,17vw,236px);display:flex;flex-direction:column }
+.finder2-name { display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden }
+.finder2-short { display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden }
+.finder2-actions { margin-top:auto }
+.finder2-actions.is-idle { visibility:hidden }
+@media (max-width:600px) { .finder2-body { height:auto;min-height:228px } }
+
+/* ---- Ministries v4: season word shows only on the stop the line has just reached ---- */
+.path-stop::after { opacity:0 !important;transform:translate(6%,-50%) }
+.path-stop.is-active::after { opacity:1 !important;transform:translate(0,-50%);color:#2635700f }
+.path-stop { transition:background-color .6s ease }
+.path-stop.is-active { background:linear-gradient(90deg,#f1f4fc 0%,#f1f4fc00 85%) }
+.path-stop.is-active .path-season-name { color:var(--navy) }
+.path-stop:not(.is-active) .path-season-name { color:#26357099;transition:color .5s }
+
+/* ---- Ministries v4: richer Discovery and Prayer panels ---- */
+.every-card { display:flex;flex-direction:column;background:#ffffff0a }
+.every-art { position:relative }
+.every-art .min-media { aspect-ratio:16/9 }
+.every-when { position:absolute;left:0;bottom:0;display:grid;gap:2px;padding:14px 20px 14px 18px;background:#fff;color:var(--navy);margin:0 }
+.every-when strong { font-size:clamp(24px,2.2vw,32px);font-weight:500;letter-spacing:-.03em;line-height:1 }
+.every-when span { font-size:13px;color:var(--muted) }
+.every-copy { display:flex;flex-direction:column;flex:1 }
+.every-copy h3 { margin-top:0 }
+.every-list-label { margin-top:22px !important;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#bccaf2 !important }
+.every-list { list-style:none;margin:10px 0 0;padding:0;display:grid;gap:2px }
+.every-list li { display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #ffffff1f;color:#fff }
+.every-check { width:20px;height:20px;flex:none;color:#f6c768 }
+.every-check path { stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .7s cubic-bezier(.65,0,.35,1) }
+.every-card.is-in .every-check path { stroke-dashoffset:0 }
+.every-list li:nth-child(2) .every-check path { transition-delay:.15s } .every-list li:nth-child(3) .every-check path { transition-delay:.3s } .every-list li:nth-child(4) .every-check path { transition-delay:.45s }
+.every-copy .min-ask { margin-top:auto;padding-top:18px }
+.every-card:hover .min-media svg { transform:scale(1.03) }
+.every-card .min-media svg { transition:transform .8s cubic-bezier(.16,1,.3,1) }
+@media (prefers-reduced-motion:reduce) { .every-check path { stroke-dashoffset:0;transition:none } }
+.min-every .every-when, .min-every .every-when strong { color:var(--navy) } .min-every .every-when span { color:var(--muted) }
+@media (max-width:600px) { .every-when { position:static;grid-auto-flow:row;padding:12px 18px;border-bottom:1px solid #dfe2e8 } }
+
+/* ---- Ministries v5: hero matches the other page heroes (one screen under the header) ---- */
+.min-hero2 { --hero-h:clamp(560px,calc(100svh - 112px),900px);--hero-pad:clamp(36px,5.5vh,64px);min-height:var(--hero-h);padding-block:var(--hero-pad);display:flex;align-items:center }
+.min-hero2 h1 { font-size:clamp(44px,4.8vw,72px) }
+.finder2 { margin-top:clamp(24px,4vh,44px);font-size:clamp(22px,2.3vw,34px) }
+.finder2-card { display:flex;flex-direction:column;height:calc(var(--hero-h) - var(--hero-pad) * 2);max-height:620px }
+.finder2-art { aspect-ratio:auto;flex:1;min-height:0 }
+.finder2-body { flex:none;height:auto;min-height:0;padding:18px 24px 22px }
+.finder2-actions { margin-top:14px }
+@media (max-width:900px) {
+  .min-hero2 { min-height:0;display:block }
+  .finder2-card { height:auto;max-height:none }
+  .finder2-art { flex:none;aspect-ratio:16/10 }
+}
+
+/* ---- Ministries v6: smooth highlight, season word where it can be seen ---- */
+.path-stop.is-active { background:none }
+.path-stop::before { content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,#eef2fc 0%,#eef2fc 40%,#eef2fc00 90%);opacity:0;transition:opacity 1.1s cubic-bezier(.4,0,.2,1) }
+.path-stop.is-active::before { opacity:1 }
+.path-stop .path-season-name, .path-stop .path-dot { transition:color .9s cubic-bezier(.4,0,.2,1),background-color .9s,border-color .9s,transform .9s cubic-bezier(.16,1,.3,1) }
+.path-stop::after { top:auto !important;bottom:clamp(6px,1.5vh,16px);right:auto;left:52px;font-size:clamp(64px,8.5vw,140px);transform:translateY(18px) !important;transition:opacity 1.2s cubic-bezier(.4,0,.2,1),transform 1.4s cubic-bezier(.16,1,.3,1) }
+.path-stop.is-active::after { transform:none !important;color:#26357014 }
+.path-stop .path-copy { position:relative }
+
+/* ---- Ministries v6: Sunday steps draw across, each stop lights in turn ---- */
+.connect-steps::after { display:none }
+.connect-steps li { border-top-color:#2635702e }
+.connect-steps li::after { content:"";position:absolute;left:0;right:0;top:-3px;height:3px;background:var(--navy);transform:scaleX(0);transform-origin:left;transition:transform .9s cubic-bezier(.65,0,.35,1) }
+.connect-steps li::before { background:#c4cbdc;transform:scale(.6);transition:background-color .4s,transform .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 0 0 #26357040 }
+.js-connect.is-in .connect-steps li::after { transform:scaleX(1) }
+.js-connect.is-in .connect-steps li::before { background:var(--navy);transform:scale(1);animation:stepRing 2.8s ease-out infinite }
+.js-connect.is-in .connect-steps li:nth-child(1)::after { transition-delay:.1s } .js-connect.is-in .connect-steps li:nth-child(2)::after { transition-delay:1s } .js-connect.is-in .connect-steps li:nth-child(3)::after { transition-delay:1.9s }
+.js-connect.is-in .connect-steps li:nth-child(1)::before { transition-delay:0s;animation-delay:.2s } .js-connect.is-in .connect-steps li:nth-child(2)::before { transition-delay:.9s;animation-delay:1.1s } .js-connect.is-in .connect-steps li:nth-child(3)::before { transition-delay:1.8s;animation-delay:2s }
+@keyframes stepRing { 0% { box-shadow:0 0 0 0 #26357059 } 70%,100% { box-shadow:0 0 0 14px #26357000 } }
+.motion-paused .connect-steps li::before { animation-play-state:paused }
+@media (prefers-reduced-motion:reduce) { .connect-steps li::after { transform:none;transition:none } .connect-steps li::before { transform:none;animation:none !important;background:var(--navy) } }
+
+/* ===== Ministries v7 ===== */
+/* Pinned stage: the seasons */
+.min-stage { position:relative;padding:0;height:calc(var(--count) * 85svh + 100svh) }
+.stage-pin { position:sticky;top:0;height:100svh;display:flex;align-items:center;overflow:hidden }
+.stage-grid { display:grid;grid-template-columns:minmax(220px,.75fr) minmax(0,2fr);gap:clamp(32px,5vw,80px);align-items:center }
+.stage-rail h2 { font-size:clamp(32px,3.2vw,48px);line-height:1.08 }
+.stage-nav { position:relative;list-style:none;margin:clamp(24px,4vh,40px) 0 0;padding:0 0 0 22px }
+.stage-nav::before, .stage-nav::after { content:"";position:absolute;left:4px;top:8px;bottom:8px;width:3px;background:#2635701f }
+.stage-nav::after { bottom:auto;height:calc((100% - 16px) * var(--progress,0));background:var(--navy) }
+.min-stage .stage-nav::after { height:calc((100% - 16px) * var(--progress,0)) }
+.stage-nav-btn { position:relative;display:grid;gap:0;width:100%;min-height:52px;padding:6px 0;border:0;background:none;text-align:left;font:inherit;cursor:pointer;color:#26357080 }
+.stage-nav-btn::before { content:"";position:absolute;left:-23px;top:15px;width:11px;height:11px;border-radius:50%;background:#fff;border:3px solid #c4cbdc;transition:all .6s cubic-bezier(.16,1,.3,1) }
+.stage-nav-name { font-size:clamp(20px,1.8vw,24px);font-weight:500;letter-spacing:-.02em;transition:color .6s ease }
+.stage-nav-tag { font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);opacity:.7 }
+.stage-nav-btn:hover .stage-nav-name { color:var(--navy) }
+.stage-nav-btn.is-done::before { background:var(--navy);border-color:var(--navy) }
+.stage-nav-btn[aria-current]::before { background:var(--navy);border-color:var(--navy);transform:scale(1.35) }
+.stage-nav-btn[aria-current] .stage-nav-name { color:var(--navy) }
+.stage-nav-btn:focus-visible { outline:2px solid var(--navy);outline-offset:4px }
+.stage-panels { position:relative;height:min(70svh,600px) }
+.stage-season { position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(24px,3vw,48px);align-items:center;opacity:0;visibility:hidden;transform:translateY(24px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.16,1,.3,1),visibility 0s linear .7s }
+.stage-season.is-active { opacity:1;visibility:visible;transform:none;transition:opacity .7s cubic-bezier(.4,0,.2,1) .1s,transform .9s cubic-bezier(.16,1,.3,1) .1s,visibility 0s }
+.stage-season-label { font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted) }
+.stage-season-label span { color:var(--navy);font-weight:500 }
+.stage-groups { display:grid;gap:22px;margin-top:12px }
+.stage-group h3 { font-size:clamp(24px,2.2vw,32px);line-height:1.15 }
+.stage-group p { margin-top:8px;color:var(--muted);line-height:1.65;max-width:44ch }
+.stage-season.is-pair .stage-group h3 { font-size:clamp(20px,1.7vw,24px) }
+.stage-season.is-pair .stage-group p { font-size:16px }
+.stage-art { position:relative;height:100%;background:#1e2b57;overflow:hidden;display:grid;place-items:center }
+.stage-word { position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);font-size:clamp(80px,10vw,170px);font-weight:500;letter-spacing:-.05em;color:#ffffff0d;white-space:nowrap;line-height:1;transition:transform 1.6s cubic-bezier(.16,1,.3,1),opacity 1s ease;opacity:0 }
+.stage-season.is-active .stage-word { opacity:1;transform:translate(-50%,-50%) scale(1) }
+.stage-art-cells { position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;width:100%;height:100% }
+.stage-art-cell { display:grid;place-items:center }
+.stage-art-cell svg { width:min(92%,520px);height:auto }
+.stage-season.is-pair .stage-art-cell + .stage-art-cell { border-left:1px solid #ffffff1a }
+/* phones and tablets: a simple stacked list */
+@media (max-width:960px) {
+  .min-stage { height:auto;padding-block:clamp(56px,8vw,96px) }
+  .stage-pin { position:static;height:auto;display:block;overflow:visible }
+  .stage-grid { display:block }
+  .stage-nav { display:none }
+  .stage-panels { height:auto;display:grid;gap:48px;margin-top:32px }
+  .stage-season { position:relative;inset:auto;opacity:1;visibility:visible;transform:none;grid-template-columns:1fr;gap:20px }
+  .stage-art { order:-1;aspect-ratio:16/10;height:auto }
+  .stage-word { opacity:1;transform:translate(-50%,-50%);font-size:clamp(56px,18vw,110px) }
+  .stage-season.is-pair .stage-groups { grid-template-columns:1fr }
+}
+@media (prefers-reduced-motion:reduce) { .stage-season, .stage-word { transition:none } }
+
+/* Discovery and Prayer: time set in the drawing, no white box */
+.every-when { position:absolute !important;left:clamp(16px,2vw,26px);top:clamp(14px,2vw,22px);bottom:auto;padding:0;background:none !important;border:0 !important;pointer-events:none }
+.min-every .every-when strong { color:#bccaf2;font-size:clamp(28px,2.8vw,42px) }
+.min-every .every-when span { color:#c9d2ec;font-size:13px }
+
+/* Serve with us: one body, six stars */
+.min-serve2 { position:relative;overflow:hidden;background:#141d3d;color:#fff }
+.serve-sky { position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(#ffffff2e 1px,transparent 1.4px),radial-gradient(#bccaf21f 1px,transparent 1.3px);background-size:90px 90px,140px 140px;background-position:0 0,40px 60px;animation:skyDrift 90s linear infinite }
+@keyframes skyDrift { to { background-position:90px 45px,180px 130px } }
+.motion-paused .serve-sky { animation-play-state:paused }
+.serve2-grid { position:relative;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(32px,5vw,80px);align-items:center }
+.min-serve2 h2 { color:#fff }
+.serve2-lead { margin-top:16px;color:#dfe4f3;font-size:clamp(18px,1.4vw,20px);line-height:1.6;max-width:40ch }
+.serve2-verse { margin:22px 0 0;padding:0 }
+.serve2-verse p { color:#fff;font-size:clamp(18px,1.5vw,21px);line-height:1.5 }
+.serve2-verse cite { display:block;margin-top:4px;font-style:normal;font-size:14px;color:#bccaf2 }
+.teams { list-style:none;margin:28px 0 0;padding:0;position:relative;min-height:190px }
+.team { position:absolute;inset:0 0 auto;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .45s ease,transform .6s cubic-bezier(.16,1,.3,1),visibility 0s linear .45s }
+.team.is-active { opacity:1;visibility:visible;transform:none;transition:opacity .45s ease,transform .6s cubic-bezier(.16,1,.3,1),visibility 0s }
+.team .serve-icon { width:44px;height:44px;color:#f6c768 }
+.team h3 { margin-top:12px;font-size:clamp(24px,2.2vw,30px);color:#fff }
+.team p { margin-top:8px;color:#dfe4f3;line-height:1.6;max-width:42ch }
+.team .min-ask { color:#fff }
+.min-serve2 .serve-note { color:#c9d2ec;margin-top:22px }
+.min-serve2 .serve-note a { color:#fff }
+.sky { position:relative;aspect-ratio:1/1;max-height:600px;width:100% }
+.sky-lines { position:absolute;inset:0;width:100%;height:100% }
+.sky-lines line { stroke:#bccaf2;stroke-opacity:.3;stroke-width:.25;stroke-dasharray:1 1.6;animation:skyFlow 3s linear infinite;vector-effect:non-scaling-stroke }
+.sky-lines line { stroke-width:1.2 }
+@keyframes skyFlow { to { stroke-dashoffset:-2.6 } }
+.motion-paused .sky-lines line { animation-play-state:paused }
+.star { position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;min-width:48px;min-height:48px;padding:0 6px;border:0;background:none;color:#c9d2ec;font:inherit;font-size:15px;cursor:pointer;white-space:nowrap }
+.star-dot { position:relative;width:14px;height:14px;flex:none;border-radius:50%;background:#bccaf2;box-shadow:0 0 0 0 #bccaf266;transition:transform .5s cubic-bezier(.34,1.56,.64,1),background-color .4s;animation:starTwinkle 3.2s ease-in-out infinite }
+.star:nth-child(3n) .star-dot { animation-delay:1.1s } .star:nth-child(3n+1) .star-dot { animation-delay:2s }
+.star.is-active .star-dot { background:#f6c768;transform:scale(1.6);animation:starPulse 2.4s ease-out infinite }
+.star.is-active .star-name, .star:hover .star-name { color:#fff }
+.star-name { transition:color .3s }
+.star:focus-visible { outline:2px solid #fff;outline-offset:4px;border-radius:8px }
+@keyframes starTwinkle { 50% { opacity:.55 } }
+@keyframes starPulse { 0% { box-shadow:0 0 0 0 #f6c76888 } 80%,100% { box-shadow:0 0 0 14px #f6c76800 } }
+.motion-paused .star-dot { animation-play-state:paused !important }
+@media (prefers-reduced-motion:reduce) { .serve-sky, .sky-lines line, .star-dot { animation:none !important } .team { transition:none } }
+@media (max-width:900px) {
+  .serve2-grid { grid-template-columns:1fr }
+  .sky { display:none }
+  .teams { min-height:0;display:grid;gap:14px }
+  .team { position:static;opacity:1;visibility:visible;transform:none;padding:20px;border:1px solid #ffffff26;background:#ffffff08 }
+}
+.stage-pin > .wrap { flex:none }
+.stage-group .path-meta { color:var(--navy);font-weight:500;font-size:15px }
+
+/* ===== Ministries v8 ===== */
+/* Season stage: no background word; one shared scene for two groups */
+.stage-word { display:none }
+.stage-art > svg { width:min(94%,600px);height:auto }
+.is-scene .scene-part { opacity:.32;transition:opacity .9s cubic-bezier(.4,0,.2,1) }
+.is-scene .scene-part.is-lit { opacity:1 }
+.is-scene .loop-sway { transform-box:fill-box;transform-origin:50% 100% !important }
+.pair-switch { position:relative;display:inline-grid;grid-template-columns:1fr 1fr;margin-top:14px;padding:4px;border:1px solid #cbd0db;border-radius:999px;background:#fff }
+.pair-switch-btn { position:relative;z-index:1;min-height:40px;padding:8px 18px;border:0;border-radius:999px;background:none;font:inherit;font-size:15px;font-weight:500;color:var(--muted);cursor:pointer;transition:color .4s ease }
+.pair-switch-btn[aria-pressed="true"] { color:#fff }
+.pair-switch-btn:focus-visible { outline:2px solid var(--navy);outline-offset:2px }
+.pair-switch-thumb { position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--navy);transform:translateX(calc(var(--pair,0) * 100%));transition:transform .55s cubic-bezier(.65,0,.35,1) }
+.stage-season.is-pair .stage-group { display:none }
+.stage-season.is-pair .stage-group.is-shown { display:block;animation:finderIn .6s cubic-bezier(.16,1,.3,1) }
+.stage-season.is-pair .stage-group h3 { font-size:clamp(24px,2.2vw,32px) }
+.stage-season.is-pair .stage-group p { font-size:inherit }
+@media (max-width:960px) {
+  .pair-switch { display:none }
+  .stage-season.is-pair .stage-group { display:block }
+  .stage-season.is-pair .stage-group + .stage-group { margin-top:8px;padding-top:22px;border-top:1px solid #dfe2e8 }
+  .is-scene .scene-part { opacity:1 }
+}
+@media (prefers-reduced-motion:reduce) { .pair-switch-thumb, .is-scene .scene-part { transition:none } }
+
+/* Discovery and Prayer: the time sits under the text as a quiet detail row */
+.every-when2 { display:flex;align-items:center;gap:14px;margin-top:20px;padding:14px 0;border-top:1px solid #ffffff26;border-bottom:1px solid #ffffff26 }
+.every-when-icon { width:30px;height:30px;flex:none;color:#f6c768 }
+.every-when2 span { display:grid;gap:1px;color:#c9d2ec;font-size:14px;line-height:1.4 }
+.every-when2 strong { color:#fff;font-size:18px;font-weight:500 }
+.every-list-label { margin-top:18px !important }
+
+/* ===== Ministries v9 ===== */
+/* Two-group seasons: one full drawing at a time, redrawn when you switch */
+.scene-swap { position:relative;width:min(94%,600px);aspect-ratio:4/3 }
+.scene-layer { position:absolute;inset:0;opacity:0;transform:scale(.97);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform 1s cubic-bezier(.16,1,.3,1) }
+.scene-layer.is-on { opacity:1;transform:none }
+.scene-layer svg { width:100%;height:100% }
+.scene-layer:not(.is-on) .draw-lines path { stroke-dashoffset:1 !important;transition:none !important }
+.scene-layer:not(.is-on) .draw-warm, .scene-layer:not(.is-on) .draw-glow { opacity:0 !important;transition:none !important }
+@media (max-width:960px) { .scene-swap { width:100% } }
+
+/* Discovery and Prayer: copy carries the time, cards stay balanced */
+.every-copy p { max-width:46ch }
+
+/* Serve with us on navy, with a light that follows the pointer */
+.min-serve.is-dark { background:#141d3d;color:#fff }
+.min-serve.is-dark h2 { color:#fff }
+.min-serve.is-dark .heading-row p, .min-serve.is-dark .serve-note { color:#c9d2ec }
+.min-serve.is-dark .serve-note a { color:#fff }
+.serve-glow { position:absolute;inset:-30%;pointer-events:none;background:radial-gradient(30% 36% at 22% 28%,#3c55a870,#3c55a800 70%),radial-gradient(26% 32% at 80% 72%,#bccaf21f,#bccaf200 70%);animation:rsvpDrift 28s ease-in-out infinite alternate }
+.motion-paused .serve-glow { animation-play-state:paused }
+.min-serve.is-dark .serve-tile { position:relative;overflow:hidden;background:#ffffff08;border-color:#ffffff1f;color:#fff }
+.min-serve.is-dark .serve-tile::before { content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(220px circle at var(--mx,50%) var(--my,-40%),#bccaf229,#bccaf200 70%);opacity:0;transition:opacity .4s ease }
+.min-serve.is-dark .serve-tile > * { position:relative }
+.min-serve.is-dark .serve-icon { color:#f6c768 }
+.min-serve.is-dark .serve-tile p { color:#c9d2ec }
+.min-serve.is-dark .min-ask { color:#fff }
+@media (hover:hover) {
+  .min-serve.is-dark .serve-tile:hover { background:#ffffff12;border-color:#bccaf266;color:#fff;transform:translateY(-2px) }
+  .min-serve.is-dark .serve-tile:hover::before { opacity:1 }
+  .min-serve.is-dark .serve-tile:hover p { color:#dfe4f3 }
+  .min-serve.is-dark .serve-tile:hover .serve-icon { color:#f6c768 }
+}
+@media (prefers-reduced-motion:reduce) { .serve-glow { animation:none } }
+/* Stage dots sit exactly on the line (line centre 5.5px from the list edge) */
+.stage-nav-btn::before { box-sizing:border-box;width:17px;height:17px;left:-25px;top:12px }
+@media (max-width:960px) { .scene-swap { width:auto;height:100% } }
+/* Discovery and Prayer: short paragraphs with room between them; the first reads as the lead */
+.every-copy h3 + p { margin-top:12px;color:#fff;font-size:clamp(18px,1.4vw,20px);line-height:1.5 }
+.every-copy p + p { margin-top:14px }
+
+/* ===== Ministries v10: chapel doors ===== */
+.doors { list-style:none;margin:0;padding:0;display:flex;gap:12px;height:clamp(460px,64vh,580px) }
+.door { flex:1 1 0;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,0fr);transition:flex-grow .85s cubic-bezier(.65,0,.35,1),grid-template-columns .85s cubic-bezier(.65,0,.35,1) }
+.door.is-open { flex-grow:4.4;grid-template-columns:minmax(0,.85fr) minmax(0,1.25fr) }
+.door-arch { position:relative;display:flex;flex-direction:column;justify-content:flex-end;height:100%;padding:20px 18px;border:0;border-radius:999px 999px 0 0;background:#1e2b57;color:#fff;font:inherit;text-align:left;cursor:pointer;overflow:hidden;transition:background-color .4s ease,transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s }
+.door-arch::after { content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px #ffffff14;pointer-events:none }
+.door:not(.is-open) .door-arch:hover { background:#25336b;transform:translateY(-2px);box-shadow:0 22px 40px -28px #0b123099 }
+.door-arch:focus-visible { outline:3px solid var(--navy);outline-offset:3px }
+.door-art { position:absolute;left:4%;right:4%;top:16%;bottom:28%;display:grid;place-items:center }
+.door-art svg { width:100%;height:100%;max-width:420px }
+.door-label { position:relative;display:grid;gap:4px }
+.door-name { font-size:clamp(19px,1.7vw,24px);font-weight:500;letter-spacing:-.02em;line-height:1.15 }
+.door-tag { font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#bccaf2 }
+.door-plus { position:absolute;right:16px;bottom:22px;width:28px;height:28px;border-radius:50%;border:1px solid #ffffff55;transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .4s }
+.door-plus::before, .door-plus::after { content:"";position:absolute;left:50%;top:50%;width:12px;height:1.5px;margin:-.75px 0 0 -6px;background:#fff }
+.door-plus::after { transform:rotate(90deg) }
+.door.is-open .door-plus { opacity:0;transform:rotate(45deg) }
+.door-body { min-width:0;overflow:hidden;visibility:hidden;transition:visibility 0s linear .85s }
+.door.is-open .door-body { visibility:visible;transition:visibility 0s }
+.door-body-inner { height:100%;min-width:300px;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:0 0 0 clamp(20px,2.6vw,40px);opacity:0;transform:translateX(16px);transition:opacity .4s ease,transform .5s cubic-bezier(.16,1,.3,1) }
+.door.is-open .door-body-inner { opacity:1;transform:none;transition:opacity .6s ease .35s,transform .8s cubic-bezier(.16,1,.3,1) .35s }
+.door .stage-group h3 { font-size:clamp(24px,2.2vw,32px);line-height:1.15 }
+.door .stage-group p { margin-top:8px;color:var(--muted);line-height:1.6;max-width:44ch }
+.door .stage-group .path-meta { color:var(--navy);font-weight:500;font-size:15px }
+.door.is-pair .stage-group h3 { font-size:clamp(20px,1.7vw,24px) }
+.door.is-pair .stage-group + .stage-group { padding-top:18px;border-top:1px solid #dfe2e8 }
+.door .path-note { margin-top:0;font-size:14px }
+@media (max-width:1100px) and (min-width:761px) { .door.is-open { flex-grow:3.4 } .door-name { font-size:18px } .door-tag { display:none } }
+/* phones: doors stack and open downward */
+@media (max-width:760px) {
+  .doors { display:grid;height:auto;gap:12px }
+  .door { display:grid;grid-template-columns:1fr;grid-template-rows:auto 0fr;transition:grid-template-rows .6s cubic-bezier(.65,0,.35,1) }
+  .door.is-open { grid-template-rows:auto 1fr }
+  .door-arch { height:130px;border-radius:90px 90px 0 0;transition:height .6s cubic-bezier(.65,0,.35,1),background-color .4s }
+  .door.is-open .door-arch { height:220px }
+  .door-art { top:10%;bottom:34% }
+  .door-body { min-height:0 }
+  .door-body-inner { min-width:0;height:auto;padding:22px 2px 10px;transform:translateY(-8px) }
+  .door.is-open .door-body-inner { transform:none }
+  .door-tag { display:block }
+}
+@media (prefers-reduced-motion:reduce) { .door, .door-arch, .door-body-inner { transition:none !important } }
+@media (min-width:761px) {
+  .doors { height:clamp(500px,72vh,620px) }
+  .door.is-open.is-pair { flex-grow:5.4 }
+  .door.is-pair .door-body-inner { gap:14px }
+  .door:not(.is-open) .door-tag { display:none }
+}
+.door-plus { right:auto;left:50%;bottom:auto;top:22px;margin-left:-14px }
+@media (max-width:760px) { .door.is-open { grid-template-columns:1fr } .door-plus { top:auto;bottom:22px;left:auto;right:18px;margin-left:0 } }
+
+/* ===== Ministries v11: bento grid, one tile per group ===== */
+.bento { list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:clamp(270px,32vh,310px);gap:14px }
+.bento-tile { position:relative;display:flex;flex-direction:column;overflow:hidden;background:#1e2b57;color:#fff;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s ease }
+.bento-tile::after { content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px #ffffff14;transition:box-shadow .4s }
+.bento-tile:hover, .bento-tile:focus-within { transform:translateY(-2px);box-shadow:0 26px 50px -30px #0b1230b3 }
+.bento-tile:hover::after, .bento-tile:focus-within::after { box-shadow:inset 0 0 0 1px #bccaf259 }
+.bento-tile.is-hero { grid-column:span 2;grid-row:span 2 }
+.bento-tile.is-wide { grid-column:span 2;flex-direction:row }
+.bento-art { flex:1 1 auto;min-height:0;display:grid;place-items:center;padding:14px 14px 0;transition:flex-basis .5s cubic-bezier(.16,1,.3,1) }
+.bento-art svg { width:100%;height:100%;max-height:100% }
+.bento-tile.is-hero .bento-art { padding:28px 28px 0 }
+.bento-tile.is-wide .bento-art { flex:0 0 44%;padding:14px }
+.bento-body { flex:none;display:flex;flex-direction:column;padding:4px 20px 18px }
+.bento-tile.is-hero .bento-body { padding:6px 30px 28px }
+.bento-tile.is-wide .bento-body { flex:1;justify-content:center;padding:20px 24px 20px 4px }
+.bento-tag { margin:0;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#bccaf2 }
+.bento-body h3 { margin-top:4px;font-size:clamp(18px,1.45vw,21px);line-height:1.2;color:#fff }
+.bento-tile.is-hero h3 { font-size:clamp(26px,2.4vw,34px) }
+.bento-more { display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.16,1,.3,1) }
+.bento-more > div { min-height:0;overflow:hidden }
+.bento-desc { margin:8px 0 0;color:#dfe4f3;font-size:15px;line-height:1.55 }
+.bento-tile.is-hero .bento-more, .bento-tile.is-wide .bento-more { grid-template-rows:1fr }
+.bento-tile.is-hero .bento-desc { font-size:clamp(16px,1.3vw,18px);max-width:46ch }
+.bento-meta { margin:10px 0 0;color:#f6c768;font-size:14px;font-weight:500;line-height:1.45 }
+.bento-tile .min-ask { color:#fff;margin-top:8px;font-size:15px }
+@media (hover:hover) {
+  .bento-tile:not(.is-hero):not(.is-wide):hover .bento-more, .bento-tile:not(.is-hero):not(.is-wide):focus-within .bento-more { grid-template-rows:1fr }
+}
+@media (hover:none) { .bento-more { grid-template-rows:1fr } .bento { grid-auto-rows:auto } .bento-art { min-height:150px } }
+@media (max-width:1100px) {
+  .bento { grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:auto }
+  .bento-tile.is-hero { grid-row:auto }
+  .bento-tile.is-wide { grid-column:span 1;flex-direction:column }
+  .bento-tile.is-wide .bento-art { flex:none }
+  .bento-art { height:170px;flex:none }
+  .bento-tile.is-hero .bento-art { height:240px }
+  .bento-more { grid-template-rows:1fr }
+  .bento-tile.is-wide .bento-body { padding:4px 20px 18px }
+}
+@media (max-width:600px) {
+  .bento { grid-template-columns:1fr }
+  .bento-tile.is-hero { grid-column:auto }
+  .bento-tile.is-hero .bento-art { height:200px }
+}
+@media (prefers-reduced-motion:reduce) { .bento-tile, .bento-more { transition:none } }
+@media (min-width:1101px) {
+  .bento { grid-auto-rows:clamp(300px,38vh,340px) }
+  .bento-tile:not(.is-hero):not(.is-wide) .bento-desc { font-size:14px;line-height:1.5 }
+}
+
+/* ===== Ministries v12: seasons told like the About story ===== */
+.min-seasons .heading-row { margin-bottom:0 }
+.season-y { font-size:clamp(56px,6.5vw,100px) }
+.season-y.is-long { font-size:clamp(44px,5vw,76px) }
+.season-tag { margin-top:10px !important;font-size:13px !important;letter-spacing:.1em;text-transform:uppercase;color:var(--muted) }
+.season-group { margin-top:22px }
+.season-group h3 { margin-top:0 !important;font-size:clamp(24px,2.2vw,32px);line-height:1.15 }
+.season-group p { margin-top:10px !important }
+.season-meta { color:var(--navy) !important;font-weight:500;font-size:15px !important;line-height:1.5 !important }
+.season-group .min-ask { margin-top:10px }
+.season-row.is-pair .season-group + .season-group { margin-top:24px;padding-top:22px;border-top:1px solid #2635701f }
+.season-row.is-pair .season-group h3 { font-size:clamp(21px,1.8vw,26px) }
+.min-seasons .story-media.is-drawing svg { width:100%;height:100% }
+
+/* ===== Ministries v13: one row per group, intro clear of the line, a navy finish ===== */
+.min-seasons .heading-row { display:block }
+.min-seasons .heading-row p { margin-top:18px;max-width:52ch }
+.min-seasons .story-media.is-drawing { box-shadow:0 34px 60px -38px #1b25447a,inset 0 0 0 1px #ffffff14 }
+.story-zig.is-dark .season-tag { color:#bccaf2 !important }
+.story-zig.is-dark .season-group h3 { color:#fff }
+.story-zig.is-dark .season-group p { color:#c9d2ec }
+.story-zig.is-dark .season-meta { color:#f6c768 !important }
+.story-zig.is-dark .season-group .min-ask { color:#fff }
+.story-zig.is-dark .heading-row h2, .story-zig.is-dark .heading-row p { transition:color .9s ease }
+.story-zig.is-dark .story-media.is-drawing { box-shadow:inset 0 0 0 1px #ffffff2e }
+.min-every .every-copy h3 + p { color:#f6c768 }
+
+/* ---- Ministries: arriving from the hero lands on the whole section, then the group glows once ---- */
+.min-every .every-card.is-highlight, .pair-card.is-highlight, .min-serve.is-highlight .serve-grid { outline:0 !important;border-color:#ffffff26 !important }
+.is-glowing { animation:arriveGlow 2.6s ease-out }
+@keyframes arriveGlow { 0% { box-shadow:0 0 0 0 #f6c76800 } 20% { box-shadow:0 0 0 4px #f6c768aa,0 0 40px 6px #f6c76833 } 100% { box-shadow:0 0 0 4px #f6c76800,0 0 40px 6px #f6c76800 } }
+.story-row.is-glowing { animation:none }
+.story-row.is-glowing .story-media { animation:arriveGlow 2.6s ease-out }
+@media (prefers-reduced-motion:reduce) { .is-glowing, .story-row.is-glowing .story-media { animation:none } }

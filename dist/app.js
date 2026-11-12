@@ -390,3 +390,221 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     });
   });
 })();
+
+// Ministries: the sentence picker shows a matching group in the answer card, with its drawing.
+(function ministryFinder() {
+  const finder = document.querySelector('[data-finder]');
+  if (!finder) return;
+  const data = JSON.parse(finder.querySelector('[data-finder-data]').textContent);
+  const select = finder.querySelector('[data-finder-select]');
+  const card = document.querySelector('[data-finder-card]');
+  const layers = Array.from(card.querySelectorAll('.finder-layer'));
+  const name = card.querySelector('[data-finder-name]');
+  const short = card.querySelector('[data-finder-short]');
+  const actions = card.querySelector('[data-finder-actions]');
+  const defaults = [name.textContent, short.textContent];
+  select.addEventListener('change', () => {
+    const key = select.value;
+    layers.forEach(layer => layer.classList.toggle('is-on', layer.dataset.layer === (key || 'default')));
+    document.querySelectorAll('.is-highlight').forEach(el => el.classList.remove('is-highlight'));
+    card.classList.remove('is-swapping');
+    void card.offsetWidth;
+    card.classList.add('is-swapping');
+    if (!key) { name.textContent = defaults[0]; short.textContent = defaults[1]; actions.classList.add('is-idle'); return; }
+    name.textContent = data[key].name;
+    short.textContent = data[key].short;
+    const spot = document.getElementById(key);
+    const dest = spot && (spot.closest('.story-row') || spot.closest('section'));
+    actions.querySelector('[data-finder-see]').setAttribute('href', '#' + (dest && dest.id ? dest.id : key));
+    actions.querySelector('[data-finder-ask]').setAttribute('href', 'contact.html?topic=' + encodeURIComponent(data[key].name));
+    actions.classList.remove('is-idle');
+    const target = document.getElementById(key);
+    const glowEl = target && (target.closest('.every-card') || (target.classList.contains('min-serve') ? target.querySelector('.serve-grid') : target.closest('.story-row')));
+    document.querySelectorAll('[data-glow-next]').forEach(el => delete el.dataset.glowNext);
+    if (glowEl) glowEl.dataset.glowNext = '1';
+  });
+})();
+
+// Ministries: the season stage holds still while you scroll; each season's drawing redraws in turn.
+(function ministryStage() {
+  const stage = document.querySelector('[data-stage]');
+  const seasons = stage ? Array.from(stage.querySelectorAll('.stage-season')) : [];
+  const buttons = stage ? Array.from(stage.querySelectorAll('[data-stage-go]')) : [];
+  const desktop = matchMedia('(min-width: 961px)');
+  let current = -1;
+  function show(i) {
+    if (i === current) return;
+    current = i;
+    seasons.forEach((s, n) => { s.classList.toggle('is-active', n === i); s.classList.toggle('is-in', n === i); });
+    buttons.forEach((btn, n) => { btn.classList.toggle('is-done', n < i); if (n === i) btn.setAttribute('aria-current', 'step'); else btn.removeAttribute('aria-current'); });
+  }
+  function progress() {
+    const box = stage.getBoundingClientRect();
+    return Math.min(0.999, Math.max(0, -box.top / (box.height - innerHeight)));
+  }
+  function scrollToSeason(i) {
+    if (!desktop.matches) { seasons[i].scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    const top = stage.getBoundingClientRect().top + scrollY;
+    const travel = stage.offsetHeight - innerHeight;
+    scrollTo({ top: top + travel * (i + 0.5) / seasons.length, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
+  function update() {
+    if (stage) {
+      if (desktop.matches) {
+        const p = progress();
+        stage.style.setProperty('--progress', p);
+        show(Math.floor(p * seasons.length));
+      } else {
+        seasons.forEach(s => { if (s.getBoundingClientRect().top < innerHeight * 0.85) s.classList.add('is-in'); });
+      }
+    }
+    document.querySelectorAll('.every-card').forEach(card => { if (card.getBoundingClientRect().top < innerHeight * 0.85) card.classList.add('is-in'); });
+    const connect = document.querySelector('.min-connect');
+    if (connect && connect.getBoundingClientRect().top < innerHeight * 0.8) connect.classList.add('is-in');
+  }
+  const connect = document.querySelector('.min-connect');
+  if (connect) connect.classList.add('js-connect');
+  if (stage) {
+    stage.classList.add('js-stage');
+    buttons.forEach(btn => btn.addEventListener('click', () => scrollToSeason(Number(btn.dataset.stageGo))));
+    // Links like #youth or #girls jump to the right season instead of a hidden panel.
+    document.addEventListener('click', e => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const target = document.getElementById(link.getAttribute('href').slice(1));
+      const season = target && target.closest('.stage-season');
+      if (!season) return;
+      e.preventDefault();
+      scrollToSeason(seasons.indexOf(season));
+    });
+    desktop.addEventListener('change', () => { current = -1; seasons.forEach(s => s.classList.remove('is-active')); update(); });
+  }
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+})();
+
+// Ministries: point at or tap a star to read that serving team.
+(function serveSky() {
+  const sky = document.querySelector('[data-sky]');
+  if (!sky) return;
+  const stars = Array.from(sky.querySelectorAll('[data-star]'));
+  const teams = Array.from(document.querySelectorAll('[data-teams] .team'));
+  function pick(key) {
+    stars.forEach(s => { const on = s.dataset.star === key; s.classList.toggle('is-active', on); s.setAttribute('aria-pressed', String(on)); });
+    teams.forEach(t => t.classList.toggle('is-active', t.dataset.team === key));
+  }
+  stars.forEach(star => {
+    star.addEventListener('click', () => pick(star.dataset.star));
+    star.addEventListener('pointerenter', () => pick(star.dataset.star));
+    star.addEventListener('focus', () => pick(star.dataset.star));
+  });
+})();
+
+// Ministries: serving icons draw themselves when the grid comes into view.
+(function serveGrid() {
+  const grid = document.querySelector('[data-serve]');
+  if (!grid) return;
+  grid.querySelectorAll('.serve-tile').forEach((tile, i) => tile.style.setProperty('--i', i));
+  grid.classList.add('js-serve');
+  const check = () => { if (grid.getBoundingClientRect().top < innerHeight * 0.85) { grid.classList.add('is-in'); removeEventListener('scroll', check); } };
+  addEventListener('scroll', check, { passive: true });
+  check();
+})();
+
+// Ministries: in seasons with two groups, the switch picks one group and lights its half of the shared drawing.
+(function pairSwitch() {
+  document.querySelectorAll('.stage-season.is-pair').forEach(season => {
+    const buttons = Array.from(season.querySelectorAll('[data-pair]'));
+    const groups = Array.from(season.querySelectorAll('.stage-group'));
+    const parts = Array.from(season.querySelectorAll('.scene-layer'));
+    function pick(i) {
+      buttons.forEach((b, n) => b.setAttribute('aria-pressed', String(n === i)));
+      groups.forEach((g, n) => g.classList.toggle('is-shown', n === i));
+      parts.forEach((p, n) => p.classList.toggle('is-on', n === i));
+      season.style.setProperty('--pair', i);
+    }
+    buttons.forEach((b, i) => b.addEventListener('click', () => pick(i)));
+    // A link to the second group (for example #girls) opens that group.
+    groups.forEach((g, i) => { if (location.hash === '#' + g.id) pick(i); });
+    document.addEventListener('click', e => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const i = groups.findIndex(g => '#' + g.id === link.getAttribute('href'));
+      if (i >= 0) pick(i);
+    });
+    pick(groups.findIndex(g => '#' + g.id === location.hash) > 0 ? groups.findIndex(g => '#' + g.id === location.hash) : 0);
+  });
+})();
+
+// Ministries: on the dark Serve section, a soft light follows the pointer across each team tile.
+(function serveLight() {
+  const grid = document.querySelector('.min-serve.is-dark [data-serve]');
+  if (!grid || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  grid.addEventListener('pointermove', e => {
+    const tile = e.target.closest('.serve-tile');
+    if (!tile) return;
+    const box = tile.getBoundingClientRect();
+    tile.style.setProperty('--mx', (e.clientX - box.left) + 'px');
+    tile.style.setProperty('--my', (e.clientY - box.top) + 'px');
+  });
+})();
+
+// Ministries: chapel doors. Opening a door shows that season's groups and redraws its picture.
+(function chapelDoors() {
+  const list = document.querySelector('[data-doors]');
+  if (!list) return;
+  const doors = Array.from(list.querySelectorAll('.door'));
+  const phone = matchMedia('(max-width: 760px)');
+  function redraw(door) { door.classList.remove('is-in'); void door.offsetWidth; door.classList.add('is-in'); }
+  function open(door, toggle) {
+    const closing = toggle && phone.matches && door.classList.contains('is-open');
+    doors.forEach(d => {
+      const on = d === door && !closing;
+      d.classList.toggle('is-open', on);
+      d.querySelector('.door-arch').setAttribute('aria-expanded', String(on));
+    });
+    if (!closing) redraw(door);
+  }
+  doors.forEach(door => door.querySelector('.door-arch').addEventListener('click', () => open(door, true)));
+  const reveal = () => { if (list.getBoundingClientRect().top < innerHeight * 0.85) { doors.forEach(d => d.classList.add('is-in')); removeEventListener('scroll', reveal); } };
+  addEventListener('scroll', reveal, { passive: true });
+  reveal();
+  setTimeout(() => doors.forEach(d => d.classList.add('is-in')), 2000);
+  // Links such as #youth or #girls open the right door.
+  document.addEventListener('click', e => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link) return;
+    const target = document.getElementById(link.getAttribute('href').slice(1));
+    const door = target && target.closest('.door');
+    if (!door) return;
+    e.preventDefault();
+    open(door, false);
+    (phone.matches ? door : list.closest('section')).scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  });
+})();
+
+// Ministries: bento tiles draw when the grid comes into view and redraw when you point at one.
+(function bentoTiles() {
+  const grid = document.querySelector('[data-bento]');
+  if (!grid) return;
+  const tiles = Array.from(grid.querySelectorAll('.bento-tile'));
+  const reveal = () => { if (grid.getBoundingClientRect().top < innerHeight * 0.85) { tiles.forEach(t => t.classList.add('is-in')); removeEventListener('scroll', reveal); } };
+  addEventListener('scroll', reveal, { passive: true });
+  reveal();
+  setTimeout(() => tiles.forEach(t => t.classList.add('is-in')), 2000);
+  tiles.forEach(tile => tile.addEventListener('pointerenter', () => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    tile.classList.remove('is-in'); void tile.offsetWidth; tile.classList.add('is-in');
+  }));
+})();
+
+// Ministries: after "Take me there" lands, the matching group glows softly once.
+document.addEventListener('click', e => {
+  const link = e.target.closest('[data-finder-see]');
+  if (!link) return;
+  const el = document.querySelector('[data-glow-next]');
+  if (!el) return;
+  delete el.dataset.glowNext;
+  setTimeout(() => { el.classList.remove('is-glowing'); void el.offsetWidth; el.classList.add('is-glowing'); }, 650);
+});
