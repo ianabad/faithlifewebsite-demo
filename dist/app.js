@@ -391,30 +391,34 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   });
 })();
 
-// Ministries: the group finder picks a ministry, swaps the hero picture and points to the group below.
+// Ministries: the sentence picker shows a matching group in the answer card, with its drawing.
 (function ministryFinder() {
   const finder = document.querySelector('[data-finder]');
   if (!finder) return;
   const data = JSON.parse(finder.querySelector('[data-finder-data]').textContent);
-  const chips = Array.from(finder.querySelectorAll('[data-find]'));
-  const result = finder.querySelector('[data-finder-result]');
-  const layers = Array.from(document.querySelectorAll('.finder-layer'));
-  chips.forEach(chip => chip.addEventListener('click', () => {
-    const key = chip.dataset.find;
-    const on = chip.getAttribute('aria-pressed') !== 'true';
-    chips.forEach(c => c.setAttribute('aria-pressed', String(on && c === chip)));
-    const show = on ? key : 'default';
-    layers.forEach(layer => layer.classList.toggle('is-on', layer.dataset.layer === show));
+  const select = finder.querySelector('[data-finder-select]');
+  const card = document.querySelector('[data-finder-card]');
+  const layers = Array.from(card.querySelectorAll('.finder-layer'));
+  const name = card.querySelector('[data-finder-name]');
+  const short = card.querySelector('[data-finder-short]');
+  const actions = card.querySelector('[data-finder-actions]');
+  const defaults = [name.textContent, short.textContent];
+  select.addEventListener('change', () => {
+    const key = select.value;
+    layers.forEach(layer => layer.classList.toggle('is-on', layer.dataset.layer === (key || 'default')));
     document.querySelectorAll('.is-highlight').forEach(el => el.classList.remove('is-highlight'));
-    if (!on) { result.hidden = true; return; }
-    result.querySelector('[data-finder-name]').textContent = data[key].name;
-    result.querySelector('[data-finder-short]').textContent = data[key].short;
-    result.querySelector('[data-finder-see]').setAttribute('href', '#' + key);
-    result.querySelector('[data-finder-ask]').setAttribute('href', 'contact.html?topic=' + encodeURIComponent(data[key].name));
-    result.hidden = false;
+    card.classList.remove('is-swapping');
+    void card.offsetWidth;
+    card.classList.add('is-swapping');
+    if (!key) { name.textContent = defaults[0]; short.textContent = defaults[1]; actions.hidden = true; return; }
+    name.textContent = data[key].name;
+    short.textContent = data[key].short;
+    actions.querySelector('[data-finder-see]').setAttribute('href', '#' + key);
+    actions.querySelector('[data-finder-ask]').setAttribute('href', 'contact.html?topic=' + encodeURIComponent(data[key].name));
+    actions.hidden = false;
     const target = document.getElementById(key);
-    if (target) (target.closest('.path-stop, .every-card') || target).classList.add('is-highlight');
-  }));
+    if (target) (target.closest('.pair-card, .path-stop, .every-card, .min-serve') || target).classList.add('is-highlight');
+  });
 })();
 
 // Ministries: the season line fills as you scroll, and each group's picture wipes in when it is reached.
