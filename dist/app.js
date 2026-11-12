@@ -269,29 +269,40 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   ask(0, true);
 })();
 
-// About: the year beside the story changes as each chapter reaches the middle of the screen.
-(function storyChapters() {
-  const list = document.querySelector('[data-story]');
-  const year = document.querySelector('[data-story-year]');
-  if (!list || !year) return;
-  const chapters = Array.from(list.querySelectorAll('.story-chapter'));
-  list.closest('section').classList.add('js-story');
+// About: as each story chapter reaches the middle of the screen, its photo wipes in and the section colour changes.
+(function storySplit() {
+  const section = document.querySelector('[data-story]');
+  if (!section) return;
+  const steps = Array.from(section.querySelectorAll('.story-step'));
+  const photos = Array.from(section.querySelectorAll('.story-split-photo img'));
+  section.classList.add('js-story');
   let current = -1;
   function update() {
     const line = innerHeight * 0.55;
     let active = 0;
-    chapters.forEach((chapter, i) => { if (chapter.getBoundingClientRect().top < line) active = i; });
+    steps.forEach((step, i) => { if (step.getBoundingClientRect().top < line) active = i; });
     if (active === current) return;
     current = active;
-    chapters.forEach((chapter, i) => chapter.classList.toggle('is-active', i === active));
-    year.textContent = chapters[active].dataset.year;
-    year.classList.remove('is-swapping');
-    void year.offsetWidth;
-    year.classList.add('is-swapping');
+    section.style.backgroundColor = steps[active].dataset.bg;
+    section.classList.toggle('is-dark', steps[active].hasAttribute('data-dark'));
+    steps.forEach((step, i) => step.classList.toggle('is-active', i === active));
+    photos.forEach((photo, i) => photo.classList.toggle('is-on', i <= active));
   }
   addEventListener('scroll', update, { passive: true });
   addEventListener('resize', update);
   update();
+})();
+
+// About values: the dot grid brightens around the pointer.
+(function valuesGlow() {
+  const section = document.querySelector('.about-values');
+  if (!section || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  section.addEventListener('pointermove', e => {
+    const box = section.getBoundingClientRect();
+    section.style.setProperty('--mx', (e.clientX - box.left) + 'px');
+    section.style.setProperty('--my', (e.clientY - box.top) + 'px');
+  });
+  section.addEventListener('pointerleave', () => { section.style.setProperty('--mx', '-999px'); });
 })();
 
 // Words that light up as a paragraph scrolls into view (About mission).

@@ -762,3 +762,88 @@ html { scroll-behavior:smooth }
   .edu-status { grid-column:1;grid-row:auto;justify-self:start;margin-bottom:8px;order:-1 }
   .edu-list strong { grid-row:auto }
 }
+
+/* ---- About v2: smaller hero headline, slow photo push-in ---- */
+.about-hero h1 { font-size:clamp(44px,4.8vw,72px);line-height:1.05 }
+.about-hero .visit-hero2-photo { overflow:hidden }
+@media (prefers-reduced-motion:no-preference) {
+  .about-hero .visit-hero2-photo img { animation:aboutPush 20s cubic-bezier(.2,.6,.3,1) both }
+}
+@keyframes aboutPush { from { transform:scale(1.14) } to { transform:scale(1) } }
+.motion-paused .about-hero .visit-hero2-photo img { animation-play-state:paused }
+
+/* ---- About v2: story with photos and a colour that changes per chapter ---- */
+.story-split { padding-block:clamp(64px,10vh,120px) 0;transition:background-color .9s ease }
+.story-split-grid { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,6vw,96px) }
+.story-step { min-height:82vh;display:flex;flex-direction:column;justify-content:center;padding-block:40px }
+.story-step:last-child { min-height:90vh }
+.story-y { font-size:clamp(64px,8vw,120px);font-weight:500;letter-spacing:-.05em;line-height:1;color:var(--navy);transition:color .9s ease }
+.story-step h3 { margin-top:14px;font-size:clamp(26px,2.4vw,36px);line-height:1.15;transition:color .9s ease }
+.story-step p { margin-top:14px;max-width:44ch;color:var(--muted);font-size:clamp(17px,1.3vw,19px);line-height:1.65;transition:color .9s ease }
+.story-split-photo { position:sticky;top:15vh;height:70vh;margin-block:6vh 15vh;overflow:hidden;background:#d9deea }
+.story-split-photo img { position:absolute;inset:0;width:100%;height:100%;object-fit:cover }
+.story-split-photo img:not(:first-child) { display:none }
+.js-story .story-split-photo img:not(:first-child) { display:block }
+.js-story .story-split-photo img { clip-path:inset(100% 0 0 0);transform:scale(1.08);transition:clip-path 1.1s cubic-bezier(.65,0,.15,1),transform 1.6s cubic-bezier(.16,1,.3,1) }
+.js-story .story-split-photo img.is-on { clip-path:inset(0 0 0 0);transform:scale(1) }
+.js-story .story-step { opacity:.3;transition:opacity .6s ease }
+.js-story .story-step.is-active { opacity:1 }
+.story-split.is-dark h2, .story-split.is-dark .story-y, .story-split.is-dark h3 { color:#fff }
+.story-split.is-dark p { color:#c9d2ec }
+.story-split h2 { transition:color .9s ease }
+@media (max-width:760px) {
+  .story-split-grid { grid-template-columns:1fr;gap:0 }
+  .story-split-media { order:-1;position:sticky;top:0;z-index:2;align-self:start;margin-inline:-24px }
+  .story-split-photo { position:relative;top:auto;height:34vh;margin:0 }
+  .story-split-text { order:0 }
+  .story-split-text h2 { order:-2 }
+  .story-step { min-height:66vh }
+  .story-split { padding-top:0 }
+  .story-split-text h2 { padding-top:40px }
+}
+@media (prefers-reduced-motion:reduce) {
+  .js-story .story-split-photo img { transition:none;transform:none }
+  .js-story .story-step { opacity:1 }
+  .story-split { transition:none }
+}
+
+/* ---- About v2: drifting light behind the mission ---- */
+.about-mission { position:relative;overflow:hidden }
+.about-mission > .wrap { position:relative;z-index:1 }
+.mission-light { position:absolute;inset:-30%;background:radial-gradient(34% 40% at 24% 30%,#bccaf273,#bccaf200 70%),radial-gradient(30% 36% at 76% 70%,#ffffffd9,#ffffff00 70%);animation:rsvpDrift 24s ease-in-out infinite alternate;pointer-events:none }
+.motion-paused .mission-light { animation-play-state:paused }
+@media (prefers-reduced-motion:reduce) { .mission-light { animation:none } }
+
+/* ---- About v2: dot grid on the values that brightens near the pointer ---- */
+.about-values { position:relative;overflow:hidden }
+.about-values::before, .about-values::after { content:"";position:absolute;inset:0;pointer-events:none;background-size:24px 24px }
+.about-values::before { background-image:radial-gradient(#ffffff1c 1.2px,transparent 1.4px) }
+.about-values::after { background-image:radial-gradient(#bccaf2 1.5px,transparent 1.7px);-webkit-mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%);mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%) }
+.about-values > .wrap { position:relative;z-index:1 }
+
+/* ---- Pastors as role rings (About team + bio pages) ---- */
+.ring-cards { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,48px);text-align:center }
+.ring-cards.is-two { grid-template-columns:repeat(2,minmax(0,1fr));max-width:640px;margin-top:clamp(28px,4vw,48px) }
+.ring-card { display:flex;flex-direction:column;align-items:center;color:inherit;text-decoration:none;padding:8px 0 }
+.ring-figure { position:relative;width:min(220px,100%);aspect-ratio:1 }
+.ring-text { position:absolute;inset:0;width:100%;height:100%;transition:transform 1.8s cubic-bezier(.16,1,.3,1) }
+.ring-text text { font-size:11.5px;letter-spacing:.2em;fill:var(--navy);font-weight:500 }
+.ring-figure img { position:absolute;inset:12.5%;width:75%;height:75%;border-radius:50%;object-fit:cover;object-position:50% 18%;transition:transform .7s cubic-bezier(.16,1,.3,1) }
+.ring-card h3 { margin-top:16px;font-size:clamp(22px,1.9vw,27px) }
+.ring-link { margin-top:6px;display:inline-flex;align-items:center;gap:8px;color:var(--navy);font-weight:500;font-size:16px }
+.ring-link > span { background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .4s cubic-bezier(.16,1,.3,1) }
+.ring-link .site-icon { width:18px;height:18px;transition:transform .4s cubic-bezier(.16,1,.3,1) }
+.ring-card:hover .ring-text, .ring-card:focus-visible .ring-text { transform:rotate(120deg) }
+.ring-card:hover img { transform:scale(1.04) }
+.ring-card:hover .ring-link > span { background-size:100% 1px }
+.ring-card:hover .ring-link .site-icon { transform:translateX(3px) }
+.ring-card:focus-visible { outline:3px solid var(--navy);outline-offset:4px;border-radius:12px }
+.pastor-others .ring-figure { width:min(180px,100%) }
+@media (max-width:700px) {
+  .ring-cards { grid-template-columns:1fr;gap:28px }
+  .ring-cards.is-two { grid-template-columns:repeat(2,minmax(0,1fr));gap:16px }
+  .ring-figure { width:min(170px,52vw) }
+  .ring-cards.is-two .ring-figure { width:100% }
+  .ring-cards.is-two .ring-card h3 { font-size:19px }
+}
+@media (prefers-reduced-motion:reduce) { .ring-text, .ring-figure img { transition:none } .ring-card:hover .ring-text { transform:none } }
