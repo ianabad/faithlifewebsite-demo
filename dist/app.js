@@ -659,8 +659,10 @@ document.addEventListener('click', e => {
   ];
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    const base = w < 760 ? h - 48 : h * 0.7;
+    const faint = canvas.classList.contains('is-faint');
+    const base = faint ? h * 0.5 : (w < 760 ? h - 48 : h * 0.7);
     const big = Math.min(70, h * 0.09);
+    ctx.globalAlpha = faint ? 0.35 : 1;
     layers.forEach((L, li) => {
       const g = ctx.createLinearGradient(0, 0, w, 0);
       const px = Math.max(0, Math.min(1, pointer / w));
