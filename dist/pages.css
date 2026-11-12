@@ -460,3 +460,25 @@ html { scroll-behavior:smooth }
 .policy-copy ul { margin:0;padding-left:1.2em }
 .policy-copy li + li { margin-top:10px }
 .policy-copy a { text-decoration:underline;text-underline-offset:3px }
+
+/* ---- Plan your visit ---- */
+.visit-hero .hero-facts { margin:22px 0 30px }
+.visit-hero .actions { display:flex;flex-wrap:wrap;gap:12px }
+.visit-getting-grid { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:clamp(40px,6vw,96px);align-items:start }
+.visit-details-list { margin:28px 0 24px;border-top:2px solid var(--navy) }
+.visit-details-list > div { display:grid;grid-template-columns:130px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid #cbd0db }
+.visit-details-list dt { font-weight:500;color:var(--navy) }
+.visit-details-list dd { margin:0;color:var(--ink) }
+.visit-map .map-frame { height:clamp(320px,38vw,480px) }
+.visit-rsvp-lead { color:var(--muted);margin-top:24px;max-width:34ch }
+.visit-form select { width:100%;min-width:0;box-sizing:border-box;font:inherit;color:var(--ink);padding:12px;border:1px solid #959ba6;background:#fff;border-radius:0 }
+.visit-form-row { display:grid;grid-template-columns:1fr 1fr;gap:20px }
+.visit-kids { border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px }
+.visit-kids legend { padding:0;margin-bottom:8px;width:100% }
+.visit-kids label { display:inline-flex !important;align-items:center;gap:10px;min-height:44px }
+.visit-kids input { width:20px;height:20px;accent-color:var(--navy) }
+.visit-form :is(input,select,textarea):focus-visible { outline:2px solid var(--navy);outline-offset:2px }
+@media (max-width:860px) { .visit-getting-grid { grid-template-columns:1fr } }
+@media (max-width:480px) { .visit-form-row { grid-template-columns:1fr } .visit-details-list > div { grid-template-columns:1fr;gap:4px } }
+.visit-timeline.is-compact .visit-step { padding-bottom:30px }
+.visit-timeline.is-compact .visit-step:last-of-type { padding-bottom:0 }

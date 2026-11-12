@@ -117,67 +117,6 @@ show(0);
 // The site-wide "Pause animations" switch in the footer also stops the slideshow.
 document.addEventListener('motionpreference', event => setPlaying(!event.detail.paused && !reducedMotion.matches));
 
-// Show the date of the next Sunday gathering, in Winnipeg time.
-(function nextGathering() {
-  const target = document.querySelector('[data-next-gathering]');
-  if (!target || !window.Intl) return;
-  try {
-    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
-      timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric', day: 'numeric',
-      weekday: 'short', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'
-    }).formatToParts(new Date()).map(p => [p.type, p.value]));
-    const weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(parts.weekday.replace('.', ''));
-    if (weekday < 0) return;
-    const minutes = Number(parts.hour) * 60 + Number(parts.minute);
-    let days = (7 - weekday) % 7;
-    if (days === 0 && minutes >= 15 * 60 + 30) days = 7;
-    if (days === 0) {
-      target.textContent = minutes < 13 * 60 + 30 ? 'Today at 1:30 PM' : 'Gathering now, until about 3:30 PM';
-      return;
-    }
-    const date = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day) + days));
-    const label = new Intl.DateTimeFormat('en-CA', { timeZone: 'UTC', month: 'long', day: 'numeric' }).format(date);
-    target.textContent = (days <= 6 ? 'This Sunday, ' : 'Sunday, ') + label + ' at 1:30 PM';
-  } catch (error) {
-    // Keep the default "Sundays at 1:30 PM".
-  }
-})();
-
-// "Your first Sunday": the line fills and each step lights up as you scroll through it.
-(function visitTimeline() {
-  const list = document.querySelector('[data-timeline]');
-  if (!list) return;
-  const steps = Array.from(list.querySelectorAll('.visit-step'));
-  const still = matchMedia('(prefers-reduced-motion: reduce)');
-  list.closest('section').classList.add('js-timeline');
-  let ticking = false;
-  function update() {
-    const marker = innerHeight * 0.62;
-    if (still.matches) {
-      list.style.setProperty('--progress', 1);
-      steps.forEach(step => step.classList.add('is-reached'));
-      return;
-    }
-    const box = list.getBoundingClientRect();
-    const progress = Math.min(1, Math.max(0, (marker - box.top) / box.height));
-    list.style.setProperty('--progress', progress.toFixed(3));
-    steps.forEach(step => {
-      const dot = step.querySelector('.visit-dot').getBoundingClientRect();
-      step.classList.toggle('is-reached', dot.top + dot.height / 2 <= marker);
-    });
-  }
-  function request() {
-    if (ticking) return;
-    ticking = true;
-    update();
-    requestAnimationFrame(() => { ticking = false; });
-    setTimeout(() => { if (ticking) { ticking = false; update(); } }, 100);
-  }
-  addEventListener('scroll', request, { passive: true });
-  addEventListener('resize', request);
-  still.addEventListener('change', request);
-  update();
-})();
 
 // Winnipeg date helpers shared by the week strip, gatherings and bulletin.
 function winnipegNow() {
