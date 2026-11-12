@@ -1114,3 +1114,4 @@ html { scroll-behavior:smooth }
 @media (max-width:760px) { .connect-steps { grid-template-columns:1fr;gap:28px } }
 @media (prefers-reduced-motion:reduce) { .js-connect .connect-steps li { opacity:1;transform:none;transition:none } }
 .min-close { background:#fff }
+.min-hero .finder-q { color:#fff }
