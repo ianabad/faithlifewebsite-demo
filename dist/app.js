@@ -193,3 +193,78 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     setTimeout(() => { if (!observed) reveal(); }, 1500);
   }
 })();
+
+// Bringing kids: the three steps settle in when the section arrives.
+(function kidsSteps() {
+  const list = document.querySelector('[data-kids]');
+  if (!list) return;
+  const section = list.closest('section');
+  Array.from(list.children).forEach((item, i) => item.style.setProperty('--i', i));
+  section.classList.add('js-kids');
+  let observed = false;
+  const reveal = () => section.classList.add('is-in');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => { observed = true; if (entries[0].isIntersecting) { reveal(); io.disconnect(); } }, { threshold: 0.25 });
+    io.observe(list);
+  }
+  addEventListener('scroll', function check() {
+    const box = list.getBoundingClientRect();
+    if (box.top < innerHeight * 0.85 && box.bottom > 0) { reveal(); removeEventListener('scroll', check); }
+  }, { passive: true });
+  setTimeout(() => { if (!observed) reveal(); }, 1500);
+})();
+
+// Questions people ask: tap a question, see it sent, then a short typing pause and the answer.
+(function faqChat() {
+  const root = document.querySelector('[data-chat]');
+  if (!root) return;
+  const items = Array.from(root.querySelectorAll('.chat-item'));
+  const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || (window.flcmMotionPaused && window.flcmMotionPaused());
+  const arrow = '<svg class="site-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h16m-7-7 7 7-7 7"/></svg>';
+  const ui = document.createElement('div');
+  ui.className = 'chat-ui';
+  ui.innerHTML = '<ul class="chat-menu"></ul><div class="chat-window"><div class="chat-head"><span class="chat-avatar"><img src="assets/logo.png" alt=""></span><div><strong>Faith Life</strong><span>Answers to common questions</span></div></div><div class="chat-log" aria-live="polite"></div></div>';
+  const menu = ui.querySelector('.chat-menu');
+  const log = ui.querySelector('.chat-log');
+  const buttons = items.map((item, i) => {
+    const li = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'chat-q';
+    button.setAttribute('aria-pressed', 'false');
+    button.innerHTML = '<span>' + item.querySelector('[data-q]').innerHTML + '</span>' + arrow;
+    button.addEventListener('click', () => {
+      ask(i, false);
+      // On phones the reply sits below the list, so bring it into view.
+      const box = ui.querySelector('.chat-window').getBoundingClientRect();
+      if (box.top > innerHeight - 160 || box.bottom < 120) ui.querySelector('.chat-window').scrollIntoView({ block: 'nearest', behavior: still() ? 'auto' : 'smooth' });
+    });
+    li.append(button);
+    menu.append(li);
+    return button;
+  });
+  let timers = [];
+  function ask(i, instant) {
+    timers.forEach(clearTimeout);
+    timers = [];
+    buttons.forEach((button, j) => button.setAttribute('aria-pressed', String(j === i)));
+    log.innerHTML = '';
+    const q = document.createElement('div');
+    q.className = 'bubble bubble-q';
+    q.textContent = items[i].querySelector('[data-q]').textContent;
+    log.append(q);
+    const answer = document.createElement('div');
+    answer.className = 'bubble bubble-a';
+    answer.innerHTML = items[i].querySelector('[data-a] p').innerHTML;
+    if (instant || still()) { log.append(answer); return; }
+    const typing = document.createElement('div');
+    typing.className = 'bubble bubble-typing';
+    typing.setAttribute('aria-hidden', 'true');
+    typing.innerHTML = '<i></i><i></i><i></i>';
+    timers.push(setTimeout(() => log.append(typing), 250));
+    timers.push(setTimeout(() => { typing.remove(); log.append(answer); }, 1100));
+  }
+  root.append(ui);
+  root.classList.add('js-chat');
+  ask(0, true);
+})();

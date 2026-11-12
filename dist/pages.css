@@ -555,3 +555,71 @@ html { scroll-behavior:smooth }
 .visit-rsvp-dark .visit-form { background:#fff;color:var(--ink);padding:clamp(24px,3vw,40px);box-shadow:0 28px 60px -28px #0b1230cc }
 .motion-paused .rsvp-light { animation-play-state:paused }
 @media (prefers-reduced-motion:reduce) { .rsvp-light { animation:none } }
+
+/* ---- Bringing kids: a grade-4 type moment over softly floating dots ---- */
+.visit-kids-sec { position:relative;overflow:hidden;background:#eef2fd }
+.visit-kids-sec > .wrap { position:relative;z-index:1 }
+.kids-dots span { position:absolute;border-radius:50%;opacity:.55;animation:kidsFloat 16s ease-in-out infinite alternate }
+.kids-dots span:nth-child(1) { width:90px;height:90px;left:6%;top:14%;background:#c9d4f6 }
+.kids-dots span:nth-child(2) { width:34px;height:34px;left:38%;top:9%;background:#f3dfa4;animation-duration:12s }
+.kids-dots span:nth-child(3) { width:140px;height:140px;right:-30px;top:8%;background:#d6def8;animation-duration:20s }
+.kids-dots span:nth-child(4) { width:22px;height:22px;left:44%;bottom:16%;background:#a9bdf0;animation-duration:10s }
+.kids-dots span:nth-child(5) { width:60px;height:60px;right:12%;bottom:10%;background:#f3dfa4;opacity:.45;animation-duration:14s }
+.kids-dots span:nth-child(6) { width:18px;height:18px;left:16%;bottom:22%;background:#8fa6e6;animation-duration:9s }
+.kids-dots span:nth-child(7) { width:44px;height:44px;left:58%;top:42%;background:#cfe6dc;animation-duration:18s }
+@keyframes kidsFloat { 0% { transform:translate(0,0) } 50% { transform:translate(14px,-18px) } 100% { transform:translate(-10px,12px) } }
+.kids-grid { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(40px,6vw,104px);align-items:center }
+.kids-grade { display:grid;margin:28px 0 24px;color:var(--navy) }
+.kids-grade-small { font-size:clamp(17px,1.4vw,20px);font-weight:500 }
+.kids-grade-big { font-size:clamp(76px,10vw,150px);line-height:.95;font-weight:500;letter-spacing:-.05em }
+.kids-teens { color:var(--muted);max-width:34ch }
+.kids-teens a { color:var(--navy);text-decoration:underline;text-underline-offset:3px }
+.kids-steps { list-style:none;margin:0;padding:0;display:grid;gap:14px }
+.kids-steps li { display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;background:#fff;padding:22px 24px;box-shadow:0 14px 30px -22px #26357066;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s ease }
+.kids-steps li:hover { transform:translateY(-2px);box-shadow:0 20px 36px -22px #26357080 }
+.kids-dot { width:14px;height:14px;border-radius:50%;margin-top:9px;background:var(--navy) }
+.kids-steps li:nth-child(2) .kids-dot { background:#d9b24a }
+.kids-steps li:nth-child(3) .kids-dot { background:#5f9c86 }
+.kids-steps h3 { font-size:clamp(21px,1.8vw,25px) }
+.kids-steps p { color:var(--muted);margin-top:6px }
+.js-kids .kids-steps li { opacity:0;transform:translateY(16px) }
+.js-kids.is-in .kids-steps li { opacity:1;transform:none;transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1),box-shadow .35s ease;transition-delay:calc(var(--i) * 120ms) }
+.motion-paused .kids-dots span { animation-play-state:paused }
+@media (max-width:860px) { .kids-grid { grid-template-columns:1fr } }
+@media (prefers-reduced-motion:reduce) {
+  .kids-dots span { animation:none }
+  .js-kids .kids-steps li { opacity:1;transform:none;transition:none }
+}
+
+/* ---- Questions people ask: tap a question, get a reply ---- */
+.faq-chat { margin-top:clamp(36px,4vw,56px) }
+.chat-item + .chat-item { margin-top:28px }
+.chat-item h3 { font-size:22px }
+.chat-answer p { margin-top:8px;color:var(--muted);max-width:60ch }
+.js-chat .chat-items { display:none }
+.chat-ui { display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,56px);align-items:start }
+.chat-menu { list-style:none;margin:0;padding:0;display:grid;gap:10px }
+.chat-q { width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;padding:14px 20px;border:1px solid #cbd0db;background:#fff;color:var(--ink);font:inherit;font-size:17px;cursor:pointer;transition:border-color .25s,background .25s,color .25s,transform .25s }
+.chat-q .site-icon { width:18px;height:18px;flex:none;transition:transform .3s cubic-bezier(.16,1,.3,1) }
+.chat-q:hover { border-color:var(--navy);transform:translateX(3px) }
+.chat-q[aria-pressed="true"] { background:var(--navy);border-color:var(--navy);color:#fff }
+.chat-q[aria-pressed="true"] .site-icon { transform:translateX(3px) }
+.chat-q:focus-visible { outline:2px solid var(--navy);outline-offset:3px }
+.chat-window { background:#fff;box-shadow:0 24px 50px -30px #26357066;min-height:380px;display:flex;flex-direction:column;position:sticky;top:32px }
+.chat-head { display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #e3e6ee }
+.chat-avatar { width:40px;height:40px;border-radius:50%;background:var(--navy);display:grid;place-items:center;flex:none }
+.chat-avatar img { width:26px;height:auto }
+.chat-head strong { display:block;font-weight:500;color:var(--ink) }
+.chat-head span { font-size:14px;color:var(--muted) }
+.chat-log { flex:1;display:flex;flex-direction:column;gap:12px;padding:24px 20px 28px }
+.bubble { max-width:86%;padding:13px 16px;line-height:1.55;font-size:16.5px;animation:bubbleIn .45s cubic-bezier(.16,1,.3,1) both }
+.bubble-q { align-self:flex-end;background:var(--navy);color:#fff;border-radius:18px 18px 4px 18px }
+.bubble-a { align-self:flex-start;background:#eef1f8;color:var(--ink);border-radius:18px 18px 18px 4px }
+.bubble-a a { color:var(--navy);text-decoration:underline;text-underline-offset:3px }
+.bubble-typing { align-self:flex-start;background:#eef1f8;border-radius:18px 18px 18px 4px;display:flex;gap:5px;padding:16px 18px }
+.bubble-typing i { width:7px;height:7px;border-radius:50%;background:#8a93a8;animation:typing 1s ease-in-out infinite }
+.bubble-typing i:nth-child(2) { animation-delay:.15s } .bubble-typing i:nth-child(3) { animation-delay:.3s }
+@keyframes bubbleIn { from { opacity:0;transform:translateY(10px) scale(.97) } }
+@keyframes typing { 0%,100% { transform:none;opacity:.5 } 40% { transform:translateY(-4px);opacity:1 } }
+@media (max-width:860px) { .chat-ui { grid-template-columns:1fr } .chat-window { position:static;min-height:300px } }
+@media (prefers-reduced-motion:reduce) { .bubble { animation:none } }
