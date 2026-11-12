@@ -362,8 +362,6 @@ html { scroll-behavior:smooth }
 .footer-layout { display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,2.6fr);gap:clamp(40px,5vw,80px);align-items:start }
 .footer-brand .brand { display:block;width:auto;max-width:100% }
 .footer-brand .brand img { display:block;width:380px;max-width:100%;height:auto }
-.footer-tagline { list-style:none;margin:clamp(48px,6vw,80px) 0 0;padding:0;display:flex;flex-wrap:wrap;column-gap:.32em;color:#fff;font-size:clamp(30px,3.2vw,46px);line-height:1.1;font-weight:500;letter-spacing:-.03em }
-.footer-tagline li:last-child { color:#bccaf2 }
 .footer-about { color:#c4cdea;font-size:16px;line-height:1.55;margin:24px 0 0;max-width:30ch }
 .footer-links { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px }
 .site-footer h3 { font-size:17px;font-weight:500;letter-spacing:0;color:#aebcea;margin:0 0 14px }
@@ -411,24 +409,24 @@ html { scroll-behavior:smooth }
 .values-strip::after { right:0;background:linear-gradient(270deg,#1e2b57,#1e2b5700) }
 @media (prefers-reduced-motion:reduce) { .values-track { animation:none } }
 
-/* ---- Footer tagline: rises in line by line, then a soft light moves through the words ---- */
-.footer-tagline li:last-child { color:inherit }
-.js-tagline .footer-tagline li { opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1);transition-delay:calc(var(--i) * 110ms) }
-.js-tagline.is-in .footer-tagline li { opacity:1;transform:none }
-.js-tagline.is-glowing .footer-tagline li { animation:taglineGlow 8s ease-in-out infinite;animation-delay:calc(var(--i) * 2s) }
-@keyframes taglineGlow { 0%,100% { color:#fff } 10%,22% { color:#bccaf2 } 34% { color:#fff } }
 @media (prefers-reduced-motion:reduce) {
-  .js-tagline .footer-tagline li { opacity:1;transform:none;transition:none }
-  .js-tagline.is-glowing .footer-tagline li { animation:none }
-  .footer-tagline li:last-child { color:#bccaf2 }
 }
-@media (max-width:560px) { .footer-tagline { flex-direction:column;font-size:clamp(30px,9vw,38px) } }
 
 /* ---- Footer: only the tagline line is centred ---- */
-.site-footer .footer-tagline { justify-content:center;text-align:center }
-@media (max-width:560px) { .site-footer .footer-tagline { align-items:center } }
 /* Values strip: the word under the pointer glows light blue, echoing the footer */
 .values-group li { transition:color .35s ease,text-shadow .35s ease }
 .values-group li:hover { color:#bccaf2;text-shadow:0 0 18px #bccaf259 }
 .values-group li .values-dot { transition:transform .35s cubic-bezier(.16,1,.3,1),background .35s ease }
 .values-group li:hover .values-dot { transform:scale(1.6);background:#fff }
+
+/* ---- Footer: links on the right edge, and one value word rising from the divider ---- */
+.site-footer .footer-layout { grid-template-columns:minmax(0,1fr) auto }
+.site-footer .footer-links { grid-template-columns:repeat(3,auto);column-gap:clamp(48px,7vw,112px);justify-self:end }
+.footer-word { --fw:clamp(64px,12.5vw,190px);position:relative;height:calc(var(--fw) * .78);overflow:hidden;margin-top:clamp(40px,5vw,72px);pointer-events:none;user-select:none }
+.footer-word-track { animation:footerWord 14s cubic-bezier(.7,0,.2,1) infinite }
+.footer-word-track span { display:block;position:relative;top:var(--fw-drop,.09em);height:calc(var(--fw) * .78);font-size:var(--fw);line-height:.74;font-weight:500;letter-spacing:-.045em;white-space:nowrap;color:#ffffff1c }
+@keyframes footerWord { 0%,20% { transform:none } 25%,45% { transform:translateY(-20%) } 50%,70% { transform:translateY(-40%) } 75%,95% { transform:translateY(-60%) } 100% { transform:translateY(-80%) } }
+.site-footer .footer-base { margin-top:0 }
+@media (max-width:1100px) { .site-footer .footer-layout { grid-template-columns:1fr } .site-footer .footer-links { justify-self:start } }
+@media (max-width:760px) { .site-footer .footer-links { grid-template-columns:1fr 1fr;column-gap:24px;justify-self:stretch } .footer-word { --fw:clamp(44px,15vw,96px) } }
+@media (prefers-reduced-motion:reduce) { .footer-word-track { animation:none } }
