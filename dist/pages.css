@@ -403,7 +403,7 @@ html { scroll-behavior:smooth }
 .values-track { display:flex;width:max-content;animation:valuesDrift 34s linear infinite }
 .values-strip:hover .values-track { animation-play-state:paused }
 .values-group { display:flex;list-style:none;margin:0;padding:0 }
-.values-group li { display:flex;align-items:center;gap:clamp(20px,2.2vw,32px);padding:14px 0 14px clamp(20px,2.2vw,32px);font-size:clamp(15px,1.25vw,18px);font-weight:600;letter-spacing:.01em;line-height:1.2;white-space:nowrap }
+.values-group li { display:flex;align-items:center;gap:clamp(24px,2.6vw,40px);padding:15px 0 15px clamp(24px,2.6vw,40px);font-size:clamp(13px,1vw,15px);font-weight:600;letter-spacing:.16em;text-transform:uppercase;line-height:1.2;white-space:nowrap }
 .values-dot { width:5px;height:5px;border-radius:50%;background:#bccaf2;flex:none }
 @keyframes valuesDrift { to { transform:translateX(-25%) } }
 .values-strip::before, .values-strip::after { content:"";position:absolute;top:0;bottom:0;width:clamp(24px,5vw,80px);z-index:1;pointer-events:none }
@@ -423,3 +423,20 @@ html { scroll-behavior:smooth }
   .footer-tagline li:last-child { color:#bccaf2 }
 }
 @media (max-width:560px) { .footer-tagline { flex-direction:column;font-size:clamp(30px,9vw,38px) } }
+
+/* ---- Footer, centred ---- */
+.site-footer { text-align:center }
+.site-footer .footer-layout { grid-template-columns:1fr;justify-items:center;gap:40px }
+.site-footer .footer-brand { display:flex;flex-direction:column;align-items:center;gap:0 }
+.site-footer .footer-about { margin:20px auto 0;max-width:34ch }
+.site-footer .footer-links { grid-template-columns:repeat(3,auto);column-gap:clamp(48px,8vw,120px);justify-content:center }
+.site-footer .footer-links a { justify-content:center }
+.site-footer .footer-tagline { justify-content:center }
+.site-footer .footer-base { justify-content:center;align-items:center;flex-direction:column;gap:6px }
+@media (max-width:420px) { .site-footer .footer-base { align-items:center } }
+@media (max-width:760px) {
+  .site-footer .footer-links { grid-template-columns:1fr 1fr;column-gap:24px;width:100% }
+  .site-footer .footer-links > div:last-child { grid-column:1/-1 }
+  .site-footer .footer-links > div:last-child ul { justify-content:center }
+}
+@media (max-width:560px) { .site-footer .footer-tagline { align-items:center } }
