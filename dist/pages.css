@@ -229,3 +229,20 @@ header { background:#1e2b57;border-bottom:0 }
   .first-sunday .split { gap:40px }
 }
 .ministries .ministry-grid { scrollbar-color:#26357066 transparent }
+
+/* ---- Hero fills the first screen on tablets and desktops ---- */
+.hero { min-height:clamp(600px, calc(100vh - 112px), 1240px);min-height:clamp(600px, calc(100svh - 112px), 1240px) }
+.hero-copy { position:relative }
+.hero-scroll { position:absolute;left:inherit;bottom:clamp(24px,4vh,44px);display:inline-flex;align-items:center;gap:12px;color:#c4cdea;font-size:15px;min-height:44px;text-decoration:none;transition:color .2s }
+.hero-copy > .hero-scroll { left:max(48px,calc((100vw - 1280px)/2)) }
+.hero-scroll .site-icon { width:18px;height:18px;animation:heroNudge 2.4s cubic-bezier(.45,0,.55,1) infinite }
+.hero-scroll:hover { color:#fff }
+.hero-scroll:focus-visible { outline:2px solid #fff;outline-offset:4px }
+@keyframes heroNudge { 0%,60%,100% { transform:none } 30% { transform:translateY(4px) } }
+@media (max-width:1200px) { .hero-copy > .hero-scroll { left:32px } }
+@media (max-width:1000px) { .hero { min-height:clamp(600px, calc(100vh - 95px), 1240px);min-height:clamp(600px, calc(100svh - 95px), 1240px) } }
+@media (max-width:760px) { .hero { min-height:0 } .hero-scroll { display:none } }
+@media (max-height:820px) and (min-width:761px) { .hero-scroll { display:none } }
+@media (prefers-reduced-motion:reduce) { .hero-scroll .site-icon { animation:none } }
+html { scroll-behavior:smooth }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto } }
