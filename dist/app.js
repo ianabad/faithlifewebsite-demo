@@ -390,3 +390,59 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     });
   });
 })();
+
+// Ministries: the group finder picks a ministry, swaps the hero picture and points to the group below.
+(function ministryFinder() {
+  const finder = document.querySelector('[data-finder]');
+  if (!finder) return;
+  const data = JSON.parse(finder.querySelector('[data-finder-data]').textContent);
+  const chips = Array.from(finder.querySelectorAll('[data-find]'));
+  const result = finder.querySelector('[data-finder-result]');
+  const layers = Array.from(document.querySelectorAll('.finder-layer'));
+  const loadAll = () => layers.forEach(layer => { if (layer.dataset.src && !layer.src) layer.src = layer.dataset.src; });
+  ['pointerover', 'focusin'].forEach(type => finder.addEventListener(type, loadAll, { once: true }));
+  chips.forEach(chip => chip.addEventListener('click', () => {
+    const key = chip.dataset.find;
+    const on = chip.getAttribute('aria-pressed') !== 'true';
+    chips.forEach(c => c.setAttribute('aria-pressed', String(on && c === chip)));
+    const show = on ? key : 'default';
+    loadAll();
+    layers.forEach(layer => layer.classList.toggle('is-on', layer.dataset.layer === show));
+    document.querySelectorAll('.is-highlight').forEach(el => el.classList.remove('is-highlight'));
+    if (!on) { result.hidden = true; return; }
+    result.querySelector('[data-finder-name]').textContent = data[key].name;
+    result.querySelector('[data-finder-short]').textContent = data[key].short;
+    result.querySelector('[data-finder-see]').setAttribute('href', '#' + key);
+    result.querySelector('[data-finder-ask]').setAttribute('href', 'contact.html?topic=' + encodeURIComponent(data[key].name));
+    result.hidden = false;
+    const target = document.getElementById(key);
+    if (target) (target.closest('.path-stop, .every-card') || target).classList.add('is-highlight');
+  }));
+})();
+
+// Ministries: the season line fills as you scroll, and each group's picture wipes in when it is reached.
+(function ministryPath() {
+  const list = document.querySelector('[data-path]');
+  if (!list) return;
+  const stops = Array.from(list.querySelectorAll('.path-stop'));
+  list.classList.add('js-path');
+  function update() {
+    const box = list.getBoundingClientRect();
+    const fill = Math.min(1, Math.max(0, (innerHeight * 0.6 - box.top) / box.height));
+    list.style.setProperty('--path-fill', (fill * 100) + '%');
+    stops.forEach(stop => {
+      const top = stop.getBoundingClientRect().top;
+      stop.classList.toggle('is-reached', top < innerHeight * 0.6);
+      if (top < innerHeight * 0.85) stop.classList.add('is-in');
+    });
+    document.querySelectorAll('.every-card').forEach(card => { if (card.getBoundingClientRect().top < innerHeight * 0.85) card.classList.add('is-in'); });
+    const connect = document.querySelector('.min-connect');
+    if (connect && connect.getBoundingClientRect().top < innerHeight * 0.8) connect.classList.add('is-in');
+  }
+  const connect = document.querySelector('.min-connect');
+  if (connect) connect.classList.add('js-connect');
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+  setTimeout(() => { stops.forEach(s => { if (s.getBoundingClientRect().top < innerHeight) s.classList.add('is-in'); }); }, 1500);
+})();
