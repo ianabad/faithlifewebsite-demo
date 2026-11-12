@@ -792,16 +792,24 @@ document.addEventListener('click', e => {
   if (!box) return;
   const qs = [...box.querySelectorAll('.gt-q')], as = [...box.querySelectorAll('.gt-a')];
   let cur = 0;
-  // On wide screens the answer panel glides to sit level with the chosen question, its notch pointing at it.
+  // On wide screens the answer panel stays vertically centred in the window while you scroll the section;
+  // its notch keeps pointing at the chosen question whenever that question is beside it.
   function place() {
-    const a = as[cur];
-    if (innerWidth <= 760) { a.style.removeProperty('--gt-y'); return; }
-    const top = qs[0].offsetTop, bottom = qs[qs.length - 1].offsetTop + qs[qs.length - 1].offsetHeight;
-    const mid = qs[cur].offsetTop + qs[cur].offsetHeight / 2;
-    const h = a.offsetHeight, room = bottom - top;
-    const y = h >= room ? 0 : Math.max(0, Math.min(room - h, mid - top - h / 2));
-    as.forEach(x => { x.style.setProperty('--gt-y', y + 'px'); x.style.setProperty('--gt-notch', Math.max(28, Math.min(h - 28, mid - top - y)) + 'px'); });
+    const wide = innerWidth > 760;
+    as.forEach(x => x.style.setProperty('--gt-top', wide ? Math.max(24, (innerHeight - as[cur].offsetHeight) / 2) + 'px' : 'auto'));
+    notch();
   }
+  let pending = false;
+  function notch() {
+    pending = false;
+    const a = as[cur];
+    if (innerWidth <= 760) return;
+    const q = qs[cur].getBoundingClientRect(), r = a.getBoundingClientRect();
+    const n = q.top + q.height / 2 - r.top;
+    a.style.setProperty('--gt-notch', n + 'px');
+    a.classList.toggle('no-notch', n < 28 || n > r.height - 28);
+  }
+  addEventListener('scroll', () => { if (!pending) { pending = true; requestAnimationFrame(notch); } }, { passive: true });
   function open(n, focus) {
     cur = n;
     qs.forEach((q, k) => { const on = k === n; q.classList.toggle('is-on', on); q.setAttribute('aria-selected', on); q.tabIndex = on ? 0 : -1; as[k].classList.toggle('is-on', on); });

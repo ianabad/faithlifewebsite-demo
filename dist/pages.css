@@ -1852,7 +1852,7 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 
 /* Growth Track: ask and answer */
 .gt-faq { background:#f4f6fc }
-.gt-ask { display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-auto-rows:auto;column-gap:clamp(32px,5vw,80px) }
+@media (min-width:761px) { .gt-faq .wrap { display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);column-gap:clamp(32px,5vw,80px) } .gt-faq .gt-head { grid-column:1 } .gt-ask { display:contents } }
 .gt-q { grid-column:1;display:flex;align-items:baseline;gap:18px;width:100%;padding:22px 0;border:0;border-top:1px solid #d5dcef;background:none;text-align:left;color:var(--navy);transition:color .3s }
 .gt-q:last-of-type { border-bottom:1px solid #d5dcef }
 .gt-qn { font-size:13px;font-weight:500;letter-spacing:.1em;color:#9aa6cb;transition:color .3s }
@@ -1860,11 +1860,12 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .gt-qt::after { content:"";position:absolute;left:0;bottom:-4px;height:2px;width:100%;background:#f6c768;transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.16,1,.3,1) }
 .gt-q:hover .gt-qt { opacity:.85 }
 .gt-q.is-on .gt-qt { opacity:1 } .gt-q.is-on .gt-qn { color:#b88a2a } .gt-q.is-on .gt-qt::after { transform:scaleX(1) }
-.gt-a { grid-column:2;grid-row:1 / span 6;align-self:start;transform:translateY(var(--gt-y,0px));transition:transform .7s cubic-bezier(.16,1,.3,1);display:none;flex-direction:column;justify-content:center;gap:22px;padding:clamp(32px,4vw,56px);background:var(--navy);color:#fff;border-radius:24px;position:relative;background-image:radial-gradient(circle at 100% 0,#0000 0 120px,#ffffff14 121px 122px,#ffffff08 123px 162px,#ffffff05 163px 202px,#0000 203px) }
+.gt-a { grid-column:2;grid-row:1 / span 7;align-self:start;position:sticky;top:var(--gt-top,120px);display:none;flex-direction:column;justify-content:center;gap:22px;padding:clamp(32px,4vw,56px);background:var(--navy);color:#fff;border-radius:24px;position:relative;background-image:radial-gradient(circle at 100% 0,#0000 0 120px,#ffffff14 121px 122px,#ffffff08 123px 162px,#ffffff05 163px 202px,#0000 203px) }
 .gt-a.is-on { display:flex }
 .gt-a.is-on > * { animation:gtAnswer .6s cubic-bezier(.16,1,.3,1) both }
 .gt-a.is-on > p { animation-delay:.06s } .gt-a.is-on > .gt-next { animation-delay:.12s }
-.gt-a::after { content:"";position:absolute;left:-7px;top:var(--gt-notch,40px);width:14px;height:14px;margin-top:-7px;background:var(--navy);transform:rotate(45deg);border-radius:2px;transition:top .7s cubic-bezier(.16,1,.3,1) }
+.gt-a::after { content:"";position:absolute;left:-7px;top:var(--gt-notch,40px);width:14px;height:14px;margin-top:-7px;background:var(--navy);transform:rotate(45deg);border-radius:2px;transition:opacity .3s }
+.gt-a.no-notch::after { opacity:0 }
 .gt-a p { position:relative;color:#e4e8f6;font-size:clamp(19px,1.55vw,23px);line-height:1.6;max-width:36ch }
 .gt-a-icon { width:56px;height:56px;fill:none;stroke:#f6c768;stroke-width:2;stroke-linecap:round;stroke-linejoin:round }
 .gt-a.is-on .gt-a-icon path, .gt-a.is-on .gt-a-icon circle { stroke-dasharray:140;stroke-dashoffset:140;animation:gtDraw 1.1s cubic-bezier(.65,0,.35,1) .1s forwards }
@@ -1875,7 +1876,7 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 
 @media (max-width:760px) {
   .gt-ticks span { width:24px }
-  .gt-ask { grid-template-columns:1fr }
+  .gt-ask { display:grid;grid-template-columns:1fr }
   .gt-q { grid-column:1 }
   .gt-a { grid-column:1;grid-row:auto;margin:0 0 18px;padding:26px 22px;border-radius:18px }
   .gt-a-icon { width:44px;height:44px }
@@ -1899,7 +1900,7 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 @media (max-width:760px) {
   .gt-strip .wk-day.is-span::after { left:5px;right:auto;top:-50%;bottom:50%;width:2px;height:auto;margin:0 }
   .gt-strip .wk-day.is-span { min-height:40px }
-  .gt-faq .gt-a { transform:none }
+  .gt-faq .gt-a { position:relative;top:auto }
   .gt-a::after { display:none }
 }
 .gt-qn { flex:none;width:8px;height:8px;border-radius:50%;background:#c9d2ec;transform:translateY(-3px);transition:background .3s,box-shadow .3s }
