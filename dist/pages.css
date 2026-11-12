@@ -1655,3 +1655,4 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 @media (prefers-reduced-motion:reduce) { .min-seasons .story-row.is-in .story-media.is-drawing { transition:none } }
 /* Light rows glow navy-blue; the navy row keeps its gold glow */
 .min-seasons .story-row.is-lit:not([data-dark]) .story-media.is-drawing { box-shadow:0 0 0 1px #ffffff1f inset,0 38px 90px -20px #26357080,0 0 80px 6px #3c55a82e }
+@media (max-width:760px) { .story-zig .wrap > h2, .story-zig .heading-row { padding-left:26px } }

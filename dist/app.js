@@ -322,7 +322,7 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     rows.forEach(row => {
       const m = row.querySelector('.story-media').getBoundingClientRect();
       const x = point.x + box.left, y = point.y + box.top;
-      row.classList.toggle('is-lit', x >= m.left && x <= m.right && y >= m.top && y <= m.bottom);
+      row.classList.toggle('is-lit', (innerWidth <= 760 || (x >= m.left && x <= m.right)) && y >= m.top && y <= m.bottom);
     });
     svg.classList.toggle('is-moving', progress > 0 && progress < 1);
     let active = 0;
