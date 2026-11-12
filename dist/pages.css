@@ -356,3 +356,50 @@ html { scroll-behavior:smooth }
 .js-verse .word-verse blockquote span { color:#c3c8d6;transition:color .45s ease }
 .js-verse .word-verse blockquote span.is-lit { color:var(--navy) }
 @media (prefers-reduced-motion:reduce) { .js-verse .word-verse blockquote span { color:var(--navy) } }
+
+/* ---- Site footer: brand, links, and a live "Visit us" panel ---- */
+.site-footer { padding:clamp(56px,7vw,88px) 0 28px }
+.footer-layout { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.95fr) minmax(0,1.5fr);grid-template-areas:"brand links visit";gap:clamp(32px,4.5vw,64px);align-items:start }
+.footer-brand { grid-area:brand }
+.footer-brand .brand { display:inline-block }
+.footer-brand .brand { max-width:100% }
+.footer-brand .brand img { display:block;width:240px;max-width:100%;height:auto }
+.footer-tagline { color:#fff;font-size:19px;line-height:1.45;font-weight:500;margin:26px 0 8px;max-width:20ch }
+.footer-about { color:#c4cdea;font-size:16px;line-height:1.55;margin:0;max-width:26ch }
+.footer-links { grid-area:links;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px }
+.site-footer h3 { font-size:17px;font-weight:500;letter-spacing:0;color:#aebcea;margin:0 0 14px }
+.footer-links ul { list-style:none;margin:0;padding:0 }
+.footer-links a { display:inline-flex;align-items:center;gap:10px;min-height:40px;color:#e6eaf6;text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 calc(100% - 8px)/0 1px no-repeat;transition:background-size .35s cubic-bezier(.16,1,.3,1),color .2s }
+.footer-links a:is(:hover,:focus-visible) { color:#fff;background-size:100% 1px }
+.footer-links a .site-icon { width:19px;height:19px;flex:none;color:#aebcea }
+.footer-visit { grid-area:visit;background:#ffffff0d;border-top:2px solid #bccaf2;padding:clamp(24px,2.4vw,32px) }
+.footer-next { color:#fff;font-size:clamp(19px,1.6vw,22px);line-height:1.35;font-weight:500;margin:0 0 14px }
+.footer-visit address { font-style:normal;color:#d3daf0;line-height:1.55 }
+.footer-visit-actions { display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 20px }
+.footer-chip { display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 13px;border:1px solid #ffffff55;background:transparent;color:#fff;font:inherit;font-size:15.5px;line-height:1;cursor:pointer;text-decoration:none;transition:background .25s ease,color .25s ease,border-color .25s ease }
+.footer-chip .site-icon { width:18px;height:18px;flex:none }
+.footer-chip:is(:hover,:focus-visible) { background:#fff;color:var(--navy);border-color:#fff }
+.footer-chip.is-copied { background:#bccaf2;color:var(--navy);border-color:#bccaf2 }
+.footer-chip [data-copied-icon] { animation:footerPop .35s cubic-bezier(.16,1,.3,1) }
+@keyframes footerPop { from { transform:scale(.4);opacity:0 } }
+.footer-also { color:#c4cdea;font-size:15.5px;margin:0 0 18px }
+.footer-plan { display:inline-flex;align-items:center;gap:10px;color:#fff;text-decoration:underline;text-decoration-color:#ffffff66;text-underline-offset:5px;min-height:44px }
+.footer-plan .site-icon, .footer-top .site-icon { width:18px;height:18px;transition:transform .3s cubic-bezier(.16,1,.3,1) }
+.footer-plan:is(:hover,:focus-visible) { text-decoration-color:#fff }
+.footer-plan:is(:hover,:focus-visible) .site-icon { transform:translate(3px,-3px) }
+.footer-base { display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 32px;margin-top:clamp(48px,6vw,72px);padding-top:20px;border-top:1px solid #ffffff33;color:#c4cdea;font-size:15.5px }
+.footer-top { display:inline-flex;align-items:center;gap:10px;min-height:44px;color:#e6eaf6;text-decoration:none }
+.footer-top:is(:hover,:focus-visible) { color:#fff }
+.footer-top:is(:hover,:focus-visible) .site-icon { transform:translateY(-4px) }
+.site-footer :is(a,button):focus-visible { outline:2px solid #fff;outline-offset:3px }
+@media (max-width:1100px) {
+  .footer-layout { grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"brand visit" "links links" }
+}
+@media (max-width:640px) {
+  .footer-layout { grid-template-columns:1fr;grid-template-areas:"brand" "visit" "links";gap:40px }
+  .footer-links { grid-template-columns:1fr 1fr;row-gap:32px }
+  .footer-links > div:last-child { grid-column:1/-1 }
+  .footer-links > div:last-child ul { display:flex;flex-wrap:wrap;column-gap:24px }
+  .footer-base { flex-direction:column;align-items:flex-start }
+}
+.footer-chip svg[hidden] { display:none }
