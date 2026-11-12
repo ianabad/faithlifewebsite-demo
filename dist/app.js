@@ -659,7 +659,7 @@ document.addEventListener('click', e => {
   ];
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    const base = h * (w < 760 ? 0.82 : 0.7);
+    const base = w < 760 ? h - 48 : h * 0.7;
     const big = Math.min(70, h * 0.09);
     layers.forEach((L, li) => {
       const g = ctx.createLinearGradient(0, 0, w, 0);

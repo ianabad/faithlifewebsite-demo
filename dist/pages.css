@@ -1751,3 +1751,9 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .motion-paused .msg-photo img { animation-play-state:paused }
 @media (max-width:760px) { .msg-photo { justify-self:stretch;width:100%;aspect-ratio:4/3 } .msg-hero-inner { padding-bottom:120px } }
 @media (min-width:761px) { .msg-hero-inner { padding-block:clamp(40px,6vh,72px) } .msg-photo { width:min(100%,420px);max-height:calc(100svh - 112px - 2 * clamp(40px,6vh,72px)) } }
+
+/* ---- Messages v4: hero formatted like About and Plan your visit, wave behind the words ---- */
+.msg-hero2-copy { position:relative;overflow:hidden }
+.msg-hero2-copy > :not(canvas) { position:relative;z-index:1 }
+.msg-hero2-copy .msg-wave { position:absolute;inset:0;width:100%;height:100%;z-index:0 }
+@media (max-width:760px) { .msg-hero2-copy { padding-bottom:110px } }
