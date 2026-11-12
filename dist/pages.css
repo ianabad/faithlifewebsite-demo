@@ -1653,3 +1653,5 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .min-seasons .story-row.is-in .story-media.is-drawing { animation:none;box-shadow:0 0 0 1px #ffffff14 inset,0 30px 90px -18px #f6c76800,0 0 70px 4px #f6c76800;transition:clip-path 1.1s cubic-bezier(.65,0,.15,1),box-shadow 1.4s cubic-bezier(.4,0,.2,1) }
 .min-seasons .story-row.is-lit .story-media.is-drawing { box-shadow:0 0 0 1px #ffffff1f inset,0 34px 100px -16px #f6c76880,0 0 90px 8px #f6c7682e }
 @media (prefers-reduced-motion:reduce) { .min-seasons .story-row.is-in .story-media.is-drawing { transition:none } }
+/* Light rows glow navy-blue; the navy row keeps its gold glow */
+.min-seasons .story-row.is-lit:not([data-dark]) .story-media.is-drawing { box-shadow:0 0 0 1px #ffffff1f inset,0 38px 90px -20px #26357080,0 0 80px 6px #3c55a82e }
