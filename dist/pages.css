@@ -1741,3 +1741,13 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 @media (prefers-reduced-motion:no-preference) { .msg-play { animation:ticketIn .9s cubic-bezier(.16,1,.3,1) .4s both } }
 @media (max-width:760px) { .msg-hero-inner { grid-template-columns:1fr } .msg-play { justify-self:start;grid-template-columns:auto 1fr;align-items:center;justify-items:start;gap:18px } .msg-play-rings { width:110px } .msg-play-disc { left:55px;top:55px;width:64px } .msg-play-label { justify-items:start } }
 @media (max-width:760px) { .msg-play { display:none } }
+
+/* ---- Messages v3: a real sermon photo on the right of the hero ---- */
+.msg-play { display:none !important }
+.msg-photo { position:relative;margin:0;justify-self:end;width:min(100%,440px);aspect-ratio:4/5;overflow:hidden;box-shadow:0 40px 80px -40px #0b1230cc }
+.msg-photo img { display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40% }
+.msg-photo::after { content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px #ffffff1f;pointer-events:none }
+@media (prefers-reduced-motion:no-preference) { .msg-photo { animation:heroUnveil 1.25s cubic-bezier(.65,0,.15,1) .1s both } .msg-photo img { animation:aboutPush 18s cubic-bezier(.2,.6,.3,1) both } }
+.motion-paused .msg-photo img { animation-play-state:paused }
+@media (max-width:760px) { .msg-photo { justify-self:stretch;width:100%;aspect-ratio:4/3 } .msg-hero-inner { padding-bottom:120px } }
+@media (min-width:761px) { .msg-hero-inner { padding-block:clamp(40px,6vh,72px) } .msg-photo { width:min(100%,420px);max-height:calc(100svh - 112px - 2 * clamp(40px,6vh,72px)) } }
