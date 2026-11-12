@@ -1594,3 +1594,17 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .bento { grid-auto-rows:clamp(300px,38vh,340px) }
   .bento-tile:not(.is-hero):not(.is-wide) .bento-desc { font-size:14px;line-height:1.5 }
 }
+
+/* ===== Ministries v12: seasons told like the About story ===== */
+.min-seasons .heading-row { margin-bottom:0 }
+.season-y { font-size:clamp(56px,6.5vw,100px) }
+.season-y.is-long { font-size:clamp(44px,5vw,76px) }
+.season-tag { margin-top:10px !important;font-size:13px !important;letter-spacing:.1em;text-transform:uppercase;color:var(--muted) }
+.season-group { margin-top:22px }
+.season-group h3 { margin-top:0 !important;font-size:clamp(24px,2.2vw,32px);line-height:1.15 }
+.season-group p { margin-top:10px !important }
+.season-meta { color:var(--navy) !important;font-weight:500;font-size:15px !important;line-height:1.5 !important }
+.season-group .min-ask { margin-top:10px }
+.season-row.is-pair .season-group + .season-group { margin-top:24px;padding-top:22px;border-top:1px solid #2635701f }
+.season-row.is-pair .season-group h3 { font-size:clamp(21px,1.8vw,26px) }
+.min-seasons .story-media.is-drawing svg { width:100%;height:100% }
