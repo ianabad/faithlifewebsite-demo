@@ -329,15 +329,3 @@ const pad = n => String(n).padStart(2, '0');
   update();
 })();
 
-
-// Values strip: a pause control for the moving words.
-(function valuesStrip() {
-  const strip = document.querySelector('[data-values]');
-  const toggle = strip && strip.querySelector('[data-values-toggle]');
-  if (!toggle) return;
-  toggle.addEventListener('click', () => {
-    const paused = strip.classList.toggle('is-paused');
-    toggle.setAttribute('aria-label', paused ? 'Play the moving words' : 'Pause the moving words');
-    toggle.querySelector('path').setAttribute('d', paused ? 'm5 3 8 5-8 5z' : 'M5 3v10M11 3v10');
-  });
-})();
