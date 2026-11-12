@@ -638,3 +638,73 @@ document.addEventListener('click', e => {
     field.addEventListener('pointerleave', () => field.style.setProperty('--mx', '-999px'));
   });
 })();
+
+// Messages: a living sound wave behind the hero. It breathes like a voice and warms to gold near the pointer.
+(function soundWave() {
+  const canvas = document.querySelector('[data-wave]');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let w = 0, h = 0, dpr = 1, pointer = -9999, visible = true, t = 0, last = 0;
+  function size() {
+    dpr = Math.min(2, devicePixelRatio || 1);
+    w = canvas.clientWidth; h = canvas.clientHeight;
+    canvas.width = w * dpr; canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  const layers = [
+    { amp: 1, speed: 1, freq: 0.012, alpha: 0.55, width: 2.5 },
+    { amp: 0.7, speed: 1.35, freq: 0.017, alpha: 0.3, width: 2 },
+    { amp: 0.45, speed: 0.8, freq: 0.009, alpha: 0.18, width: 1.5 }
+  ];
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    const base = h * (w < 760 ? 0.82 : 0.7);
+    const big = Math.min(70, h * 0.09);
+    layers.forEach((L, li) => {
+      const g = ctx.createLinearGradient(0, 0, w, 0);
+      const px = Math.max(0, Math.min(1, pointer / w));
+      if (pointer > -1000) {
+        g.addColorStop(0, `rgba(188,202,242,${L.alpha})`);
+        g.addColorStop(Math.max(0, px - 0.12), `rgba(188,202,242,${L.alpha})`);
+        g.addColorStop(px, `rgba(246,199,104,${Math.min(1, L.alpha + 0.35)})`);
+        g.addColorStop(Math.min(1, px + 0.12), `rgba(188,202,242,${L.alpha})`);
+        g.addColorStop(1, `rgba(188,202,242,${L.alpha})`);
+      } else { g.addColorStop(0, `rgba(188,202,242,${L.alpha})`); g.addColorStop(1, `rgba(188,202,242,${L.alpha})`); }
+      ctx.strokeStyle = g; ctx.lineWidth = L.width; ctx.lineCap = 'round';
+      ctx.beginPath();
+      for (let x = 0; x <= w; x += 4) {
+        const env = 0.35 + 0.65 * Math.pow(Math.sin((x / w) * Math.PI), 1.2) * (0.6 + 0.4 * Math.sin(t * 0.7 + x * 0.004 + li));
+        const near = pointer > -1000 ? Math.exp(-Math.pow((x - pointer) / 140, 2)) * 0.9 : 0;
+        const y = base + Math.sin(x * L.freq + t * L.speed * 1.6 + li * 1.7) * big * L.amp * (env + near) * (0.85 + 0.15 * Math.sin(t * 2.1 + x * 0.02));
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    });
+  }
+  function frame(now) {
+    const paused = document.documentElement.classList.contains('motion-paused');
+    if (visible && !paused) { t += Math.min(0.05, (now - last) / 1000 || 0.016); draw(); }
+    last = now;
+    requestAnimationFrame(frame);
+  }
+  size(); draw();
+  addEventListener('resize', () => { size(); draw(); });
+  const hero = canvas.parentElement;
+  hero.addEventListener('pointermove', e => { pointer = e.clientX - canvas.getBoundingClientRect().left; if (reduce) draw(); });
+  hero.addEventListener('pointerleave', () => { pointer = -9999; if (reduce) draw(); });
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(hero);
+  if (!reduce) requestAnimationFrame(frame);
+})();
+
+// Messages: mark today in the week strip (Winnipeg time).
+(function weekStrip() {
+  const strip = document.querySelector('[data-week]');
+  if (!strip || !window.Intl) return;
+  try {
+    const day = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Winnipeg', weekday: 'short' }).format(new Date()).replace('.', '');
+    const i = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(day);
+    const li = strip.querySelector(`[data-dow="${i}"]`);
+    if (li) { li.classList.add('is-today'); li.insertAdjacentHTML('beforeend', '<span class="wk-today">Today</span>'); }
+  } catch (e) { /* leave the strip as it is */ }
+})();
