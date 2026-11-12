@@ -152,3 +152,52 @@ header { background:#1e2b57;border-bottom:0 }
 
 .person .person-bio { margin-top:16px;line-height:1.6;color:inherit;opacity:.85 }
 @media (max-width:760px) { .person .person-bio { grid-column:1/-1;margin-top:18px } }
+
+/* ---- Homepage hero: living headline, visit facts, story-style photo progress ---- */
+.sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0 }
+::selection { background:#c9d2f2;color:var(--ink) }
+.hero .hero-copy h1 { font-size:clamp(20px,10cqw,76px);line-height:1.1 }
+.hero-rotator { display:block }
+.hero-words { display:grid;padding-block:.06em .12em;margin-block:-.06em -.12em }
+.hero-word { grid-area:1/1;color:#bccaf2;opacity:0;transform:translateY(.42em);filter:blur(8px);transition:opacity .5s ease,transform .9s cubic-bezier(.16,1,.3,1),filter .7s cubic-bezier(.16,1,.3,1);will-change:transform,opacity }
+.hero-word.is-active { opacity:1;transform:none;filter:none;transition-delay:.18s }
+.hero-word.is-leaving { opacity:0;transform:translateY(-.32em);filter:blur(8px);transition-duration:.45s,.6s,.5s;transition-delay:0s }
+.hero-copy .hero-lead { color:#fff;font-size:clamp(19px,1.55vw,22px);line-height:1.5;font-weight:500;letter-spacing:-.01em;max-width:30ch;margin:30px 0 0 }
+.hero-facts { list-style:none;margin:22px 0 34px;padding:0;display:grid;gap:10px;color:#d3daf0;font-size:16px;line-height:1.4 }
+.hero-facts li { display:flex;align-items:center;gap:12px }
+.hero-facts .site-icon { width:20px;height:20px;flex:none;color:#aebcea }
+.hero-facts a { color:inherit;text-decoration:underline;text-decoration-color:#ffffff55;text-underline-offset:4px;text-decoration-thickness:1px;transition:text-decoration-color .2s }
+.hero-facts a:hover { text-decoration-color:currentColor }
+.hero-copy .actions { margin:0 }
+
+.hero-image::before { content:"";position:absolute;inset:0 0 auto;height:140px;z-index:1;pointer-events:none;background:linear-gradient(#0f1733a6,#0f173300) }
+.hero-image > img { transition:opacity 1s cubic-bezier(.4,0,.2,1);width:100%;object-fit:cover }
+.hero-image .gallery-controls { top:14px;left:22px;right:14px;display:flex;align-items:center;gap:10px;z-index:2 }
+.gallery-steps { flex:1;display:flex;gap:6px }
+.gallery-step { flex:1;height:44px;padding:0;border:0;background:transparent;cursor:pointer;display:flex;align-items:center }
+.gallery-step span { position:relative;display:block;width:100%;height:3px;border-radius:3px;background:#ffffff4d;overflow:hidden;transition:height .2s }
+.gallery-step span::after { content:"";position:absolute;inset:0;background:#fff;transform:scaleX(0);transform-origin:left }
+.gallery-step.is-done span::after { transform:scaleX(1) }
+.gallery-step.is-current span::after { animation:heroProgress var(--slide-duration,6500ms) linear forwards }
+.is-paused .gallery-step.is-current span::after { animation-play-state:paused }
+.gallery-step:is(:hover,:focus-visible) span { height:5px }
+.gallery-step:focus-visible { outline:2px solid #fff;outline-offset:2px;border-radius:4px }
+@keyframes heroProgress { to { transform:scaleX(1) } }
+.hero-image .gallery-play { width:44px;height:44px;display:grid;place-items:center;flex:none;padding:0;border:0;background:transparent;color:#fff;cursor:pointer }
+.hero-image .gallery-play svg { width:30px;height:30px;padding:8px;border-radius:50%;background:#15203dcc;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:background .2s }
+.hero-image .gallery-play:is(:hover,:focus-visible) svg { background:var(--navy) }
+.hero-image .gallery-play:focus-visible { outline:2px solid #fff;outline-offset:-2px;border-radius:50% }
+.hero-image .image-caption { z-index:2 }
+.hero-image { touch-action:pan-y }
+
+@media (max-width:760px) {
+  .hero-image { aspect-ratio:1/1 }
+  .hero-image .gallery-controls { top:8px;left:12px;right:8px }
+  .hero-copy .hero-lead { margin-top:24px;font-size:19px }
+  .hero-facts { margin:20px 0 30px;font-size:15.5px }
+}
+@media (prefers-reduced-motion:reduce) {
+  .hero-word, .hero-word.is-active, .hero-word.is-leaving { transition:opacity .2s linear;transform:none;filter:none }
+  .gallery-step.is-current span::after { animation:none;transform:scaleX(1) }
+  .hero-image > img { transition:opacity .2s linear }
+}
