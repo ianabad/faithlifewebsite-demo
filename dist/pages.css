@@ -1608,3 +1608,15 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .season-row.is-pair .season-group + .season-group { margin-top:24px;padding-top:22px;border-top:1px solid #2635701f }
 .season-row.is-pair .season-group h3 { font-size:clamp(21px,1.8vw,26px) }
 .min-seasons .story-media.is-drawing svg { width:100%;height:100% }
+
+/* ===== Ministries v13: one row per group, intro clear of the line, a navy finish ===== */
+.min-seasons .heading-row { display:block }
+.min-seasons .heading-row p { margin-top:18px;max-width:52ch }
+.min-seasons .story-media.is-drawing { box-shadow:0 34px 60px -38px #1b25447a,inset 0 0 0 1px #ffffff14 }
+.story-zig.is-dark .season-tag { color:#bccaf2 !important }
+.story-zig.is-dark .season-group h3 { color:#fff }
+.story-zig.is-dark .season-group p { color:#c9d2ec }
+.story-zig.is-dark .season-meta { color:#f6c768 !important }
+.story-zig.is-dark .season-group .min-ask { color:#fff }
+.story-zig.is-dark .heading-row h2, .story-zig.is-dark .heading-row p { transition:color .9s ease }
+.story-zig.is-dark .story-media.is-drawing { box-shadow:inset 0 0 0 1px #ffffff2e }
