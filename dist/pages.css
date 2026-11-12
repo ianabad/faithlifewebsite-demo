@@ -1241,3 +1241,47 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .min-serve.is-highlight .serve-grid { outline:2px solid var(--navy);outline-offset:12px }
 .min-path { overflow-x:clip }
 @media (max-width:960px) { .path-stop::after { display:none } }
+
+/* ---- Ministries v4: hero answer card keeps one size ---- */
+.finder2 { display:block }
+.finder2-sentence { display:block }
+.finder2-select { display:flex;width:100%;margin-top:6px }
+.finder2-select select { width:100%;white-space:nowrap;overflow:hidden }
+.finder2-browse { display:inline-flex;margin-top:16px }
+.finder2-body { height:clamp(212px,17vw,236px);display:flex;flex-direction:column }
+.finder2-name { display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden }
+.finder2-short { display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden }
+.finder2-actions { margin-top:auto }
+.finder2-actions.is-idle { visibility:hidden }
+@media (max-width:600px) { .finder2-body { height:auto;min-height:228px } }
+
+/* ---- Ministries v4: season word shows only on the stop the line has just reached ---- */
+.path-stop::after { opacity:0 !important;transform:translate(6%,-50%) }
+.path-stop.is-active::after { opacity:1 !important;transform:translate(0,-50%);color:#2635700f }
+.path-stop { transition:background-color .6s ease }
+.path-stop.is-active { background:linear-gradient(90deg,#f1f4fc 0%,#f1f4fc00 85%) }
+.path-stop.is-active .path-season-name { color:var(--navy) }
+.path-stop:not(.is-active) .path-season-name { color:#26357099;transition:color .5s }
+
+/* ---- Ministries v4: richer Discovery and Prayer panels ---- */
+.every-card { display:flex;flex-direction:column;background:#ffffff0a }
+.every-art { position:relative }
+.every-art .min-media { aspect-ratio:16/9 }
+.every-when { position:absolute;left:0;bottom:0;display:grid;gap:2px;padding:14px 20px 14px 18px;background:#fff;color:var(--navy);margin:0 }
+.every-when strong { font-size:clamp(24px,2.2vw,32px);font-weight:500;letter-spacing:-.03em;line-height:1 }
+.every-when span { font-size:13px;color:var(--muted) }
+.every-copy { display:flex;flex-direction:column;flex:1 }
+.every-copy h3 { margin-top:0 }
+.every-list-label { margin-top:22px !important;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#bccaf2 !important }
+.every-list { list-style:none;margin:10px 0 0;padding:0;display:grid;gap:2px }
+.every-list li { display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #ffffff1f;color:#fff }
+.every-check { width:20px;height:20px;flex:none;color:#f6c768 }
+.every-check path { stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .7s cubic-bezier(.65,0,.35,1) }
+.every-card.is-in .every-check path { stroke-dashoffset:0 }
+.every-list li:nth-child(2) .every-check path { transition-delay:.15s } .every-list li:nth-child(3) .every-check path { transition-delay:.3s } .every-list li:nth-child(4) .every-check path { transition-delay:.45s }
+.every-copy .min-ask { margin-top:auto;padding-top:18px }
+.every-card:hover .min-media svg { transform:scale(1.03) }
+.every-card .min-media svg { transition:transform .8s cubic-bezier(.16,1,.3,1) }
+@media (prefers-reduced-motion:reduce) { .every-check path { stroke-dashoffset:0;transition:none } }
+.min-every .every-when, .min-every .every-when strong { color:var(--navy) } .min-every .every-when span { color:var(--muted) }
+@media (max-width:600px) { .every-when { position:static;grid-auto-flow:row;padding:12px 18px;border-bottom:1px solid #dfe2e8 } }

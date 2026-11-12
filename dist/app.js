@@ -410,12 +410,12 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     card.classList.remove('is-swapping');
     void card.offsetWidth;
     card.classList.add('is-swapping');
-    if (!key) { name.textContent = defaults[0]; short.textContent = defaults[1]; actions.hidden = true; return; }
+    if (!key) { name.textContent = defaults[0]; short.textContent = defaults[1]; actions.classList.add('is-idle'); return; }
     name.textContent = data[key].name;
     short.textContent = data[key].short;
     actions.querySelector('[data-finder-see]').setAttribute('href', '#' + key);
     actions.querySelector('[data-finder-ask]').setAttribute('href', 'contact.html?topic=' + encodeURIComponent(data[key].name));
-    actions.hidden = false;
+    actions.classList.remove('is-idle');
     const target = document.getElementById(key);
     if (target) (target.closest('.pair-card, .path-stop, .every-card, .min-serve') || target).classList.add('is-highlight');
   });
@@ -431,11 +431,16 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     const box = list.getBoundingClientRect();
     const fill = Math.min(1, Math.max(0, (innerHeight * 0.6 - box.top) / box.height));
     list.style.setProperty('--path-fill', (fill * 100) + '%');
-    stops.forEach(stop => {
+    let active = -1;
+    stops.forEach((stop, i) => {
       const top = stop.getBoundingClientRect().top;
-      stop.classList.toggle('is-reached', top < innerHeight * 0.6);
+      const reached = top < innerHeight * 0.6;
+      stop.classList.toggle('is-reached', reached);
+      if (reached) active = i;
       if (top < innerHeight * 0.85) stop.classList.add('is-in');
     });
+    const past = box.bottom < innerHeight * 0.35;
+    stops.forEach((stop, i) => stop.classList.toggle('is-active', i === active && !past));
     document.querySelectorAll('.every-card').forEach(card => { if (card.getBoundingClientRect().top < innerHeight * 0.85) card.classList.add('is-in'); });
     const connect = document.querySelector('.min-connect');
     if (connect && connect.getBoundingClientRect().top < innerHeight * 0.8) connect.classList.add('is-in');
