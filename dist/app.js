@@ -413,11 +413,15 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     if (!key) { name.textContent = defaults[0]; short.textContent = defaults[1]; actions.classList.add('is-idle'); return; }
     name.textContent = data[key].name;
     short.textContent = data[key].short;
-    actions.querySelector('[data-finder-see]').setAttribute('href', '#' + key);
+    const spot = document.getElementById(key);
+    const dest = spot && (spot.closest('.story-row') || spot.closest('section'));
+    actions.querySelector('[data-finder-see]').setAttribute('href', '#' + (dest && dest.id ? dest.id : key));
     actions.querySelector('[data-finder-ask]').setAttribute('href', 'contact.html?topic=' + encodeURIComponent(data[key].name));
     actions.classList.remove('is-idle');
     const target = document.getElementById(key);
-    if (target) (target.closest('.pair-card, .path-stop, .every-card, .min-serve') || target).classList.add('is-highlight');
+    const glowEl = target && (target.closest('.every-card') || (target.classList.contains('min-serve') ? target.querySelector('.serve-grid') : target.closest('.story-row')));
+    document.querySelectorAll('[data-glow-next]').forEach(el => delete el.dataset.glowNext);
+    if (glowEl) glowEl.dataset.glowNext = '1';
   });
 })();
 
@@ -594,3 +598,13 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     tile.classList.remove('is-in'); void tile.offsetWidth; tile.classList.add('is-in');
   }));
 })();
+
+// Ministries: after "Take me there" lands, the matching group glows softly once.
+document.addEventListener('click', e => {
+  const link = e.target.closest('[data-finder-see]');
+  if (!link) return;
+  const el = document.querySelector('[data-glow-next]');
+  if (!el) return;
+  delete el.dataset.glowNext;
+  setTimeout(() => { el.classList.remove('is-glowing'); void el.offsetWidth; el.classList.add('is-glowing'); }, 650);
+});
