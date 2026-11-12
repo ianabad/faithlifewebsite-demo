@@ -424,19 +424,11 @@ html { scroll-behavior:smooth }
 }
 @media (max-width:560px) { .footer-tagline { flex-direction:column;font-size:clamp(30px,9vw,38px) } }
 
-/* ---- Footer, centred ---- */
-.site-footer { text-align:center }
-.site-footer .footer-layout { grid-template-columns:1fr;justify-items:center;gap:40px }
-.site-footer .footer-brand { display:flex;flex-direction:column;align-items:center;gap:0 }
-.site-footer .footer-about { margin:20px auto 0;max-width:34ch }
-.site-footer .footer-links { grid-template-columns:repeat(3,auto);column-gap:clamp(48px,8vw,120px);justify-content:center }
-.site-footer .footer-links a { justify-content:center }
-.site-footer .footer-tagline { justify-content:center }
-.site-footer .footer-base { justify-content:center;align-items:center;flex-direction:column;gap:6px }
-@media (max-width:420px) { .site-footer .footer-base { align-items:center } }
-@media (max-width:760px) {
-  .site-footer .footer-links { grid-template-columns:1fr 1fr;column-gap:24px;width:100% }
-  .site-footer .footer-links > div:last-child { grid-column:1/-1 }
-  .site-footer .footer-links > div:last-child ul { justify-content:center }
-}
+/* ---- Footer: only the tagline line is centred ---- */
+.site-footer .footer-tagline { justify-content:center;text-align:center }
 @media (max-width:560px) { .site-footer .footer-tagline { align-items:center } }
+/* Values strip: the word under the pointer glows light blue, echoing the footer */
+.values-group li { transition:color .35s ease,text-shadow .35s ease }
+.values-group li:hover { color:#bccaf2;text-shadow:0 0 18px #bccaf259 }
+.values-group li .values-dot { transition:transform .35s cubic-bezier(.16,1,.3,1),background .35s ease }
+.values-group li:hover .values-dot { transform:scale(1.6);background:#fff }
