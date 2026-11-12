@@ -847,3 +847,131 @@ html { scroll-behavior:smooth }
   .ring-cards.is-two .ring-card h3 { font-size:19px }
 }
 @media (prefers-reduced-motion:reduce) { .ring-text, .ring-figure img { transition:none } .ring-card:hover .ring-text { transform:none } }
+
+/* ---- About v3: values tiles line up top and bottom ---- */
+.values-grid { align-items:stretch;grid-auto-rows:1fr }
+.value-tile { display:flex;flex-direction:column }
+.value-btn { flex:1;grid-template-rows:auto 1fr }
+.value-name { align-self:end }
+
+/* ---- About v3: bigger role rings, orbit background behind the team ---- */
+.ring-figure { width:min(270px,100%) }
+.pastor-others .ring-figure { width:min(200px,100%) }
+.about-team { position:relative;overflow:hidden;background:radial-gradient(55% 60% at 88% 8%,#eef2fc,#fff0 70%),#fff }
+.about-team > .wrap { position:relative;z-index:1 }
+.team-orbits { position:absolute;width:min(900px,130vw);height:auto;aspect-ratio:1;right:-20%;top:-32%;pointer-events:none;animation:orbitSpin 120s linear infinite }
+@keyframes orbitSpin { to { transform:rotate(360deg) } }
+.motion-paused .team-orbits { animation-play-state:paused }
+@media (prefers-reduced-motion:reduce) { .team-orbits { animation:none } }
+@media (max-width:700px) { .team-orbits { right:-60%;top:-12% } }
+
+/* ---- About v3: zigzag story with a line through the photos ---- */
+.story-zig { transition:background-color .9s ease;padding-bottom:clamp(64px,10vh,120px) }
+.story-zig h2, .story-y, .story-row h3, .story-row p { transition:color .9s ease }
+.story-track { position:relative;margin-top:clamp(24px,4vw,48px) }
+.story-line { position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:0 }
+.story-line path { fill:none;stroke-width:2;stroke-linecap:round }
+.story-line-base { stroke:#2635701f }
+.story-line-draw { stroke:var(--navy) }
+.story-zig.is-dark .story-line-base { stroke:#ffffff1f }
+.story-zig.is-dark .story-line-draw { stroke:#bccaf2 }
+.story-row { position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,7vw,120px);align-items:center;min-height:clamp(420px,72vh,700px);padding-block:clamp(24px,5vh,56px) }
+.story-row:nth-of-type(odd) .story-media { order:2 }
+.story-media { position:relative;z-index:1;aspect-ratio:4/3;overflow:hidden;background:#d9deea;box-shadow:0 34px 60px -38px #1b25447a }
+.story-media img { display:block;width:100%;height:100%;object-fit:cover }
+.story-media.is-portrait img { object-position:50% 22% }
+.story-media.is-drawing { background:#1e2b57 }
+.story-y { display:block;font-size:clamp(60px,7.5vw,112px);font-weight:500;letter-spacing:-.05em;line-height:1;color:var(--navy) }
+.story-row h3 { margin-top:14px;font-size:clamp(26px,2.4vw,36px);line-height:1.15 }
+.story-row p { margin-top:14px;max-width:44ch;color:var(--muted);font-size:clamp(17px,1.3vw,19px);line-height:1.65 }
+.story-zig.is-dark h2, .story-zig.is-dark .story-y, .story-zig.is-dark .story-row h3 { color:#fff }
+.story-zig.is-dark .story-row p { color:#c9d2ec }
+.js-story .story-media { clip-path:inset(0 0 100% 0);transition:clip-path 1.1s cubic-bezier(.65,0,.15,1) }
+.js-story .story-media img { transform:scale(1.1);transition:transform 1.6s cubic-bezier(.16,1,.3,1) }
+.js-story .story-copy { opacity:0;transform:translateY(24px);transition:opacity .8s ease .15s,transform .9s cubic-bezier(.16,1,.3,1) .15s }
+.js-story .story-row.is-in .story-media { clip-path:inset(0) }
+.js-story .story-row.is-in .story-media img { transform:none }
+.js-story .story-row.is-in .story-copy { opacity:1;transform:none }
+/* 2017: the house draws itself and the window lights up */
+.story-house { display:block;width:100%;height:100% }
+.house-stars circle { fill:#bccaf2;opacity:.55 }
+.house-people { fill:#1e2b57 }
+.js-story .house-lines path { stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.5s cubic-bezier(.65,0,.35,1) }
+.js-story .house-lines path:nth-child(2) { transition-delay:.25s }
+.js-story .house-lines path:nth-child(3) { transition-delay:.45s }
+.js-story .house-lines path:nth-child(4) { transition-delay:.6s }
+.js-story .house-lines path:nth-child(5) { transition-delay:.8s }
+.js-story .house-lines path:nth-child(6) { transition-delay:.95s }
+.js-story .house-lines path:nth-child(7) { transition-delay:1.1s }
+.js-story .house-light, .js-story .house-glow, .js-story .house-people { opacity:0;transition:opacity 1.2s ease 1.9s }
+.js-story .story-row.is-in .house-lines path { stroke-dashoffset:0 }
+.js-story .story-row.is-in .house-light, .js-story .story-row.is-in .house-people { opacity:1 }
+.js-story .story-row.is-in .house-glow { opacity:1;animation:houseFlicker 4.5s ease-in-out 3.2s infinite alternate }
+.js-story .story-row.is-in .house-stars circle { animation:twinkle 3s ease-in-out infinite alternate }
+.house-stars circle:nth-child(2n) { animation-delay:1.4s !important }
+@keyframes houseFlicker { to { opacity:.7 } }
+@keyframes twinkle { to { opacity:.15 } }
+.motion-paused .house-glow, .motion-paused .house-stars circle { animation-play-state:paused !important }
+@media (max-width:760px) {
+  .story-row { grid-template-columns:1fr;gap:20px;min-height:0;padding:28px 0 28px 26px }
+  .story-row:nth-of-type(odd) .story-media { order:0 }
+  .story-y { font-size:clamp(52px,15vw,72px) }
+}
+@media (prefers-reduced-motion:reduce) {
+  .js-story .story-media, .js-story .story-media img, .js-story .story-copy { clip-path:none;transform:none;opacity:1;transition:none }
+  .js-story .house-lines path { stroke-dashoffset:0;transition:none }
+  .js-story .house-light, .js-story .house-glow, .js-story .house-people { opacity:1;transition:none }
+  .js-story .story-row.is-in .house-glow, .js-story .story-row.is-in .house-stars circle { animation:none }
+  .story-zig { transition:none }
+}
+
+/* ---- About v3: beliefs with icons that draw themselves ---- */
+.belief-list { list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid #cbd0db;border-bottom:1px solid #cbd0db }
+.belief { position:relative;padding:26px 22px 32px;border-left:1px solid #cbd0db;transition:background-color .45s ease,color .45s ease }
+.belief:first-child { border-left:0 }
+.belief::before { content:"";position:absolute;left:0;right:0;top:-1px;height:3px;background:var(--navy);transform:scaleX(0);transform-origin:left;transition:transform .55s cubic-bezier(.16,1,.3,1) }
+.belief-num { font-size:13px;letter-spacing:.08em;color:var(--muted);transition:color .45s }
+.belief-icon { display:block;width:58px;height:58px;margin:30px 0 24px;color:var(--navy);transition:color .45s }
+.belief h3 { font-size:clamp(20px,1.6vw,24px);line-height:1.2 }
+.belief p { margin-top:10px;color:var(--muted);font-size:16px;line-height:1.55;transition:color .45s }
+.belief-more { margin-top:clamp(32px,4vw,48px) }
+.js-beliefs .belief-icon path, .js-beliefs .belief-icon circle { stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.4s cubic-bezier(.65,0,.35,1) calc(var(--i,0) * .18s) }
+.js-beliefs.is-in .belief-icon path, .js-beliefs.is-in .belief-icon circle { stroke-dashoffset:0 }
+@media (hover:hover) {
+  .belief:hover { background:var(--navy);color:#fff }
+  .belief:hover::before { transform:scaleX(1) }
+  .belief:hover p, .belief:hover .belief-num { color:#c9d2ec }
+  .belief:hover .belief-icon { color:#bccaf2 }
+  .js-beliefs.is-in .belief:hover .belief-icon path, .js-beliefs.is-in .belief:hover .belief-icon circle { animation:beliefRedraw 1.1s cubic-bezier(.65,0,.35,1) }
+}
+@keyframes beliefRedraw { from { stroke-dashoffset:1 } to { stroke-dashoffset:0 } }
+@media (max-width:1000px) {
+  .belief-list { grid-template-columns:1fr;border-bottom:0 }
+  .belief { display:grid;grid-template-columns:48px minmax(0,1fr);gap:2px 20px;padding:22px 0;border-left:0;border-bottom:1px solid #cbd0db }
+  .belief-num { display:none }
+  .belief-icon { grid-row:1/3;width:44px;height:44px;margin:2px 0 0 }
+  .belief p { margin-top:4px }
+}
+@media (prefers-reduced-motion:reduce) { .js-beliefs .belief-icon path, .js-beliefs .belief-icon circle { stroke-dashoffset:0;transition:none } .belief:hover .belief-icon * { animation:none !important } }
+
+/* ---- About v3: closing with the next Sunday and ripples ---- */
+.about-close { position:relative;overflow:hidden;background:#e9eefb }
+.about-close-grid { display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(40px,6vw,96px);align-items:center }
+.about-close h2 { font-size:clamp(40px,5vw,72px);line-height:1.02;letter-spacing:-.04em;color:var(--navy) }
+.about-close p { margin-top:20px;max-width:40ch;font-size:clamp(18px,1.5vw,21px);line-height:1.6;color:var(--muted) }
+.about-close .actions { margin-top:32px;display:flex;flex-wrap:wrap;gap:12px }
+.about-close-alt { background:transparent;color:var(--navy) }
+.about-close-alt:hover { background:#fff }
+.about-close-ticket { position:relative;display:grid;place-items:center;min-height:340px }
+.about-close .about-ticket { position:relative;left:auto;bottom:auto;z-index:1 }
+.close-ripples span { position:absolute;left:50%;top:50%;width:280px;height:280px;margin:-140px 0 0 -140px;border:1px solid #2635704d;border-radius:50%;opacity:0;animation:closeRipple 7.5s cubic-bezier(.2,.6,.3,1) infinite }
+.close-ripples span:nth-child(2) { animation-delay:2.5s }
+.close-ripples span:nth-child(3) { animation-delay:5s }
+@keyframes closeRipple { 0% { transform:scale(.55);opacity:0 } 18% { opacity:1 } 100% { transform:scale(2.1);opacity:0 } }
+.motion-paused .close-ripples span { animation-play-state:paused }
+@media (prefers-reduced-motion:reduce) { .close-ripples span { animation:none;opacity:.5;transform:scale(1.2) } }
+@media (max-width:860px) {
+  .about-close-grid { grid-template-columns:1fr }
+  .about-close-ticket { min-height:280px }
+  .about-close .actions { display:grid }
+}

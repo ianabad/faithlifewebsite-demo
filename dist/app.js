@@ -153,8 +153,8 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
 
 // Plan your visit: the next-Sunday ticket and the arrival path.
 (function visitPage() {
-  const ticket = document.querySelector('[data-ticket]');
-  if (ticket && window.Intl) {
+  document.querySelectorAll('[data-ticket]').forEach(ticket => {
+  if (!window.Intl) return;
     try {
       const parts = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
         timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric', day: 'numeric', weekday: 'short', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'
@@ -171,7 +171,7 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
         ticket.setAttribute('aria-label', 'Next Sunday gathering: ' + new Intl.DateTimeFormat('en-CA', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric' }).format(date) + ' at 1:30 PM, 427 Matheson Avenue');
       }
     } catch (error) { /* keep the static text */ }
-  }
+  });
   const path = document.querySelector('[data-arrive]');
   if (path) {
     Array.from(path.children).forEach((step, i) => step.querySelector('.arrive-icon').style.setProperty('--i', i));
@@ -269,28 +269,79 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   ask(0, true);
 })();
 
-// About: as each story chapter reaches the middle of the screen, its photo wipes in and the section colour changes.
-(function storySplit() {
+// About: a line draws through the story photos as you scroll; each chapter wipes in and sets the section colour.
+(function storyZig() {
   const section = document.querySelector('[data-story]');
   if (!section) return;
-  const steps = Array.from(section.querySelectorAll('.story-step'));
-  const photos = Array.from(section.querySelectorAll('.story-split-photo img'));
+  const track = section.querySelector('.story-track');
+  const rows = Array.from(section.querySelectorAll('.story-row'));
+  const svg = section.querySelector('.story-line');
+  const base = svg.querySelector('.story-line-base');
+  const draw = svg.querySelector('.story-line-draw');
   section.classList.add('js-story');
+  let length = 0;
   let current = -1;
+  function layout() {
+    const box = track.getBoundingClientRect();
+    const narrow = innerWidth <= 760;
+    svg.setAttribute('width', box.width);
+    svg.setAttribute('height', box.height);
+    svg.setAttribute('viewBox', '0 0 ' + box.width + ' ' + box.height);
+    const points = rows.map(row => {
+      const media = row.querySelector('.story-media').getBoundingClientRect();
+      return [narrow ? 4 : media.left - box.left + media.width / 2, media.top - box.top + media.height / 2];
+    });
+    let d = 'M' + points[0][0] + ' 0 L' + points[0][0] + ' ' + points[0][1];
+    for (let i = 1; i < points.length; i++) {
+      const [x0, y0] = points[i - 1];
+      const [x1, y1] = points[i];
+      const mid = (y0 + y1) / 2;
+      d += ' C' + x0 + ' ' + mid + ' ' + x1 + ' ' + mid + ' ' + x1 + ' ' + y1;
+    }
+    d += ' L' + points[points.length - 1][0] + ' ' + box.height;
+    base.setAttribute('d', d);
+    draw.setAttribute('d', d);
+    length = draw.getTotalLength();
+    draw.style.strokeDasharray = length;
+    update();
+  }
   function update() {
-    const line = innerHeight * 0.55;
+    const box = track.getBoundingClientRect();
+    const progress = Math.min(1, Math.max(0, (innerHeight * 0.6 - box.top) / box.height));
+    draw.style.strokeDashoffset = length * (1 - progress);
     let active = 0;
-    steps.forEach((step, i) => { if (step.getBoundingClientRect().top < line) active = i; });
+    rows.forEach((row, i) => {
+      const top = row.getBoundingClientRect().top;
+      if (top < innerHeight * 0.6) active = i;
+      if (top < innerHeight * 0.85) row.classList.add('is-in');
+    });
     if (active === current) return;
     current = active;
-    section.style.backgroundColor = steps[active].dataset.bg;
-    section.classList.toggle('is-dark', steps[active].hasAttribute('data-dark'));
-    steps.forEach((step, i) => step.classList.toggle('is-active', i === active));
-    photos.forEach((photo, i) => photo.classList.toggle('is-on', i <= active));
+    section.style.backgroundColor = rows[active].dataset.bg;
+    section.classList.toggle('is-dark', rows[active].hasAttribute('data-dark'));
   }
   addEventListener('scroll', update, { passive: true });
-  addEventListener('resize', update);
-  update();
+  addEventListener('resize', layout);
+  addEventListener('load', layout);
+  layout();
+  setTimeout(() => rows.forEach(row => { if (row.getBoundingClientRect().top < innerHeight) row.classList.add('is-in'); }), 1500);
+})();
+
+// About beliefs: icons draw themselves when the list comes into view.
+(function beliefs() {
+  const list = document.querySelector('[data-beliefs]');
+  if (!list) return;
+  list.querySelectorAll('.belief').forEach((item, i) => item.style.setProperty('--i', i));
+  list.classList.add('js-beliefs');
+  let done = false;
+  const reveal = () => { if (done) return; done = true; list.classList.add('is-in'); removeEventListener('scroll', check); };
+  const check = () => { const box = list.getBoundingClientRect(); if (box.top < innerHeight * 0.85 && box.bottom > 0) reveal(); };
+  addEventListener('scroll', check, { passive: true });
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => { if (entries[0].isIntersecting) { reveal(); io.disconnect(); } }, { threshold: 0.2 });
+    io.observe(list);
+  }
+  check();
 })();
 
 // About values: the dot grid brightens around the pointer.
