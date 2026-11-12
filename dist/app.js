@@ -710,3 +710,54 @@ document.addEventListener('click', e => {
     if (li) { li.classList.add('is-today'); li.insertAdjacentHTML('beforeend', '<span class="wk-today">Today</span>'); }
   } catch (e) { /* leave the strip as it is */ }
 })();
+
+// Growth Track: the tree grows one stage per session as you scroll; the year strip marks this month (Winnipeg time).
+(function growthTrack() {
+  const grow = document.querySelector('[data-grow]');
+  if (grow) {
+    const fig = grow.querySelector('.gt-figure');
+    const label = grow.querySelector('[data-stage-label]');
+    const items = [...grow.querySelectorAll('[data-session]')];
+    let current = -1, ticking = false;
+    function update() {
+      ticking = false;
+      const mid = innerHeight * (innerWidth <= 900 ? 0.62 : 0.5);
+      let stage = 0;
+      items.forEach((li, i) => { if (li.getBoundingClientRect().top + li.offsetHeight * 0.3 < mid) stage = i + 1; });
+      const box = grow.getBoundingClientRect();
+      if (box.bottom < 0) stage = items.length;
+      if (stage === current) return;
+      current = stage;
+      fig.dataset.stage = stage;
+      items.forEach((li, i) => { li.classList.toggle('is-active', i === stage - 1); li.classList.toggle('is-done', i < stage - 1); });
+      if (label) label.textContent = 'Session 0' + Math.max(1, stage);
+    }
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
+  let month = new Date().getMonth() + 1, year = new Date().getFullYear();
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric' }).formatToParts(new Date());
+    month = +parts.find(p => p.type === 'month').value; year = +parts.find(p => p.type === 'year').value;
+  } catch (e) { /* use the device date */ }
+  const strip = document.querySelector('[data-year]');
+  if (strip) {
+    const li = strip.querySelector(`[data-month="${month}"]`);
+    if (li) { li.classList.add('is-now'); li.insertAdjacentHTML('beforeend', '<span class="gt-now">Now</span>'); }
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { strip.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.35 });
+      io.observe(strip);
+    } else strip.classList.add('is-in');
+  }
+  const ticket = document.querySelector('[data-gt-ticket]');
+  if (ticket) {
+    let m, when, soon;
+    if (month === 1) { m = 'Jan'; when = 'January ' + year; soon = 'Late this month'; }
+    else if (month <= 5) { m = 'May'; when = 'May ' + year; soon = month === 5 ? 'This month' : 'Before summer'; }
+    else { m = 'Jan'; when = 'January ' + (year + 1); soon = 'Late January'; }
+    ticket.querySelector('[data-gt-month]').textContent = m;
+    ticket.querySelector('[data-gt-when]').textContent = when;
+    ticket.querySelector('[data-gt-soon]').textContent = soon;
+  }
+})();
