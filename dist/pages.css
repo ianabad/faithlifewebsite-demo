@@ -1629,3 +1629,14 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .story-row.is-glowing { animation:none }
 .story-row.is-glowing .story-media { animation:arriveGlow 2.6s ease-out }
 @media (prefers-reduced-motion:reduce) { .is-glowing, .story-row.is-glowing .story-media { animation:none } }
+
+/* ---- Ministries polish: soft gold glow under each picture ---- */
+.min-seasons .story-media.is-drawing { box-shadow:0 40px 70px -34px #f6c76859,0 34px 60px -38px #1b25447a,inset 0 0 0 1px #ffffff14 }
+.story-zig.is-dark.min-seasons .story-media.is-drawing { box-shadow:0 40px 80px -30px #f6c7684d,inset 0 0 0 1px #ffffff2e }
+
+/* ---- Start here: hero-style navy with a dot grid that lights near the pointer ---- */
+.min-every.dot-field::before, .min-every.dot-field::after { content:"";position:absolute;inset:0;pointer-events:none;background-size:24px 24px;z-index:0 }
+.min-every.dot-field::before { background-image:radial-gradient(#ffffff1c 1.2px,transparent 1.4px) }
+.min-every.dot-field::after { background-image:radial-gradient(#bccaf2 1.5px,transparent 1.7px);-webkit-mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%);mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%) }
+.min-every.dot-field .every-light { z-index:0 }
+.min-every.dot-field > .wrap { z-index:1 }
