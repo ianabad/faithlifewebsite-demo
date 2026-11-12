@@ -318,6 +318,12 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     draw.style.strokeDashoffset = length - drawn;
     const point = draw.getPointAtLength(drawn);
     [tip, halo].forEach(dot => { dot.setAttribute('cx', point.x); dot.setAttribute('cy', point.y); });
+    // The picture the line is passing behind gets a warm glow.
+    rows.forEach(row => {
+      const m = row.querySelector('.story-media').getBoundingClientRect();
+      const x = point.x + box.left, y = point.y + box.top;
+      row.classList.toggle('is-lit', x >= m.left && x <= m.right && y >= m.top && y <= m.bottom);
+    });
     svg.classList.toggle('is-moving', progress > 0 && progress < 1);
     let active = 0;
     rows.forEach((row, i) => {
