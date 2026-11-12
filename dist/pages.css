@@ -975,3 +975,10 @@ html { scroll-behavior:smooth }
   .about-close-ticket { min-height:280px }
   .about-close .actions { display:grid }
 }
+
+/* ---- About v4: 2017–2024 range, paired portraits, ripples centred on the Sunday card ---- */
+.story-y.is-range { font-size:clamp(48px,5.6vw,84px);letter-spacing:-.045em }
+.story-media.is-pair { display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#fff }
+.story-media.is-pair img { min-width:0;object-position:50% 22% }
+.close-ripples { position:absolute;inset:0;pointer-events:none }
+.about-close-ticket { min-height:380px }
