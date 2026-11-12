@@ -792,24 +792,23 @@ document.addEventListener('click', e => {
   if (!box) return;
   const qs = [...box.querySelectorAll('.gt-q')], as = [...box.querySelectorAll('.gt-a')];
   let cur = 0;
-  // On wide screens the answer panel stays vertically centred in the window while you scroll the section;
-  // its notch keeps pointing at the chosen question whenever that question is beside it.
-  function place() {
-    const wide = innerWidth > 760;
-    as.forEach(x => x.style.setProperty('--gt-top', wide ? Math.max(24, (innerHeight - as[cur].offsetHeight) / 2) + 'px' : 'auto'));
-    notch();
-  }
+  // On wide screens the answer panel always sits in the vertical centre of the window while the section is on screen.
+  // It only stops at the section's own top and bottom edges, so it never covers a neighbouring section.
+  const section = box.closest('section'), grid = box.parentElement;
   let pending = false;
-  function notch() {
+  function place() {
     pending = false;
     const a = as[cur];
     if (innerWidth <= 760) return;
-    const q = qs[cur].getBoundingClientRect(), r = a.getBoundingClientRect();
-    const n = q.top + q.height / 2 - r.top;
+    const h = a.offsetHeight, sec = section.getBoundingClientRect(), area = grid.getBoundingClientRect();
+    const top = Math.min(Math.max((innerHeight - h) / 2, sec.top + 24), sec.bottom - 24 - h);
+    const y = top - area.top;
+    as.forEach(x => { x.style.transform = 'translateY(' + y + 'px)'; });
+    const q = qs[cur].getBoundingClientRect(), n = q.top + q.height / 2 - top;
     a.style.setProperty('--gt-notch', n + 'px');
-    a.classList.toggle('no-notch', n < 28 || n > r.height - 28);
+    a.classList.toggle('no-notch', n < 40 || n > h - 40);
   }
-  addEventListener('scroll', () => { if (!pending) { pending = true; requestAnimationFrame(notch); } }, { passive: true });
+  addEventListener('scroll', () => { if (!pending) { pending = true; requestAnimationFrame(place); } }, { passive: true });
   function open(n, focus) {
     cur = n;
     qs.forEach((q, k) => { const on = k === n; q.classList.toggle('is-on', on); q.setAttribute('aria-selected', on); q.tabIndex = on ? 0 : -1; as[k].classList.toggle('is-on', on); });
