@@ -309,15 +309,26 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   }
   function update() {
     const box = section.getBoundingClientRect();
-    const progress = Math.min(1, Math.max(0, (innerHeight * 0.6 - box.top) / box.height));
-    draw.style.strokeDashoffset = length * (1 - progress);
-    const point = draw.getPointAtLength(length * progress);
+    // Find the point on the line that sits at the middle of the screen, so the tip rests behind a centred picture.
+    const targetY = Math.min(box.height, Math.max(0, innerHeight * 0.5 - box.top));
+    let lo = 0, hi = length;
+    for (let n = 0; n < 22; n++) { const mid = (lo + hi) / 2; if (draw.getPointAtLength(mid).y < targetY) lo = mid; else hi = mid; }
+    const drawn = length ? lo : 0;
+    const progress = length ? drawn / length : 0;
+    draw.style.strokeDashoffset = length - drawn;
+    const point = draw.getPointAtLength(drawn);
     [tip, halo].forEach(dot => { dot.setAttribute('cx', point.x); dot.setAttribute('cy', point.y); });
+    // The picture the line is passing behind gets a warm glow.
+    rows.forEach(row => {
+      const m = row.querySelector('.story-media').getBoundingClientRect();
+      const x = point.x + box.left, y = point.y + box.top;
+      row.classList.toggle('is-lit', (innerWidth <= 760 || (x >= m.left && x <= m.right)) && y >= m.top && y <= m.bottom);
+    });
     svg.classList.toggle('is-moving', progress > 0 && progress < 1);
     let active = 0;
     rows.forEach((row, i) => {
       const top = row.getBoundingClientRect().top;
-      if (top < innerHeight * 0.6) active = i;
+      if (top < innerHeight * 0.5) active = i;
       if (top < innerHeight * 0.85) row.classList.add('is-in');
     });
     if (active === current) return;
@@ -603,8 +614,27 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
 document.addEventListener('click', e => {
   const link = e.target.closest('[data-finder-see]');
   if (!link) return;
+  const dest = document.querySelector(link.getAttribute('href'));
+  if (dest && dest.classList.contains('story-row')) {
+    e.preventDefault();
+    dest.classList.add('is-in');
+    dest.querySelector('.story-media').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+  }
   const el = document.querySelector('[data-glow-next]');
   if (!el) return;
   delete el.dataset.glowNext;
   setTimeout(() => { el.classList.remove('is-glowing'); void el.offsetWidth; el.classList.add('is-glowing'); }, 650);
 });
+
+// Dot grids that brighten around the pointer (About values, Ministries start-here).
+(function dotFields() {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  document.querySelectorAll('.dot-field').forEach(field => {
+    field.addEventListener('pointermove', e => {
+      const box = field.getBoundingClientRect();
+      field.style.setProperty('--mx', (e.clientX - box.left) + 'px');
+      field.style.setProperty('--my', (e.clientY - box.top) + 'px');
+    });
+    field.addEventListener('pointerleave', () => field.style.setProperty('--mx', '-999px'));
+  });
+})();
