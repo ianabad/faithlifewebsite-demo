@@ -268,3 +268,58 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   root.classList.add('js-chat');
   ask(0, true);
 })();
+
+// About: the year beside the story changes as each chapter reaches the middle of the screen.
+(function storyChapters() {
+  const list = document.querySelector('[data-story]');
+  const year = document.querySelector('[data-story-year]');
+  if (!list || !year) return;
+  const chapters = Array.from(list.querySelectorAll('.story-chapter'));
+  list.closest('section').classList.add('js-story');
+  let current = -1;
+  function update() {
+    const line = innerHeight * 0.55;
+    let active = 0;
+    chapters.forEach((chapter, i) => { if (chapter.getBoundingClientRect().top < line) active = i; });
+    if (active === current) return;
+    current = active;
+    chapters.forEach((chapter, i) => chapter.classList.toggle('is-active', i === active));
+    year.textContent = chapters[active].dataset.year;
+    year.classList.remove('is-swapping');
+    void year.offsetWidth;
+    year.classList.add('is-swapping');
+  }
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+})();
+
+// Words that light up as a paragraph scrolls into view (About mission).
+(function revealWords() {
+  const blocks = Array.from(document.querySelectorAll('[data-reveal-words]'));
+  if (!blocks.length) return;
+  blocks.forEach(block => block.closest('section').classList.add('js-words'));
+  function update() {
+    blocks.forEach(block => {
+      const words = block.querySelectorAll('span');
+      const box = block.getBoundingClientRect();
+      const progress = Math.min(1, Math.max(0, (innerHeight * 0.85 - box.top) / (box.height + innerHeight * 0.3)));
+      const lit = Math.round(progress * words.length);
+      words.forEach((word, i) => word.classList.toggle('is-lit', i < lit));
+    });
+  }
+  addEventListener('scroll', update, { passive: true });
+  addEventListener('resize', update);
+  update();
+})();
+
+// About: value tiles open to show what each value means and its verse.
+(function valueTiles() {
+  document.querySelectorAll('[data-values-grid] .value-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      button.setAttribute('aria-expanded', String(open));
+      button.closest('.value-tile').classList.toggle('is-open', open);
+    });
+  });
+})();
