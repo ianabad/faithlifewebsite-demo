@@ -269,27 +269,29 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   ask(0, true);
 })();
 
-// About: a line draws through the story photos as you scroll; each chapter wipes in and sets the section colour.
+// About: a line runs from the top edge of the story to the bottom, through every photo, drawing itself as you scroll.
 (function storyZig() {
   const section = document.querySelector('[data-story]');
   if (!section) return;
-  const track = section.querySelector('.story-track');
   const rows = Array.from(section.querySelectorAll('.story-row'));
   const svg = section.querySelector('.story-line');
   const base = svg.querySelector('.story-line-base');
   const draw = svg.querySelector('.story-line-draw');
+  const tip = svg.querySelector('.story-line-tip');
+  const halo = svg.querySelector('.story-line-halo');
   section.classList.add('js-story');
   let length = 0;
   let current = -1;
   function layout() {
-    const box = track.getBoundingClientRect();
+    const box = section.getBoundingClientRect();
     const narrow = innerWidth <= 760;
+    const wrap = section.querySelector('.wrap').getBoundingClientRect();
     svg.setAttribute('width', box.width);
     svg.setAttribute('height', box.height);
     svg.setAttribute('viewBox', '0 0 ' + box.width + ' ' + box.height);
     const points = rows.map(row => {
       const media = row.querySelector('.story-media').getBoundingClientRect();
-      return [narrow ? 4 : media.left - box.left + media.width / 2, media.top - box.top + media.height / 2];
+      return [narrow ? wrap.left - box.left + 4 : media.left - box.left + media.width / 2, media.top - box.top + media.height / 2];
     });
     let d = 'M' + points[0][0] + ' 0 L' + points[0][0] + ' ' + points[0][1];
     for (let i = 1; i < points.length; i++) {
@@ -306,9 +308,12 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
     update();
   }
   function update() {
-    const box = track.getBoundingClientRect();
+    const box = section.getBoundingClientRect();
     const progress = Math.min(1, Math.max(0, (innerHeight * 0.6 - box.top) / box.height));
     draw.style.strokeDashoffset = length * (1 - progress);
+    const point = draw.getPointAtLength(length * progress);
+    [tip, halo].forEach(dot => { dot.setAttribute('cx', point.x); dot.setAttribute('cy', point.y); });
+    svg.classList.toggle('is-moving', progress > 0 && progress < 1);
     let active = 0;
     rows.forEach((row, i) => {
       const top = row.getBoundingClientRect().top;

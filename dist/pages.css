@@ -982,3 +982,20 @@ html { scroll-behavior:smooth }
 .story-media.is-pair img { min-width:0;object-position:50% 22% }
 .close-ripples { position:absolute;inset:0;pointer-events:none }
 .about-close-ticket { min-height:380px }
+
+/* ---- About v5: the story line runs edge to edge, thicker, flowing, with a glowing tip ---- */
+.story-zig { position:relative;overflow:hidden }
+.story-zig > .wrap { position:relative;z-index:1 }
+.story-zig .story-line { position:absolute;left:0;top:0;z-index:0 }
+.story-zig .story-line-base { stroke:#26357033;stroke-width:3;stroke-dasharray:2 12;animation:storyFlow 1.4s linear infinite }
+.story-zig .story-line-draw { stroke-width:4 }
+.story-line-tip { fill:var(--navy);transition:fill .9s ease }
+.story-line-halo { fill:var(--navy);opacity:0;transform-box:fill-box;transform-origin:center;transition:fill .9s ease }
+.story-line.is-moving .story-line-halo { animation:storyHalo 2s ease-out infinite }
+.story-zig.is-dark .story-line-base { stroke:#ffffff33 }
+.story-zig.is-dark .story-line-tip, .story-zig.is-dark .story-line-halo { fill:#bccaf2 }
+@keyframes storyFlow { to { stroke-dashoffset:-28 } }
+@keyframes storyHalo { 0% { opacity:.35;transform:scale(.4) } 100% { opacity:0;transform:scale(1.4) } }
+.motion-paused .story-line-base, .motion-paused .story-line-halo { animation-play-state:paused }
+@media (prefers-reduced-motion:reduce) { .story-zig .story-line-base, .story-line.is-moving .story-line-halo { animation:none } }
+.story-row h3 { text-wrap:balance }
