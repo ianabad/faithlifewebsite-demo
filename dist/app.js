@@ -31,3 +31,28 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
 }
 
 
+
+
+// Pause animations: one switch for every moving part on the site, remembered on this device.
+(function motionPreference() {
+  const root = document.documentElement;
+  const button = document.querySelector('[data-motion-toggle]');
+  let paused = false;
+  try { paused = localStorage.getItem('flcm-motion') === 'paused'; } catch (error) {}
+  function apply() {
+    root.classList.toggle('motion-paused', paused);
+    if (button) {
+      button.setAttribute('aria-pressed', String(paused));
+      button.querySelector('[data-motion-label]').textContent = paused ? 'Play animations' : 'Pause animations';
+      button.querySelector('[data-motion-icon]').setAttribute('d', paused ? 'm8 5 11 7-11 7z' : 'M9 6v12M15 6v12');
+    }
+    document.dispatchEvent(new CustomEvent('motionpreference', { detail: { paused } }));
+  }
+  if (button) button.addEventListener('click', () => {
+    paused = !paused;
+    try { localStorage.setItem('flcm-motion', paused ? 'paused' : 'playing'); } catch (error) {}
+    apply();
+  });
+  window.flcmMotionPaused = () => paused;
+  apply();
+})();

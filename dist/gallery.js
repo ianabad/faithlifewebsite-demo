@@ -111,8 +111,11 @@ document.addEventListener('visibilitychange', schedule);
 reducedMotion.addEventListener('change', () => setPlaying(!reducedMotion.matches));
 
 gallery.querySelector('.gallery-controls').hidden = false;
+if (window.flcmMotionPaused && window.flcmMotionPaused()) playing = false;
 setIcon();
 show(0);
+// The site-wide "Pause animations" switch in the footer also stops the slideshow.
+document.addEventListener('motionpreference', event => setPlaying(!event.detail.paused && !reducedMotion.matches));
 
 // Show the date of the next Sunday gathering, in Winnipeg time.
 (function nextGathering() {

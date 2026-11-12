@@ -438,3 +438,25 @@ html { scroll-behavior:smooth }
   26%,100% { opacity:0;transform:translateY(-.22em);filter:blur(10px) }
 }
 @media (prefers-reduced-motion:reduce) { .footer-word-track span { animation:none } .footer-word-track span:first-child { opacity:1 } }
+
+/* ---- Footer base: legal links, Pause animations, Back to top ---- */
+.footer-legal, .footer-actions { display:flex;flex-wrap:wrap;align-items:center;gap:4px 24px }
+.footer-legal a { color:#e6eaf6;text-decoration:none;min-height:44px;display:inline-flex;align-items:center;background:linear-gradient(currentColor,currentColor) 0 calc(100% - 10px)/0 1px no-repeat;transition:background-size .35s cubic-bezier(.16,1,.3,1) }
+.footer-legal a:is(:hover,:focus-visible) { background-size:100% 1px;color:#fff }
+.footer-motion { display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;background:transparent;color:#e6eaf6;font:inherit;font-size:15.5px;cursor:pointer }
+.footer-motion .site-icon { width:18px;height:18px }
+.footer-motion:hover { color:#fff }
+.footer-motion[aria-pressed="true"] { color:#bccaf2 }
+/* Paused: everything that moves on its own holds still */
+.motion-paused .values-track { animation-play-state:paused }
+.motion-paused .footer-word-track span { animation:none }
+.motion-paused .footer-word-track span:first-child { opacity:1 }
+.motion-paused .hero-scroll .site-icon { animation:none }
+@media (max-width:560px) { .footer-actions { gap:4px 24px } }
+
+/* ---- Policy pages ---- */
+.policy-copy { max-width:62ch }
+.policy-copy p + p, .policy-copy ul + p, .policy-copy p + ul { margin-top:16px }
+.policy-copy ul { margin:0;padding-left:1.2em }
+.policy-copy li + li { margin-top:10px }
+.policy-copy a { text-decoration:underline;text-underline-offset:3px }
