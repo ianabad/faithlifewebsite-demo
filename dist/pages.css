@@ -623,3 +623,4 @@ html { scroll-behavior:smooth }
 @keyframes typing { 0%,100% { transform:none;opacity:.5 } 40% { transform:translateY(-4px);opacity:1 } }
 @media (max-width:860px) { .chat-ui { grid-template-columns:1fr } .chat-window { position:static;min-height:300px } }
 @media (prefers-reduced-motion:reduce) { .bubble { animation:none } }
+.footer-credit { color:#aeb8dc;font-size:14.5px }
