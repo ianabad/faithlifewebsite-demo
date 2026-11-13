@@ -710,3 +710,173 @@ document.addEventListener('click', e => {
     if (li) { li.classList.add('is-today'); li.insertAdjacentHTML('beforeend', '<span class="wk-today">Today</span>'); }
   } catch (e) { /* leave the strip as it is */ }
 })();
+
+// Growth Track: the tree grows one stage per session as you scroll; the year strip marks this month (Winnipeg time).
+(function growthTrack() {
+  const grow = document.querySelector('[data-grow]');
+  if (grow) {
+    const fig = grow.querySelector('.gt-figure');
+    const label = grow.querySelector('[data-stage-label]');
+    const items = [...grow.querySelectorAll('[data-session]')];
+    let current = -1, ticking = false;
+    function update() {
+      ticking = false;
+      const mid = innerHeight * (innerWidth <= 900 ? 0.62 : 0.5);
+      let stage = 0;
+      items.forEach((li, i) => { if (li.getBoundingClientRect().top + li.offsetHeight * 0.3 < mid) stage = i + 1; });
+      const box = grow.getBoundingClientRect();
+      if (box.bottom < 0) stage = items.length;
+      if (stage === current) return;
+      current = stage;
+      fig.dataset.stage = stage;
+      items.forEach((li, i) => { li.classList.toggle('is-active', i === stage - 1); li.classList.toggle('is-done', i < stage - 1); });
+      if (label) label.textContent = 'Class 0' + Math.max(1, stage);
+    }
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    addEventListener('resize', update);
+    update();
+  }
+  let month = new Date().getMonth() + 1, year = new Date().getFullYear();
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric' }).formatToParts(new Date());
+    month = +parts.find(p => p.type === 'month').value; year = +parts.find(p => p.type === 'year').value;
+  } catch (e) { /* use the device date */ }
+  const strip = document.querySelector('[data-year]');
+  if (strip) {
+    const li = strip.querySelector(`[data-month="${month}"]`);
+    if (li) { li.classList.add('is-today'); li.insertAdjacentHTML('beforeend', '<span class="wk-today">This month</span>'); }
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { strip.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.35 });
+      io.observe(strip);
+    } else strip.classList.add('is-in');
+  }
+  const ticket = document.querySelector('[data-gt-ticket]');
+  if (ticket) {
+    let m, when, soon;
+    if (month === 1) { m = 'Jan'; when = 'January ' + year; soon = 'Late this month'; }
+    else if (month <= 5) { m = 'May'; when = 'May ' + year; soon = month === 5 ? 'This month' : 'Before summer'; }
+    else { m = 'Jan'; when = 'January ' + (year + 1); soon = 'Late January'; }
+    ticket.querySelector('[data-gt-month]').textContent = m;
+    ticket.querySelector('[data-gt-when]').textContent = when;
+    ticket.querySelector('[data-gt-soon]').textContent = soon;
+  }
+})();
+
+// Growth Track: the hero photos take turns; paused with the motion toggle or reduced motion.
+(function gtSlides() {
+  const box = document.querySelector('[data-slides]');
+  if (!box) return;
+  const imgs = [...box.querySelectorAll('.gt-slide')], ticks = [...box.querySelectorAll('.gt-ticks span')];
+  if (imgs.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) { box.querySelector('.gt-ticks')?.remove(); return; }
+  const dur = 6500; let i = 0, left = dur, last = performance.now(), visible = true;
+  box.style.setProperty('--gt-dur', dur + 'ms');
+  function show(n) {
+    imgs[i].classList.remove('is-on'); ticks[i].classList.remove('is-on'); ticks[i].classList.add('is-done');
+    i = n % imgs.length;
+    if (i === 0) ticks.forEach(t => t.classList.remove('is-done'));
+    imgs[i].classList.add('is-on'); void ticks[i].offsetWidth; ticks[i].classList.add('is-on');
+    left = dur;
+  }
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(box);
+  (function frame(now) {
+    const paused = document.documentElement.classList.contains('motion-paused') || document.hidden || !visible;
+    if (!paused) { left -= now - last; if (left <= 0) show(i + 1); }
+    box.classList.toggle('is-paused', paused);
+    last = now; requestAnimationFrame(frame);
+  })(last);
+})();
+
+// Growth Track: questions as a conversation. Tap a question, it is sent as your message, then Faith Life types and answers.
+(function gtChat() {
+  const chat = document.querySelector('[data-gt-chat]');
+  if (!chat) return;
+  const thread = chat.querySelector('.gt-thread'), reset = chat.querySelector('[data-gt-reset]');
+  const chips = [...document.querySelectorAll('[data-gt-ask]')];
+  const first = thread.innerHTML;
+  const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('motion-paused');
+  let busy = false, started = false;
+  // Keep your latest question at the top of the window so a long answer reads from its first line.
+  const down = () => {
+    const you = [...thread.querySelectorAll('.gt-msg.is-you')].pop();
+    const max = thread.scrollHeight - thread.clientHeight;
+    thread.scrollTo({ top: you ? Math.min(you.offsetTop - 16, max) : max, behavior: calm() ? 'auto' : 'smooth' });
+  };
+  function add(cls, inner) { const d = document.createElement('div'); d.className = 'gt-msg ' + cls; d.innerHTML = inner; thread.appendChild(d); down(); return d; }
+  function ask(i) {
+    if (busy) return;
+    busy = true; started = true;
+    const chip = chips[i];
+    chip.classList.add('is-asked');
+    chip.querySelector('.gt-chip-ic path').setAttribute('d', 'M5 12.5l4.5 4.5L19 7.5');
+    const you = add('is-you', '<p></p>'); you.querySelector('p').textContent = chip.dataset.q;
+    reset.hidden = false;
+    const tpl = chat.querySelector(`template[data-answer="${i}"]`);
+    const answer = () => {
+      typing && typing.remove();
+      const msg = add('is-us', ''); msg.appendChild(tpl.content.cloneNode(true)); down();
+      busy = false;
+      if (chips.every(c => c.classList.contains('is-asked')) && !thread.querySelector('.gt-chat-end')) {
+        const end = document.createElement('p'); end.className = 'gt-chat-end';
+        end.innerHTML = 'Still wondering about something? <a href="contact.html?topic=Growth Track">Ask us directly</a>';
+        thread.appendChild(end); down();
+      }
+    };
+    let typing = null;
+    if (calm()) return answer();
+    setTimeout(() => { typing = add('is-us', '<span class="gt-av" aria-hidden="true"></span><span class="gt-typing" aria-label="Faith Life is typing"><i></i><i></i><i></i></span>'); }, 350);
+    setTimeout(answer, 350 + Math.min(1500, 700 + tpl.content.textContent.length * 3));
+  }
+  chips.forEach((c, i) => c.addEventListener('click', () => {
+    ask(i);
+    // On phones the conversation sits above the questions, so bring it back into view.
+    const r = chat.getBoundingClientRect();
+    if (r.top < 0 || r.bottom > innerHeight) chat.scrollIntoView({ block: 'nearest', behavior: calm() ? 'auto' : 'smooth' });
+  }));
+  reset.addEventListener('click', () => {
+    if (busy) return;
+    thread.innerHTML = first; reset.hidden = true;
+    chips.forEach(c => { c.classList.remove('is-asked'); c.querySelector('.gt-chip-ic path').setAttribute('d', 'M5 12h14m-6-6 6 6-6 6'); });
+  });
+  // Desktop: the conversation holds its place until you scroll past it, then stays centred in the window,
+  // and stops 48px above the end of the section so it never runs into the next one.
+  const section = chat.closest('section');
+  let shift = 0, queued = false;
+  function follow() {
+    queued = false;
+    if (innerWidth <= 900) { shift = 0; chat.style.transform = ''; return; }
+    const r = chat.getBoundingClientRect(), natural = r.top - shift, h = r.height;
+    const stop = section.getBoundingClientRect().bottom - 48;
+    shift = Math.max(0, Math.min((innerHeight - h) / 2 - natural, stop - natural - h));
+    chat.style.transform = shift ? 'translateY(' + shift + 'px)' : '';
+  }
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(follow); } }, { passive: true });
+  addEventListener('resize', follow);
+  follow();
+  // The first question asks itself once, when the conversation scrolls into view.
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); if (!started) setTimeout(() => { if (!started) ask(0); }, 600); } }, { threshold: 0.6 });
+    io.observe(chat);
+  }
+})();
+
+// Growth Track: registration status. One setting on the section (data-reg="open" or "closed") decides what shows,
+// and the hero button follows it. Add ?registration=open or ?registration=closed to the address to preview either state.
+(function gtRegistration() {
+  const reg = document.querySelector('[data-reg]');
+  if (!reg) return;
+  const preview = new URLSearchParams(location.search).get('registration');
+  if (preview === 'open' || preview === 'closed') reg.dataset.reg = preview;
+  const open = reg.dataset.reg === 'open', form = reg.dataset.regForm;
+  reg.querySelectorAll('[data-reg-form]').forEach(a => { if (form) a.href = form; });
+  if (open && reg.dataset.regCloses) {
+    reg.querySelector('[data-reg-closes]').textContent = reg.dataset.regCloses;
+    reg.querySelector('[data-reg-closes-line]').hidden = false;
+  }
+  const cta = document.querySelector('[data-reg-cta]');
+  if (cta) {
+    const icon = cta.querySelector('span');
+    cta.textContent = open ? 'Register now ' : 'Get notified ';
+    if (icon) cta.append(icon);
+    if (open) { cta.href = form; cta.target = '_blank'; cta.rel = 'noopener'; }
+  }
+})();
