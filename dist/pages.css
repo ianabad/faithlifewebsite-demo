@@ -2118,3 +2118,10 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .gt-chat { border-radius:var(--card-r) }
 
 @media (max-width:760px) { .ministry-grid article > :not(.photo) { margin-left:20px;margin-right:20px } }
+
+/* Card system, part two: buttons, small controls and offset photo frames share the softer corners */
+.button, #menu, .gathering-cal, .week-day { border-radius:var(--field-r) }
+.nav-resources > div { border-radius:16px }
+.home-announcements.paper-bulletin { border-radius:var(--card-r) }
+.story-image img, .story-image::after { border-radius:var(--frame-r) }
+.pastor-hero-photo img, .pastor-hero-photo::before { border-radius:var(--frame-r) }
