@@ -1906,3 +1906,11 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .gt-qn { flex:none;width:8px;height:8px;border-radius:50%;background:#c9d2ec;transform:translateY(-3px);transition:background .3s,box-shadow .3s }
 .gt-q.is-on .gt-qn { background:#f6c768;box-shadow:0 0 0 5px #f6c76833 }
 @media (max-width:760px) { .wk-strip.gt-strip { grid-template-columns:1fr } .gt-strip .wk-what { font-size:20px } }
+
+/* Home hero: the photo steps sit as short bars in the bottom-right corner, like Growth Track */
+.hero-image .gallery-controls { top:auto;left:auto;right:clamp(10px,2vw,26px);bottom:clamp(8px,1.8vw,22px);gap:4px }
+.hero-image .gallery-steps { flex:none;gap:6px }
+.hero-image .gallery-step { flex:none;width:34px }
+.hero-image .gallery-step span { background:#ffffff59 }
+.hero-image .gallery-play svg { width:26px;height:26px;padding:7px;background:#15203d99 }
+@media (max-width:760px) { .hero-image .gallery-controls { top:auto;left:auto;right:8px;bottom:6px } .hero-image .gallery-step { width:26px } }
