@@ -946,3 +946,26 @@ document.addEventListener('click', e => {
   const place = () => tickets.forEach(t => { const time = t.querySelector('.visit-ticket-time'); if (time && t.offsetHeight) t.style.setProperty('--tear', time.offsetTop + 'px'); });
   place(); addEventListener('resize', place); if (document.fonts) document.fonts.ready.then(place);
 })();
+
+// Home: the three story facts draw their icons once; Coming up tickets count down in Winnipeg time.
+(function homeExtras() {
+  const facts = document.querySelector('[data-home-facts]');
+  if (facts && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    facts.classList.add('js-facts');
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { facts.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.5 });
+    io.observe(facts);
+  }
+  const soon = [...document.querySelectorAll('[data-mt-date]')];
+  if (!soon.length) return;
+  let y, m, d;
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(new Date());
+    const get = t => +parts.find(p => p.type === t).value; y = get('year'); m = get('month'); d = get('day');
+  } catch (e) { const n = new Date(); y = n.getFullYear(); m = n.getMonth() + 1; d = n.getDate(); }
+  const today = Date.UTC(y, m - 1, d);
+  soon.forEach(el => {
+    const [ey, em, ed] = el.dataset.mtDate.split('-').map(Number);
+    const days = Math.round((Date.UTC(ey, em - 1, ed) - today) / 864e5);
+    el.textContent = days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : days > 1 ? 'In ' + days + ' days' : '';
+  });
+})();
