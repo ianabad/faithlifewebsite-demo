@@ -2446,3 +2446,10 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .art-card-art.is-photo::after, .art-head-art.is-photo::after { content:"";position:absolute;inset:0;background:linear-gradient(180deg,#1e2b5700 45%,#1e2b5766 100%);box-shadow:inset 0 -3px 0 #f6c768;pointer-events:none }
 .art-card-link:hover .art-photo { transform:scale(1.03) }
 .art-head-art.is-photo { border-radius:var(--frame-r) }
+/* Photo covers always fill the same fixed frame: any size or shape of photo is cropped to fit, never stretched */
+.art-card-art, .art-head-art { position:relative;overflow:hidden }
+.art-card-art.is-photo .art-photo, .art-head-art.is-photo .art-photo { object-fit:cover;object-position:50% 45% }
+/* Cover frames get their shape from the frame itself, never from what is inside (drawing or photo) */
+.art-card-art .art-draw, .art-head-art .art-draw { position:absolute;inset:0;width:100%;height:100% }
+.art-card.is-featured .art-card-art { aspect-ratio:3/2;min-height:0;height:auto;align-self:stretch }
+@media (max-width:900px) { .art-card.is-featured .art-card-art { aspect-ratio:16/9 } }
