@@ -2292,3 +2292,5 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .cl-arc { width:min(100%,230px) }
 .cl-head-side { gap:10px }
 @media (max-width:760px) { .cl-arc { width:200px } }
+.cl-arc { width:min(100%,180px) }
+@media (max-width:760px) { .cl-arc { width:170px } }
