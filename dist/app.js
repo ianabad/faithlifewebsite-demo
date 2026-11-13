@@ -1024,3 +1024,35 @@ document.addEventListener('click', e => {
     select.value = key; apply(key, true);
   }
 })();
+
+// Articles: topic chips filter the reading room (the first match becomes the featured card); drawings draw once in view;
+// on an article, a thin gold bar shows how far you have read.
+(function articles() {
+  const room = document.querySelector('[data-art-room]');
+  if (room) {
+    const chips = [...room.querySelectorAll('[data-filter]')], cards = [...room.querySelectorAll('.art-card')];
+    chips.forEach(chip => chip.addEventListener('click', () => {
+      const f = chip.dataset.filter;
+      chips.forEach(c => c.setAttribute('aria-pressed', String(c === chip)));
+      let first = true;
+      cards.forEach(card => {
+        const show = f === 'All' || card.dataset.topic === f;
+        card.hidden = !show;
+        card.classList.toggle('is-featured', show && first);
+        if (show) { first = false; card.style.animation = 'none'; void card.offsetWidth; card.style.animation = ''; }
+      });
+    }));
+  }
+  const draws = document.querySelectorAll('.art-draw');
+  if (draws.length && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-drawn'); io.unobserve(e.target); } }), { threshold: 0.35 });
+    draws.forEach(d => { const host = d.parentElement; host.classList.add('js-draw'); io.observe(host); });
+  }
+  const bar = document.querySelector('[data-read-progress]'), body = document.querySelector('[data-read-body]');
+  if (bar && body) {
+    let q = false;
+    const update = () => { q = false; const r = body.getBoundingClientRect(); const p = Math.min(1, Math.max(0, (innerHeight * 0.6 - r.top) / r.height)); bar.style.transform = 'scaleX(' + p.toFixed(3) + ')'; };
+    addEventListener('scroll', () => { if (!q) { q = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  }
+})();
