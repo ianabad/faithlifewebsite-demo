@@ -1947,3 +1947,16 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .gt-msg.is-you p, .gt-bubble p { font-size:16px }
   .gt-thread { padding:18px 14px 22px }
 }
+
+/* Growth Track: registration status (one setting: open or closed) */
+.gt-reg[data-reg="closed"] .gt-reg-open, .gt-reg[data-reg="open"] .gt-reg-closed { display:none }
+.gt-reg-badge { display:inline-flex;align-items:center;gap:10px;margin:0 0 22px!important;padding:7px 14px 7px 12px;border-radius:999px;background:#fff;color:#5d6785!important;font-size:14px!important;font-weight:500;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 0 0 1px #d5dcef }
+.gt-reg-badge span { position:relative;width:9px;height:9px;border-radius:50%;background:#9aa6cb }
+.gt-reg-badge.is-open { color:var(--navy)!important;box-shadow:0 0 0 1px #f6c768 }
+.gt-reg-badge.is-open span { background:#e2a93b }
+.gt-reg-badge.is-open span::after { content:"";position:absolute;inset:0;border-radius:50%;background:#f6c768;animation:gtPulse 2s cubic-bezier(.16,1,.3,1) infinite }
+.motion-paused .gt-reg-badge.is-open span::after { animation-play-state:paused }
+@media (prefers-reduced-motion:reduce) { .gt-reg-badge.is-open span::after { animation:none } }
+@keyframes gtPulse { from { transform:scale(1);opacity:.7 } to { transform:scale(3);opacity:0 } }
+.gt-reg-note { margin-top:18px!important;font-size:15px!important }
+.gt-reg-note strong { color:var(--navy);font-weight:500 }

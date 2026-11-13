@@ -858,3 +858,25 @@ document.addEventListener('click', e => {
     io.observe(chat);
   }
 })();
+
+// Growth Track: registration status. One setting on the section (data-reg="open" or "closed") decides what shows,
+// and the hero button follows it. Add ?registration=open or ?registration=closed to the address to preview either state.
+(function gtRegistration() {
+  const reg = document.querySelector('[data-reg]');
+  if (!reg) return;
+  const preview = new URLSearchParams(location.search).get('registration');
+  if (preview === 'open' || preview === 'closed') reg.dataset.reg = preview;
+  const open = reg.dataset.reg === 'open', form = reg.dataset.regForm;
+  reg.querySelectorAll('[data-reg-form]').forEach(a => { if (form) a.href = form; });
+  if (open && reg.dataset.regCloses) {
+    reg.querySelector('[data-reg-closes]').textContent = reg.dataset.regCloses;
+    reg.querySelector('[data-reg-closes-line]').hidden = false;
+  }
+  const cta = document.querySelector('[data-reg-cta]');
+  if (cta) {
+    const icon = cta.querySelector('span');
+    cta.textContent = open ? 'Register now ' : 'Get notified ';
+    if (icon) cta.append(icon);
+    if (open) { cta.href = form; cta.target = '_blank'; cta.rel = 'noopener'; }
+  }
+})();
