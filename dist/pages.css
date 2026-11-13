@@ -2439,3 +2439,10 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .art-head-art { max-width:520px }
 }
 @media (max-width:700px) { .art-grid { grid-template-columns:1fr } .art-chips { margin-top:-10px } }
+
+/* Articles: a photo cover (the post's featured image) in the same frame, with a soft navy tint and a gold edge */
+.art-card-art.is-photo, .art-head-art.is-photo { position:relative;overflow:hidden;background:#1e2b57 }
+.art-photo { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.16,1,.3,1) }
+.art-card-art.is-photo::after, .art-head-art.is-photo::after { content:"";position:absolute;inset:0;background:linear-gradient(180deg,#1e2b5700 45%,#1e2b5766 100%);box-shadow:inset 0 -3px 0 #f6c768;pointer-events:none }
+.art-card-link:hover .art-photo { transform:scale(1.03) }
+.art-head-art.is-photo { border-radius:var(--frame-r) }
