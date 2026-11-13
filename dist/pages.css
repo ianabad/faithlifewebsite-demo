@@ -2280,3 +2280,7 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .first-sunday .visit-timeline.is-compact { display:flex;flex-direction:column;justify-content:space-between;padding-top:6px;padding-bottom:6px }
   .first-sunday .visit-timeline.is-compact .visit-step { padding-bottom:0 }
 }
+/* Keep the sun drawing in proportion with the heading beside it */
+.cl-arc { width:min(100%,230px) }
+.cl-head-side { gap:10px }
+@media (max-width:760px) { .cl-arc { width:200px } }
