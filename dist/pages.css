@@ -2552,3 +2552,8 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .ea-sun .ea-when { color:#7a4f12 }
 .ea-sun .ea-ref { opacity:.85 }
 @media (max-width:900px) { .ea-day { padding-left:0 } }
+/* Easter Sunday text stays clearly readable on the dawn */
+.ea-days { background:linear-gradient(180deg,#0e1530 0%,#18224a 22%,#323a6e 40%,#8a6b78 54%,#e3b98c 66%,#fbe6c4 78%,#fdf3df 100%) }
+.ea-sun .ea-quote { color:#1b2544;font-weight:500 }
+.ea-sun .ea-ref { color:#1b2544;opacity:1 }
+.ea-sun h2 { color:#1b2544 }
