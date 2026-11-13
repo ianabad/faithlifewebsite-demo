@@ -2262,7 +2262,8 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .church-life-grid { align-items:stretch }
   .home-gatherings, .cl-right { display:flex;flex-direction:column }
   .home-gatherings > .text-link, .cl-right > .text-link { margin-top:auto;align-self:flex-start }
-  .cl-right > .paper-bulletin { margin-bottom:28px }
+  .cl-right > .paper-bulletin { flex:1;display:flex;flex-direction:column;margin-bottom:20px }
+  .cl-right .mini-tickets { flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:12px }
 }
 .cl-right > .text-link { color:#fff }
 @media (max-width:760px) {
