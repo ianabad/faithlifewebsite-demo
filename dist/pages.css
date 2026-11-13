@@ -2575,3 +2575,20 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 /* Albert Sans, stored on the site (SIL Open Font License): one typeface on every device */
 @font-face { font-family:'Albert Sans';font-style:normal;font-weight:300 900;font-stretch:100%;font-display:swap;src:url(assets/fonts/albert-sans.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD }
 @font-face { font-family:'Albert Sans';font-style:italic;font-weight:300 900;font-stretch:100%;font-display:swap;src:url(assets/fonts/albert-sans-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD }
+
+/* Home, Your first Sunday: the Next Sunday ticket runs the width of the text, date on the left and details on the right */
+.home-sunday-ticket .visit-ticket { --stub:200px;display:grid;grid-template-columns:var(--stub) minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:0;width:100%;max-width:620px;min-width:0;padding:0;
+  -webkit-mask:radial-gradient(circle 10px at var(--stub) 0,#0000 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 10px at var(--stub) 100%,#0000 98%,#000) bottom/100% 51% no-repeat;
+          mask:radial-gradient(circle 10px at var(--stub) 0,#0000 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 10px at var(--stub) 100%,#0000 98%,#000) bottom/100% 51% no-repeat }
+.home-sunday-ticket .visit-ticket-label { grid-column:1;grid-row:1;padding:24px 24px 0 26px }
+.home-sunday-ticket .visit-ticket-date { grid-column:1;grid-row:2;padding:4px 24px 22px 26px;align-self:end }
+.home-sunday-ticket .visit-ticket-time { grid-column:2;grid-row:1 / span 2;align-self:center;margin:0;padding:22px 26px;border-left:2px dashed #dfe5f5;font-size:18px;line-height:1.4 }
+.home-sunday-ticket .visit-ticket-time::before { display:none }
+.home-sunday-ticket .visit-ticket-soon { grid-column:2;grid-row:2;align-self:end;justify-self:start;margin:0 0 24px 28px }
+@media (max-width:600px) {
+  .home-sunday-ticket .visit-ticket { grid-template-columns:1fr;grid-template-rows:auto;padding:22px 24px;-webkit-mask:none;mask:none }
+  .home-sunday-ticket .visit-ticket-label, .home-sunday-ticket .visit-ticket-date, .home-sunday-ticket .visit-ticket-time, .home-sunday-ticket .visit-ticket-soon { grid-column:1;grid-row:auto;padding:0;margin:0 }
+  .home-sunday-ticket .visit-ticket-date { margin-top:4px }
+  .home-sunday-ticket .visit-ticket-time { margin-top:12px;padding-top:12px;border-left:0;border-top:2px dashed #dfe5f5;font-size:17px }
+  .home-sunday-ticket .visit-ticket-soon { margin-top:10px }
+}
