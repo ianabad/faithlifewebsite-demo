@@ -2233,3 +2233,49 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .nav-resources > .nav-res-panel { position:static;width:auto;margin:6px 0 4px;padding:6px;background:#ffffff0a;box-shadow:none }
   .nav-res-panel::before { display:none }
 }
+
+/* This week: a sun-over-chapel drawing balances the heading; both columns end on a link at the same height */
+.church-life .heading-row { align-items:flex-end }
+.cl-head-side { display:grid;justify-items:end;gap:14px;max-width:420px;text-align:right }
+.cl-head-side p { max-width:34ch }
+.cl-arc { width:min(100%,360px);height:auto;overflow:visible;fill:none;stroke-linecap:round;stroke-linejoin:round }
+.cl-arc-path { stroke:#bccaf259;stroke-width:1.6;stroke-dasharray:.012 .018 }
+.cl-ground { stroke:#bccaf2;stroke-width:2 }
+.cl-chapel path { stroke:#fff;stroke-width:2.2 }
+.cl-window { fill:#f6c768;opacity:.9 }
+.cl-sun { fill:#f6c768 }
+.cl-sun-glow { fill:#f6c768;opacity:.18 }
+.cl-sun-turn { transform-box:view-box;transform-origin:210px 150px;transform:rotate(-38deg) }
+.js-arc .cl-sun-turn { transform:rotate(-88deg);transition:transform 2.6s cubic-bezier(.22,.9,.3,1) .3s }
+.js-arc.is-in .cl-sun-turn { transform:rotate(-38deg) }
+.js-arc .cl-chapel path, .js-arc .cl-ground { stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.4s cubic-bezier(.65,0,.35,1) }
+.js-arc.is-in .cl-chapel path, .js-arc.is-in .cl-ground { stroke-dashoffset:0 }
+.js-arc .cl-window { opacity:0;transition:opacity .8s 1.3s }
+.js-arc.is-in .cl-window { opacity:.9 }
+.cl-sun-glow { animation:clGlow 4s ease-in-out infinite }
+.motion-paused .cl-sun-glow { animation-play-state:paused }
+@keyframes clGlow { 50% { transform:scale(1.25);opacity:.08 } }
+.cl-sun-glow { transform-box:fill-box;transform-origin:center }
+@media (prefers-reduced-motion:reduce) { .cl-sun-glow { animation:none } }
+
+@media (min-width:761px) {
+  .church-life-grid { align-items:stretch }
+  .home-gatherings, .cl-right { display:flex;flex-direction:column }
+  .home-gatherings > .text-link, .cl-right > .text-link { margin-top:auto;align-self:flex-start }
+  .cl-right > .paper-bulletin { margin-bottom:28px }
+}
+.cl-right > .text-link { color:#fff }
+@media (max-width:760px) {
+  .church-life .heading-row { display:block }
+  .cl-head-side { justify-items:start;text-align:left;margin-top:24px;max-width:none }
+  .cl-arc { width:260px }
+  .cl-right > .text-link { margin-top:22px }
+}
+
+/* Your first Sunday: the steps stretch to the full height of the intro beside them */
+@media (min-width:901px) {
+  .first-sunday-grid { align-items:stretch }
+  .first-sunday-intro { position:static }
+  .first-sunday .visit-timeline.is-compact { display:flex;flex-direction:column;justify-content:space-between;padding-top:6px;padding-bottom:6px }
+  .first-sunday .visit-timeline.is-compact .visit-step { padding-bottom:0 }
+}

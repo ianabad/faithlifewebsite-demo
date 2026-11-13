@@ -969,3 +969,12 @@ document.addEventListener('click', e => {
     el.textContent = days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : days > 1 ? 'In ' + days + ' days' : '';
   });
 })();
+
+// Home: the sun rises over the chapel once the This week heading comes into view.
+(function clArc() {
+  const arc = document.querySelector('[data-cl-arc]');
+  if (!arc || !('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  arc.classList.add('js-arc');
+  const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { arc.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.5 });
+  io.observe(arc);
+})();
