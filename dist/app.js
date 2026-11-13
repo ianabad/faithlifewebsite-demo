@@ -1056,3 +1056,30 @@ document.addEventListener('click', e => {
     update();
   }
 })();
+
+// Statement of faith: the index follows your place in the statement; jumping to a belief gives it a soft gold welcome.
+(function beliefsIndex() {
+  const content = document.querySelector('[data-bf]');
+  if (!content) return;
+  const ideas = [...content.querySelectorAll('[data-bf-idea]')], beliefs = [...content.querySelectorAll('[data-bf-belief]')];
+  const groups = [...document.querySelectorAll('[data-bf-group]')], links = [...document.querySelectorAll('[data-bf-link]')];
+  let q = false;
+  function update() {
+    q = false;
+    const mark = innerHeight * 0.35;
+    let idea = ideas[0], bel = beliefs[0];
+    ideas.forEach(s => { if (s.getBoundingClientRect().top <= mark) idea = s; });
+    beliefs.forEach(b => { if (b.getBoundingClientRect().top <= mark) bel = b; });
+    groups.forEach(g => g.classList.toggle('is-on', g.dataset.bfGroup === idea.dataset.bfIdea));
+    links.forEach(l => l.classList.toggle('is-on', l.dataset.bfLink === bel.dataset.bfBelief));
+    const on = document.querySelector('.bf-idx-group.is-on .bf-idx-head');
+    if (on && innerWidth <= 900) { const bar = on.closest('ol'); const r = on.getBoundingClientRect(), br = bar.getBoundingClientRect(); if (r.left < br.left || r.right > br.right) bar.scrollTo({ left: on.offsetLeft - 20, behavior: 'smooth' }); }
+  }
+  addEventListener('scroll', () => { if (!q) { q = true; requestAnimationFrame(update); } }, { passive: true });
+  addEventListener('resize', update);
+  update();
+  document.querySelectorAll('.bf-index a[href^="#"]').forEach(a => a.addEventListener('click', () => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t && t.matches('[data-bf-belief]')) { t.classList.remove('is-arrived'); void t.offsetWidth; t.classList.add('is-arrived'); }
+  }));
+})();
