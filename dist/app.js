@@ -978,3 +978,15 @@ document.addEventListener('click', e => {
   const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { arc.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.5 });
   io.observe(arc);
 })();
+
+// Resources menu: the photo follows the link you point at or tab to.
+(function navResPic() {
+  document.querySelectorAll('.nav-res-panel').forEach(panel => {
+    const links = [...panel.querySelectorAll('[data-res]')], pics = [...panel.querySelectorAll('[data-res-pic]')];
+    const start = Math.max(0, links.findIndex(l => l.hasAttribute('aria-current')));
+    const show = i => { links.forEach((l, k) => l.classList.toggle('is-active', k === i)); pics.forEach((p, k) => p.classList.toggle('is-on', k === i)); };
+    links.forEach((l, i) => { l.addEventListener('pointerenter', () => show(i)); l.addEventListener('focus', () => show(i)); });
+    panel.addEventListener('pointerleave', () => show(start));
+    show(start);
+  });
+})();

@@ -2209,29 +2209,34 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 }
 @media (prefers-reduced-motion:reduce) { .js-facts .home-fact-ic * { transition:none;stroke-dashoffset:0 } .ministry-grid article:hover .card-badge svg * { animation:none } }
 
-/* Resources menu: a navy guide panel. Each link has a gold drawing and one line on where it goes. */
+/* Resources menu: big type links on the left, a real church photo on the right that changes with the link you point at */
+.nav-resources summary { border-radius:10px }
 .nav-res-chev { width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.16,1,.3,1) }
 .nav-resources[open] .nav-res-chev { transform:rotate(180deg) }
-.nav-resources > .nav-res-panel { top:calc(100% + 14px);left:-24px;width:340px;min-width:0;padding:10px;display:grid;gap:2px;background:#1e2b57;color:#fff;border:1px solid #ffffff1f;border-radius:20px;box-shadow:0 30px 60px -24px #0b1230cc }
+.nav-resources > .nav-res-panel { top:calc(100% + 16px);left:-230px;width:560px;min-width:0;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:14px;background:#1e2b57;color:#fff;border:1px solid #ffffff1f;border-radius:22px;box-shadow:0 40px 80px -30px #0b1230e6 }
 .nav-resources[open] > .nav-res-panel { animation:navPanel .4s cubic-bezier(.16,1,.3,1) both }
-.nav-res-panel::before { content:"";position:absolute;top:-7px;left:44px;width:14px;height:14px;background:#1e2b57;border-left:1px solid #ffffff1f;border-top:1px solid #ffffff1f;transform:rotate(45deg);border-radius:3px 0 0 0 }
-.nav-resources > .nav-res-panel > a.nav-res-link { position:relative;display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:center;padding:12px 14px;border-radius:14px;white-space:normal;color:#fff;text-decoration:none;transition:background .25s }
-.nav-res-link:hover, .nav-res-link:focus-visible { background:#ffffff12;text-decoration:none!important }
-.nav-resources[open] .nav-res-link { animation:navItem .45s cubic-bezier(.16,1,.3,1) both }
-.nav-resources[open] .nav-res-link:nth-child(2) { animation-delay:.05s } .nav-resources[open] .nav-res-link:nth-child(3) { animation-delay:.1s }
-.nav-res-ic { width:40px;height:40px;padding:9px;border-radius:12px;background:#ffffff0f;fill:none;stroke:#f6c768;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round }
-.nav-res-ic * { stroke-dasharray:1;stroke-dashoffset:0 }
-.nav-res-link:hover .nav-res-ic *, .nav-res-link:focus-visible .nav-res-ic * { animation:cardDraw .9s cubic-bezier(.65,0,.35,1) both }
-.nav-res-link strong { position:relative;display:inline-block;font-weight:500;font-size:17px;line-height:1.3 }
-.nav-res-link strong::after { content:"";position:absolute;left:0;right:0;bottom:-2px;height:1.5px;background:#f6c768;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.16,1,.3,1) }
-.nav-res-link:hover strong::after, .nav-res-link:focus-visible strong::after, .nav-res-link[aria-current="page"] strong::after { transform:scaleX(1) }
-.nav-res-link small { display:block;margin-top:2px;font-size:14px;line-height:1.4;color:#c9d2ec }
+.nav-res-links { display:grid;align-content:center;padding:10px 8px 10px 14px }
+.nav-resources > .nav-res-panel a.nav-res-link { position:relative;display:block;padding:12px 0 12px 22px;white-space:normal;color:#fff;text-decoration:none }
+.nav-res-link::before { content:"";position:absolute;left:0;top:22px;width:8px;height:8px;border-radius:50%;background:#ffffff38;transition:background .3s,transform .3s }
+.nav-res-link.is-active::before, .nav-res-link[aria-current="page"]::before { background:#f6c768;transform:scale(1.3) }
+.nav-res-name { display:block;font-size:24px;font-weight:500;letter-spacing:-.03em;line-height:1.15;transition:transform .35s cubic-bezier(.16,1,.3,1) }
+.nav-res-link.is-active .nav-res-name { transform:translateX(4px) }
+.nav-res-link small { display:block;margin-top:3px;font-size:14.5px;line-height:1.4;color:#c9d2ec;transition:transform .35s cubic-bezier(.16,1,.3,1) }
+.nav-res-link.is-active small { transform:translateX(4px) }
+.nav-res-link:hover, .nav-res-link:focus-visible { text-decoration:none!important }
+.nav-res-pic { position:relative;border-radius:16px;overflow:hidden;background:#ffffff0f;aspect-ratio:4/5 }
+.nav-res-pic img { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.06);transition:opacity .45s ease,transform .8s cubic-bezier(.16,1,.3,1) }
+.nav-res-pic img.is-on { opacity:1;transform:none }
 @keyframes navPanel { from { opacity:0;transform:translateY(-6px) } to { opacity:1;transform:none } }
-@keyframes navItem { from { opacity:0;transform:translateX(-8px) } to { opacity:1;transform:none } }
-@media (prefers-reduced-motion:reduce) { .nav-resources[open] > .nav-res-panel, .nav-resources[open] .nav-res-link, .nav-res-link:hover .nav-res-ic * { animation:none } }
+@media (prefers-reduced-motion:reduce) { .nav-resources[open] > .nav-res-panel { animation:none } .nav-res-pic img { transition:none } }
 @media (max-width:1000px) {
-  .nav-resources > .nav-res-panel { position:static;width:auto;margin:6px 0 4px;padding:6px;background:#ffffff0a;box-shadow:none }
-  .nav-res-panel::before { display:none }
+  .nav-resources > .nav-res-panel { position:static;width:auto;margin:4px 0 6px;padding:2px 0 2px 4px;display:block;background:none;box-shadow:none;color:#fff;border-radius:0 }
+  .nav-res-pic { display:none }
+  .nav-res-links { padding:0 }
+  .nav-resources > .nav-res-panel a.nav-res-link { color:#fff;padding:10px 0 10px 22px }
+  .nav-res-name { font-size:19px }
+  .nav-res-link small { color:#c9d2ec }
+  .nav-res-link::before { background:#ffffff40;top:19px }
 }
 
 /* This week: a sun-over-chapel drawing balances the heading; both columns end on a link at the same height */
@@ -2263,7 +2268,10 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .home-gatherings, .cl-right { display:flex;flex-direction:column }
   .home-gatherings > .text-link, .cl-right > .text-link { margin-top:auto;align-self:flex-start }
   .cl-right > .paper-bulletin { flex:1;display:flex;flex-direction:column;margin-bottom:20px }
-  .cl-right .mini-tickets { flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:12px }
+  .cl-right .mini-tickets { flex:1;display:flex;flex-direction:column;gap:12px }
+  .cl-right .mini-tickets > li { flex:1;display:flex }
+  .cl-right .mini-ticket { flex:1 }
+  .cl-right .mt-body { align-content:center }
 }
 .cl-right > .text-link { color:#fff }
 @media (max-width:760px) {
