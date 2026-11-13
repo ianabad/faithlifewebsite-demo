@@ -786,46 +786,60 @@ document.addEventListener('click', e => {
   })(last);
 })();
 
-// Growth Track: questions as tabs on wide screens, one open answer at a time everywhere.
-(function gtAsk() {
-  const box = document.querySelector('[data-ask]');
-  if (!box) return;
-  const qs = [...box.querySelectorAll('.gt-q')], as = [...box.querySelectorAll('.gt-a')];
-  let cur = 0;
-  // On wide screens the answer panel always sits in the vertical centre of the window while the section is on screen.
-  // It only stops at the section's own top and bottom edges, so it never covers a neighbouring section.
-  const section = box.closest('section'), grid = box.parentElement;
-  let pending = false;
-  function place() {
-    pending = false;
-    const a = as[cur];
-    if (innerWidth <= 760) return;
-    const h = a.offsetHeight, sec = section.getBoundingClientRect(), area = grid.getBoundingClientRect();
-    const top = Math.min(Math.max((innerHeight - h) / 2, sec.top + 24), sec.bottom - 24 - h);
-    const y = top - area.top;
-    as.forEach(x => { x.style.transform = 'translateY(' + y + 'px)'; });
-    const q = qs[cur].getBoundingClientRect(), n = q.top + q.height / 2 - top;
-    a.style.setProperty('--gt-notch', n + 'px');
-    a.classList.toggle('no-notch', n < 40 || n > h - 40);
+// Growth Track: questions as a conversation. Tap a question, it is sent as your message, then Faith Life types and answers.
+(function gtChat() {
+  const chat = document.querySelector('[data-gt-chat]');
+  if (!chat) return;
+  const thread = chat.querySelector('.gt-thread'), reset = chat.querySelector('[data-gt-reset]');
+  const chips = [...document.querySelectorAll('[data-gt-ask]')];
+  const first = thread.innerHTML;
+  const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('motion-paused');
+  let busy = false, started = false;
+  // Keep your latest question at the top of the window so a long answer reads from its first line.
+  const down = () => {
+    const you = [...thread.querySelectorAll('.gt-msg.is-you')].pop();
+    const max = thread.scrollHeight - thread.clientHeight;
+    thread.scrollTo({ top: you ? Math.min(you.offsetTop - 16, max) : max, behavior: calm() ? 'auto' : 'smooth' });
+  };
+  function add(cls, inner) { const d = document.createElement('div'); d.className = 'gt-msg ' + cls; d.innerHTML = inner; thread.appendChild(d); down(); return d; }
+  function ask(i) {
+    if (busy) return;
+    busy = true; started = true;
+    const chip = chips[i];
+    chip.classList.add('is-asked');
+    chip.querySelector('.gt-chip-ic path').setAttribute('d', 'M5 12.5l4.5 4.5L19 7.5');
+    const you = add('is-you', '<p></p>'); you.querySelector('p').textContent = chip.dataset.q;
+    reset.hidden = false;
+    const tpl = chat.querySelector(`template[data-answer="${i}"]`);
+    const answer = () => {
+      typing && typing.remove();
+      const msg = add('is-us', ''); msg.appendChild(tpl.content.cloneNode(true)); down();
+      busy = false;
+      if (chips.every(c => c.classList.contains('is-asked')) && !thread.querySelector('.gt-chat-end')) {
+        const end = document.createElement('p'); end.className = 'gt-chat-end';
+        end.innerHTML = 'Still wondering about something? <a href="contact.html?topic=Growth Track">Ask us directly</a>';
+        thread.appendChild(end); down();
+      }
+    };
+    let typing = null;
+    if (calm()) return answer();
+    setTimeout(() => { typing = add('is-us', '<span class="gt-av" aria-hidden="true"></span><span class="gt-typing" aria-label="Faith Life is typing"><i></i><i></i><i></i></span>'); }, 350);
+    setTimeout(answer, 350 + Math.min(1500, 700 + tpl.content.textContent.length * 3));
   }
-  addEventListener('scroll', () => { if (!pending) { pending = true; requestAnimationFrame(place); } }, { passive: true });
-  function open(n, focus) {
-    cur = n;
-    qs.forEach((q, k) => { const on = k === n; q.classList.toggle('is-on', on); q.setAttribute('aria-selected', on); q.tabIndex = on ? 0 : -1; as[k].classList.toggle('is-on', on); });
-    place();
-    if (focus) qs[n].focus();
-    if (innerWidth <= 760) { const r = qs[n].getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * 0.6) scrollTo({ top: scrollY + r.top - 20, behavior: 'smooth' }); }
-  }
-  qs.forEach((q, k) => {
-    q.tabIndex = k === 0 ? 0 : -1;
-    q.addEventListener('click', () => open(k));
-    q.addEventListener('keydown', e => {
-      const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
-      if (d) { e.preventDefault(); open((k + d + qs.length) % qs.length, true); }
-    });
+  chips.forEach((c, i) => c.addEventListener('click', () => {
+    ask(i);
+    // On phones the conversation sits above the questions, so bring it back into view.
+    const r = chat.getBoundingClientRect();
+    if (r.top < 0 || r.bottom > innerHeight) chat.scrollIntoView({ block: 'nearest', behavior: calm() ? 'auto' : 'smooth' });
+  }));
+  reset.addEventListener('click', () => {
+    if (busy) return;
+    thread.innerHTML = first; reset.hidden = true;
+    chips.forEach(c => { c.classList.remove('is-asked'); c.querySelector('.gt-chip-ic path').setAttribute('d', 'M5 12h14m-6-6 6 6-6 6'); });
   });
-  box.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => open(+b.dataset.next, true)));
-  addEventListener('resize', place);
-  if (document.fonts) document.fonts.ready.then(place);
-  place();
+  // The first question asks itself once, when the conversation scrolls into view.
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); if (!started) setTimeout(() => { if (!started) ask(0); }, 600); } }, { threshold: 0.6 });
+    io.observe(chat);
+  }
 })();

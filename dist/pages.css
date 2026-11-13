@@ -1850,36 +1850,11 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 @keyframes gtTick { to { transform:scaleX(1) } }
 
 
-/* Growth Track: ask and answer */
 .gt-faq { background:#f4f6fc }
-@media (min-width:761px) { .gt-faq .wrap { display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);column-gap:clamp(32px,5vw,80px) } .gt-faq .gt-head { grid-column:1 } .gt-ask { display:contents } }
-.gt-q { grid-column:1;display:flex;align-items:baseline;gap:18px;width:100%;padding:22px 0;border:0;border-top:1px solid #d5dcef;background:none;text-align:left;color:var(--navy);transition:color .3s }
-.gt-q:last-of-type { border-bottom:1px solid #d5dcef }
-.gt-qn { font-size:13px;font-weight:500;letter-spacing:.1em;color:#9aa6cb;transition:color .3s }
-.gt-qt { position:relative;font-size:clamp(20px,1.7vw,25px);line-height:1.3;letter-spacing:-.02em;opacity:.55;transition:opacity .3s }
-.gt-qt::after { content:"";position:absolute;left:0;bottom:-4px;height:2px;width:100%;background:#f6c768;transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.16,1,.3,1) }
-.gt-q:hover .gt-qt { opacity:.85 }
-.gt-q.is-on .gt-qt { opacity:1 } .gt-q.is-on .gt-qn { color:#b88a2a } .gt-q.is-on .gt-qt::after { transform:scaleX(1) }
-.gt-a { grid-column:2;grid-row:1 / span 7;align-self:start;will-change:transform;display:none;flex-direction:column;justify-content:center;gap:22px;padding:clamp(32px,4vw,56px);background:var(--navy);color:#fff;border-radius:24px;position:relative;background-image:radial-gradient(circle at 100% 0,#0000 0 120px,#ffffff14 121px 122px,#ffffff08 123px 162px,#ffffff05 163px 202px,#0000 203px) }
-.gt-a.is-on { display:flex }
-.gt-a.is-on > * { animation:gtAnswer .6s cubic-bezier(.16,1,.3,1) both }
-.gt-a.is-on > p { animation-delay:.06s } .gt-a.is-on > .gt-next { animation-delay:.12s }
-.gt-a::after { content:"";position:absolute;left:-7px;top:var(--gt-notch,40px);width:14px;height:14px;margin-top:-7px;background:var(--navy);transform:rotate(45deg);border-radius:2px;transition:opacity .3s }
-.gt-a.no-notch::after { opacity:0 }
-.gt-a p { position:relative;color:#e4e8f6;font-size:clamp(19px,1.55vw,23px);line-height:1.6;max-width:36ch }
-.gt-a-icon { width:56px;height:56px;fill:none;stroke:#f6c768;stroke-width:2;stroke-linecap:round;stroke-linejoin:round }
-.gt-a.is-on .gt-a-icon path, .gt-a.is-on .gt-a-icon circle { stroke-dasharray:140;stroke-dashoffset:140;animation:gtDraw 1.1s cubic-bezier(.65,0,.35,1) .1s forwards }
-.gt-next { align-self:flex-start;display:inline-flex;gap:10px;padding:10px 0;border:0;border-bottom:1px solid #ffffff66;background:none;color:#fff;font-size:16px;transition:gap .25s,border-color .25s }
-.gt-next:hover { gap:16px;border-color:#f6c768 }
-@keyframes gtAnswer { from { opacity:0;transform:translateY(8px) } to { opacity:1;transform:none } }
 @keyframes gtDraw { to { stroke-dashoffset:0 } }
 
 @media (max-width:760px) {
   .gt-ticks span { width:24px }
-  .gt-ask { display:grid;grid-template-columns:1fr }
-  .gt-q { grid-column:1 }
-  .gt-a { grid-column:1;grid-row:auto;margin:0 0 18px;padding:26px 22px;border-radius:18px }
-  .gt-a-icon { width:44px;height:44px }
 }
 
 /* Growth Track: class details */
@@ -1900,11 +1875,7 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 @media (max-width:760px) {
   .gt-strip .wk-day.is-span::after { left:5px;right:auto;top:-50%;bottom:50%;width:2px;height:auto;margin:0 }
   .gt-strip .wk-day.is-span { min-height:40px }
-  .gt-faq .gt-a { transform:none!important }
-  .gt-a::after { display:none }
 }
-.gt-qn { flex:none;width:8px;height:8px;border-radius:50%;background:#c9d2ec;transform:translateY(-3px);transition:background .3s,box-shadow .3s }
-.gt-q.is-on .gt-qn { background:#f6c768;box-shadow:0 0 0 5px #f6c76833 }
 @media (max-width:760px) { .wk-strip.gt-strip { grid-template-columns:1fr } .gt-strip .wk-what { font-size:20px } }
 
 /* Home hero: the photo steps sit as short bars in the bottom-right corner, like Growth Track */
@@ -1914,3 +1885,65 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .hero-image .gallery-step span { background:#ffffff59 }
 .hero-image .gallery-play svg { width:26px;height:26px;padding:7px;background:#15203d99 }
 @media (max-width:760px) { .hero-image .gallery-controls { top:auto;left:auto;right:8px;bottom:6px } .hero-image .gallery-step { width:26px } }
+
+/* Growth Track: questions as a conversation */
+.gt-faq-chat { position:relative;overflow:hidden;background:#f4f6fc }
+.gt-faq-chat > .wrap { position:relative;z-index:1 }
+.gt-faq-chat.dot-field::before, .gt-faq-chat.dot-field::after { content:"";position:absolute;inset:0;pointer-events:none;background-size:24px 24px }
+.gt-faq-chat.dot-field::before { background-image:radial-gradient(#2635701a 1.2px,transparent 1.4px) }
+.gt-faq-chat.dot-field::after { background-image:radial-gradient(#263570 1.5px,transparent 1.7px);opacity:.35;-webkit-mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%);mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%) }
+.gt-chat-grid { display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(40px,6vw,96px);align-items:center }
+.gt-chat-side .gt-head { margin-bottom:32px }
+.gt-chips { list-style:none;margin:0;padding:0;display:grid;gap:10px;justify-items:start }
+.gt-chip { display:inline-flex;align-items:center;gap:14px;min-height:48px;padding:12px 18px 12px 20px;border:1px solid #c9d2ec;border-radius:999px;background:#fff;color:var(--navy);font-size:17px;line-height:1.3;text-align:left;cursor:pointer;transition:transform .25s cubic-bezier(.16,1,.3,1),border-color .25s,background .25s,box-shadow .25s,opacity .3s }
+.gt-chip:hover { transform:translateY(-2px);border-color:var(--navy);box-shadow:0 10px 24px -16px #26357080 }
+.gt-chip:active { transform:translateY(0) scale(.98) }
+.gt-chip-ic { width:18px;height:18px;flex:none;fill:none;stroke:#b88a2a;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s }
+.gt-chip:hover .gt-chip-ic { transform:translateX(3px) }
+.gt-chip.is-asked { background:transparent;border-color:#dfe5f5;color:#7f8bb0 }
+.gt-chip.is-asked .gt-chip-ic { stroke:#9aa6cb }
+
+.gt-chat { display:flex;flex-direction:column;height:clamp(500px,66vh,620px);border-radius:28px;background:#fff;box-shadow:0 40px 80px -40px #26357040,0 0 0 1px #e3e8f6;overflow:hidden }
+.gt-chat-top { display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #edf0f8 }
+.gt-chat-mark { width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--navy);flex:none }
+.gt-chat-mark img { width:100%;height:100% }
+.gt-chat-who { display:grid;line-height:1.25 }
+.gt-chat-who strong { font-weight:500;color:var(--navy);font-size:16px }
+.gt-chat-who span { font-size:13px;color:#7f8bb0 }
+.gt-chat-reset { margin-left:auto;min-height:40px;padding:8px 14px;border:0;border-radius:999px;background:#f1f4fb;color:var(--navy);font-size:14px;cursor:pointer;transition:background .2s }
+.gt-chat-reset:hover { background:#e3e8f6 }
+.gt-thread { position:relative;flex:1;overflow-y:auto;overscroll-behavior:contain;padding:24px 20px 28px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;-webkit-mask:linear-gradient(#0000,#000 24px);mask:linear-gradient(#0000,#000 24px) }
+.gt-msg { display:flex;align-items:flex-end;gap:10px;max-width:88%;animation:gtMsg .5s cubic-bezier(.16,1,.3,1) both }
+.gt-msg.is-you { align-self:flex-end;transform-origin:100% 100% }
+.gt-msg.is-us { transform-origin:0 100% }
+.gt-msg.is-you p { margin:0;padding:12px 18px;border-radius:22px 22px 6px 22px;background:#e6ecfb;color:var(--navy);font-size:17px;line-height:1.5 }
+.gt-bubble { padding:14px 18px;border-radius:22px 22px 22px 6px;background:var(--navy);color:#fff }
+.gt-bubble p { margin:0;color:#e9edf8;font-size:17px;line-height:1.6 }
+.gt-bubble-link { display:inline-flex;gap:8px;margin-top:10px;padding:6px 0;border-bottom:1px solid #f6c768;color:#fff;font-size:15px;transition:gap .25s }
+.gt-bubble-link:hover { gap:14px }
+.gt-av { width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--navy) }
+.gt-av-ic { width:20px;height:20px;fill:none;stroke:#f6c768;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round }
+.gt-msg.is-us .gt-av-ic * { stroke-dasharray:140;stroke-dashoffset:140;animation:gtDraw 1.1s cubic-bezier(.65,0,.35,1) .15s forwards }
+.gt-typing { display:inline-flex;gap:5px;padding:16px 18px;border-radius:22px 22px 22px 6px;background:var(--navy) }
+.gt-typing i { width:7px;height:7px;border-radius:50%;background:#bccaf2;animation:gtDot 1s ease-in-out infinite }
+.gt-typing i:nth-child(2) { animation-delay:.15s } .gt-typing i:nth-child(3) { animation-delay:.3s }
+.gt-chat-end { align-self:center;margin-top:6px;font-size:14px;color:#7f8bb0;text-align:center }
+.gt-chat-end a { color:var(--navy);border-bottom:1px solid #f6c768 }
+@keyframes gtMsg { from { opacity:0;transform:translateY(12px) scale(.96) } to { opacity:1;transform:none } }
+@keyframes gtDot { 0%,60%,100% { transform:translateY(0);opacity:.5 } 30% { transform:translateY(-5px);opacity:1 } }
+@keyframes gtDraw { to { stroke-dashoffset:0 } }
+@media (prefers-reduced-motion:reduce) { .gt-msg, .gt-typing i { animation:none } .gt-msg.is-us .gt-av-ic * { animation:none;stroke-dashoffset:0 } }
+.motion-paused .gt-msg, .motion-paused .gt-typing i { animation:none }
+.motion-paused .gt-msg.is-us .gt-av-ic * { animation:none;stroke-dashoffset:0 }
+
+@media (max-width:900px) {
+  .gt-chat-grid { grid-template-columns:1fr;gap:0 }
+  .gt-chat-side { display:contents }
+  .gt-chat-side .gt-head { order:0 }
+  .gt-chat { order:1;height:min(440px,58svh);border-radius:22px }
+  .gt-chips { order:2;margin-top:18px;display:flex;flex-wrap:wrap;gap:8px }
+  .gt-chip { font-size:15.5px;padding:10px 14px 10px 16px;gap:10px }
+  .gt-msg { max-width:94% }
+  .gt-msg.is-you p, .gt-bubble p { font-size:16px }
+  .gt-thread { padding:18px 14px 22px }
+}
