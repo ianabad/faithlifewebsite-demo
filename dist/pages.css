@@ -2267,7 +2267,8 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .church-life-grid { align-items:stretch }
   .home-gatherings, .cl-right { display:flex;flex-direction:column }
   .home-gatherings > .text-link, .cl-right > .text-link { margin-top:auto;align-self:flex-start }
-  .cl-right > .paper-bulletin { flex:1;display:flex;flex-direction:column;margin-bottom:20px }
+  .cl-right > .paper-bulletin { flex:1;display:flex;flex-direction:column;margin-bottom:0 }
+  .cl-right .paper-bulletin > .text-link { align-self:flex-start;margin-top:22px }
   .cl-right .mini-tickets { flex:1;display:flex;flex-direction:column;gap:12px }
   .cl-right .mini-tickets > li { flex:1;display:flex }
   .cl-right .mini-ticket { flex:1 }
@@ -2294,3 +2295,5 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 @media (max-width:760px) { .cl-arc { width:200px } }
 .cl-arc { width:min(100%,180px) }
 @media (max-width:760px) { .cl-arc { width:170px } }
+
+.cl-right .paper-bulletin > .text-link { color:var(--navy) }
