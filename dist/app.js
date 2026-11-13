@@ -837,6 +837,21 @@ document.addEventListener('click', e => {
     thread.innerHTML = first; reset.hidden = true;
     chips.forEach(c => { c.classList.remove('is-asked'); c.querySelector('.gt-chip-ic path').setAttribute('d', 'M5 12h14m-6-6 6 6-6 6'); });
   });
+  // Desktop: the conversation holds its place until you scroll past it, then stays centred in the window,
+  // and stops 48px above the end of the section so it never runs into the next one.
+  const section = chat.closest('section');
+  let shift = 0, queued = false;
+  function follow() {
+    queued = false;
+    if (innerWidth <= 900) { shift = 0; chat.style.transform = ''; return; }
+    const r = chat.getBoundingClientRect(), natural = r.top - shift, h = r.height;
+    const stop = section.getBoundingClientRect().bottom - 48;
+    shift = Math.max(0, Math.min((innerHeight - h) / 2 - natural, stop - natural - h));
+    chat.style.transform = shift ? 'translateY(' + shift + 'px)' : '';
+  }
+  addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(follow); } }, { passive: true });
+  addEventListener('resize', follow);
+  follow();
   // The first question asks itself once, when the conversation scrolls into view.
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); if (!started) setTimeout(() => { if (!started) ask(0); }, 600); } }, { threshold: 0.6 });
