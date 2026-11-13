@@ -2634,3 +2634,14 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 /* About hero: the two lines of the heading always fit as two lines */
 .about-hero h1 { font-size:clamp(36px,4.6vw,66px) }
 @media (max-width:760px) { .about-hero h1 { font-size:min(44px,10.4vw) } }
+
+/* Top menu: on hover the underline draws in from the left, at the same distance below the text as before.
+   The current page keeps a plain white underline. */
+@media (min-width:1101px) {
+  .navigation nav > a:not(.button), .navigation .nav-resources summary { position:relative;text-decoration:none!important }
+  .navigation nav > a:not(.button)::after, .navigation .nav-resources summary::after { content:"";position:absolute;left:0;right:0;top:calc(50% + .35em + 6px);height:1.5px;border-radius:2px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .45s cubic-bezier(.16,1,.3,1) }
+  .navigation .nav-resources summary::after { right:25px }
+  .navigation nav > a:not(.button):hover::after, .navigation nav > a:not(.button):focus-visible::after, .navigation .nav-resources summary:hover::after { transform:scaleX(1);transform-origin:left }
+  .navigation nav > a[aria-current=page]::after { transform:scaleX(1) }
+}
+@media (prefers-reduced-motion:reduce) { .navigation nav > a:not(.button)::after, .navigation .nav-resources summary::after { transition:none } }
