@@ -2121,10 +2121,194 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 
 /* Card system, part two: buttons, small controls and offset photo frames share the softer corners */
 .button, #menu, .gathering-cal, .week-day { border-radius:var(--field-r) }
-.nav-resources > div { border-radius:16px }
+
 .home-announcements.paper-bulletin { border-radius:var(--card-r) }
 .story-image img, .story-image::after { border-radius:var(--frame-r) }
 .pastor-hero-photo img, .pastor-hero-photo::before { border-radius:var(--frame-r) }
 /* Home Spotify player box: rounded, its navy top line now curves with the corners */
 .player { border-top:0;border-radius:var(--card-r);box-shadow:inset 0 3px 0 var(--navy) }
 .player iframe { border-radius:14px }
+
+/* ===== Home refresh ===== */
+/* Story: three facts, each with a line drawing that draws itself once */
+.story-copy > p { margin:24px 0 0;max-width:46ch }
+.home-facts { list-style:none;margin:32px 0 30px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px }
+.home-facts li { display:grid;align-content:start;gap:2px;padding-top:16px;border-top:2px solid #e3e8f6 }
+.home-fact-ic { width:40px;height:40px;margin-bottom:10px;fill:none;stroke:#b88a2a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round }
+.home-fact-ic * { stroke-dasharray:1;stroke-dashoffset:0 }
+.js-facts .home-fact-ic * { stroke-dashoffset:1;transition:stroke-dashoffset 1.3s cubic-bezier(.65,0,.35,1) }
+.js-facts.is-in .home-fact-ic * { stroke-dashoffset:0 }
+.js-facts.is-in li:nth-child(2) .home-fact-ic * { transition-delay:.18s } .js-facts.is-in li:nth-child(3) .home-fact-ic * { transition-delay:.36s }
+.home-facts strong { font-size:clamp(24px,2vw,30px);font-weight:500;letter-spacing:-.03em;color:var(--navy);line-height:1.1 }
+.home-facts span { font-size:15px;line-height:1.45;color:var(--muted) }
+
+/* Group cards: a gold label, a one-line description, and a small drawing that draws on hover */
+.ministries.dot-field { position:relative;overflow:hidden }
+.ministries.dot-field > .wrap { position:relative;z-index:1 }
+.ministries.dot-field::before, .ministries.dot-field::after { content:"";position:absolute;inset:0;pointer-events:none;background-size:24px 24px }
+.ministries.dot-field::before { background-image:radial-gradient(#2635701a 1.2px,transparent 1.4px) }
+.ministries.dot-field::after { background-image:radial-gradient(#263570 1.5px,transparent 1.7px);opacity:.35;-webkit-mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%);mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%) }
+.ministry-grid .photo { position:relative }
+.card-badge { position:absolute;right:14px;bottom:14px;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--navy);box-shadow:0 10px 24px -10px #0b123099 }
+.card-badge svg { width:28px;height:28px;fill:none;stroke:#f6c768;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round }
+.card-badge svg * { stroke-dasharray:1;stroke-dashoffset:0 }
+.ministry-grid article:hover .card-badge svg *, .ministry-grid article:focus-within .card-badge svg * { animation:cardDraw 1.1s cubic-bezier(.65,0,.35,1) both }
+@keyframes cardDraw { from { stroke-dashoffset:1 } to { stroke-dashoffset:0 } }
+.card-label { display:block;margin-top:20px;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#b88a2a }
+.ministry-grid article .card-label + h3 { margin-top:6px }
+.ministry-grid article p { min-height:0;margin-bottom:18px }
+
+/* Coming up: mini date tickets, the same family as What's on */
+.mini-tickets { display:grid;gap:12px;margin-top:20px!important }
+.mini-tickets > li { border:0!important;padding:0!important }
+.mini-ticket { --stub:76px;display:grid;grid-template-columns:var(--stub) minmax(0,1fr);background:#fff;border-radius:16px;color:var(--ink);text-decoration:none;box-shadow:0 16px 30px -24px #26357066,0 0 0 1px #e3e8f6;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s;
+  -webkit-mask:radial-gradient(circle 8px at var(--stub) 0,#0000 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 8px at var(--stub) 100%,#0000 98%,#000) bottom/100% 51% no-repeat;
+          mask:radial-gradient(circle 8px at var(--stub) 0,#0000 98%,#000) top/100% 51% no-repeat,radial-gradient(circle 8px at var(--stub) 100%,#0000 98%,#000) bottom/100% 51% no-repeat }
+.mini-ticket:hover { transform:translateY(-2px);box-shadow:0 20px 36px -24px #26357099,0 0 0 1px #d5dcef }
+.mt-stub { display:grid;align-content:center;justify-items:center;padding:12px 6px;border-right:2px dashed #e3e8f6;color:var(--navy) }
+.mt-dow { font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#7f8bb0 }
+.mt-day { font-size:30px;font-weight:500;line-height:1;letter-spacing:-.03em }
+.mt-mon { font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#b88a2a }
+.mt-tag { writing-mode:vertical-rl;transform:rotate(180deg);font-size:11.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#b88a2a }
+.mt-body { display:grid;gap:2px;padding:14px 16px 14px 18px;min-width:0 }
+.mt-soon { font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#b88a2a }
+.mt-soon:empty { display:none }
+.mt-body strong { font-size:19px;font-weight:500;line-height:1.25;color:var(--navy) }
+.mt-body small { font-size:14.5px;line-height:1.4;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
+
+/* The Word: navy, with the faint sound wave from the Messages page behind it */
+.home-word { position:relative;overflow:hidden;background:var(--navy);color:#fff }
+.home-word > .wrap { position:relative;z-index:1 }
+.home-word .msg-wave { position:absolute;inset:0;width:100%;height:100%;z-index:0 }
+.home-word h2 { color:#fff }
+.home-word .split p { color:#c9d2ec }
+.home-word .word-verse { position:relative;padding-left:22px }
+.home-word .word-verse::before { content:"";position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:3px;background:#f6c768 }
+.home-word .word-verse blockquote p { color:#fff }
+.home-word.js-verse .word-verse blockquote span, .js-verse .home-word .word-verse blockquote span { color:#ffffff40 }
+.home-word.js-verse .word-verse blockquote span.is-lit, .js-verse .home-word .word-verse blockquote span.is-lit { color:#fff }
+.home-word .word-verse figcaption { color:#f6c768;letter-spacing:.06em }
+.home-word .player { background:#ffffff0a;box-shadow:none;border:1px solid #ffffff1f }
+.home-word .player > a { color:#fff }
+
+/* Your first Sunday: the Next Sunday ticket in the intro, gold rings on each reached step */
+.home-sunday-ticket { margin:30px 0 10px }
+.home-sunday-ticket .visit-ticket { position:relative;left:auto;bottom:auto;display:inline-grid;min-width:250px;box-shadow:0 30px 60px -36px #26357080 }
+.home-sunday-note { margin:0 0 30px!important;font-size:15px;color:var(--muted) }
+.first-sunday .visit-step.is-reached .visit-dot { box-shadow:0 0 0 6px #f6c76833 }
+.first-sunday .visit-step.is-reached .visit-dot::after { background:#e2a93b }
+.first-sunday .visit-timeline::after { background:linear-gradient(180deg,var(--navy),#e2a93b) }
+
+@media (max-width:1000px) { .home-facts { gap:12px } }
+@media (max-width:760px) {
+  .home-facts { grid-template-columns:1fr;gap:0 }
+  .home-facts li { grid-template-columns:44px 1fr;column-gap:14px;align-items:center;padding:14px 0 }
+  .home-fact-ic { grid-row:1 / span 2;margin:0 }
+  .mini-ticket { --stub:66px }
+  .mt-body small { white-space:normal }
+}
+@media (prefers-reduced-motion:reduce) { .js-facts .home-fact-ic * { transition:none;stroke-dashoffset:0 } .ministry-grid article:hover .card-badge svg * { animation:none } }
+
+/* Resources menu: big type links on the left, a real church photo on the right that changes with the link you point at */
+.nav-resources summary { border-radius:10px }
+.nav-res-chev { width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.16,1,.3,1) }
+.nav-resources[open] .nav-res-chev { transform:rotate(180deg) }
+.nav-resources > .nav-res-panel { top:calc(100% + 16px);left:-230px;width:560px;min-width:0;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:14px;background:#1e2b57;color:#fff;border:1px solid #ffffff1f;border-radius:22px;box-shadow:0 40px 80px -30px #0b1230e6 }
+.nav-resources[open] > .nav-res-panel { animation:navPanel .4s cubic-bezier(.16,1,.3,1) both }
+.nav-res-links { display:grid;align-content:center;padding:10px 8px 10px 14px }
+.nav-resources > .nav-res-panel a.nav-res-link { position:relative;display:block;padding:12px 0 12px 22px;white-space:normal;color:#fff;text-decoration:none }
+.nav-res-link::before { content:"";position:absolute;left:0;top:22px;width:8px;height:8px;border-radius:50%;background:#ffffff38;transition:background .3s,transform .3s }
+.nav-res-link.is-active::before, .nav-res-link[aria-current="page"]::before { background:#f6c768;transform:scale(1.3) }
+.nav-res-name { display:block;font-size:24px;font-weight:500;letter-spacing:-.03em;line-height:1.15;transition:transform .35s cubic-bezier(.16,1,.3,1) }
+.nav-res-link.is-active .nav-res-name { transform:translateX(4px) }
+.nav-res-link small { display:block;margin-top:3px;font-size:14.5px;line-height:1.4;color:#c9d2ec;transition:transform .35s cubic-bezier(.16,1,.3,1) }
+.nav-res-link.is-active small { transform:translateX(4px) }
+.nav-res-link:hover, .nav-res-link:focus-visible { text-decoration:none!important }
+.nav-res-pic { position:relative;border-radius:16px;overflow:hidden;background:#ffffff0f;aspect-ratio:4/5 }
+.nav-res-pic img { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.06);transition:opacity .45s ease,transform .8s cubic-bezier(.16,1,.3,1) }
+.nav-res-pic img.is-on { opacity:1;transform:none }
+@keyframes navPanel { from { opacity:0;transform:translateY(-6px) } to { opacity:1;transform:none } }
+@media (prefers-reduced-motion:reduce) { .nav-resources[open] > .nav-res-panel { animation:none } .nav-res-pic img { transition:none } }
+@media (max-width:1000px) {
+  .nav-resources > .nav-res-panel { position:static;width:auto;margin:4px 0 6px;padding:2px 0 2px 4px;display:block;background:none;box-shadow:none;color:#fff;border-radius:0 }
+  .nav-res-pic { display:none }
+  .nav-res-links { padding:0 }
+  .nav-resources > .nav-res-panel a.nav-res-link { color:#fff;padding:10px 0 10px 22px }
+  .nav-res-name { font-size:19px }
+  .nav-res-link small { color:#c9d2ec }
+  .nav-res-link::before { background:#ffffff40;top:19px }
+}
+
+/* This week: a sun-over-chapel drawing balances the heading; both columns end on a link at the same height */
+.church-life .heading-row { align-items:flex-end }
+.cl-head-side { display:grid;justify-items:end;gap:14px;max-width:420px;text-align:right }
+.cl-head-side p { max-width:34ch }
+.cl-arc { width:min(100%,360px);height:auto;overflow:visible;fill:none;stroke-linecap:round;stroke-linejoin:round }
+.cl-arc-path { stroke:#bccaf259;stroke-width:1.6;stroke-dasharray:.012 .018 }
+.cl-ground { stroke:#bccaf2;stroke-width:2 }
+.cl-chapel path { stroke:#fff;stroke-width:2.2 }
+.cl-window { fill:#f6c768;opacity:.9 }
+.cl-sun { fill:#f6c768 }
+.cl-sun-glow { fill:#f6c768;opacity:.18 }
+.cl-sun-turn { transform-box:view-box;transform-origin:210px 150px;transform:rotate(-38deg) }
+.js-arc .cl-sun-turn { transform:rotate(-88deg);transition:transform 2.6s cubic-bezier(.22,.9,.3,1) .3s }
+.js-arc.is-in .cl-sun-turn { transform:rotate(-38deg) }
+.js-arc .cl-chapel path, .js-arc .cl-ground { stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.4s cubic-bezier(.65,0,.35,1) }
+.js-arc.is-in .cl-chapel path, .js-arc.is-in .cl-ground { stroke-dashoffset:0 }
+.js-arc .cl-window { opacity:0;transition:opacity .8s 1.3s }
+.js-arc.is-in .cl-window { opacity:.9 }
+.cl-sun-glow { animation:clGlow 4s ease-in-out infinite }
+.motion-paused .cl-sun-glow { animation-play-state:paused }
+@keyframes clGlow { 50% { transform:scale(1.25);opacity:.08 } }
+.cl-sun-glow { transform-box:fill-box;transform-origin:center }
+@media (prefers-reduced-motion:reduce) { .cl-sun-glow { animation:none } }
+
+@media (min-width:761px) {
+  .church-life-grid { align-items:stretch }
+  .home-gatherings, .cl-right { display:flex;flex-direction:column }
+  .home-gatherings > .text-link, .cl-right > .text-link { margin-top:auto;align-self:flex-start }
+  .cl-right > .paper-bulletin { flex:1;display:flex;flex-direction:column;margin-bottom:0 }
+  .cl-right .paper-bulletin > .text-link { align-self:flex-start;margin-top:22px }
+  .cl-right .mini-tickets { flex:1;display:flex;flex-direction:column;gap:12px }
+  .cl-right .mini-tickets > li { flex:1;display:flex }
+  .cl-right .mini-ticket { flex:1 }
+  .cl-right .mt-body { align-content:center }
+}
+.cl-right > .text-link { color:#fff }
+@media (max-width:760px) {
+  .church-life .heading-row { display:block }
+  .cl-head-side { justify-items:start;text-align:left;margin-top:24px;max-width:none }
+  .cl-arc { width:260px }
+  .cl-right > .text-link { margin-top:22px }
+}
+
+/* Your first Sunday: the steps stretch to the full height of the intro beside them */
+@media (min-width:901px) {
+  .first-sunday-grid { align-items:stretch }
+  .first-sunday-intro { position:static }
+  .first-sunday .visit-timeline.is-compact { display:flex;flex-direction:column;justify-content:space-between;padding-top:6px;padding-bottom:6px }
+  .first-sunday .visit-timeline.is-compact .visit-step { padding-bottom:0 }
+}
+/* Keep the sun drawing in proportion with the heading beside it */
+.cl-arc { width:min(100%,230px) }
+.cl-head-side { gap:10px }
+@media (max-width:760px) { .cl-arc { width:200px } }
+.cl-arc { width:min(100%,180px) }
+@media (max-width:760px) { .cl-arc { width:170px } }
+
+.cl-right .paper-bulletin > .text-link { color:var(--navy) }
+/* This week: the Coming up panel runs past the left column by its own padding, so "See what's on" sits on the same line as "All events & gatherings" */
+@media (min-width:761px) {
+  .church-life-grid > .home-gatherings { padding-bottom:var(--bulletin-inset) }
+  .cl-right .paper-bulletin > .text-link { margin-top:26px }
+  .cl-right .mini-ticket { --stub:96px;border-radius:18px }
+  .cl-right .mt-day { font-size:42px }
+  .cl-right .mt-dow, .cl-right .mt-mon { font-size:13px }
+  .cl-right .mt-body { gap:4px;padding:20px 24px 20px 24px }
+  .cl-right .mt-soon { font-size:13px }
+  .cl-right .mt-body strong { font-size:clamp(22px,1.9vw,27px);letter-spacing:-.02em }
+  .cl-right .mt-body small { font-size:16px }
+  .cl-right .mini-tickets { gap:14px }
+}
+/* This week: the heading grows so its top lines up with the top of the sun drawing */
+@media (min-width:761px) { .church-life .heading-row h2 { font-size:clamp(44px,4.65vw,67px) } }

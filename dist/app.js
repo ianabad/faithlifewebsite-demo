@@ -946,3 +946,47 @@ document.addEventListener('click', e => {
   const place = () => tickets.forEach(t => { const time = t.querySelector('.visit-ticket-time'); if (time && t.offsetHeight) t.style.setProperty('--tear', time.offsetTop + 'px'); });
   place(); addEventListener('resize', place); if (document.fonts) document.fonts.ready.then(place);
 })();
+
+// Home: the three story facts draw their icons once; Coming up tickets count down in Winnipeg time.
+(function homeExtras() {
+  const facts = document.querySelector('[data-home-facts]');
+  if (facts && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    facts.classList.add('js-facts');
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { facts.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.5 });
+    io.observe(facts);
+  }
+  const soon = [...document.querySelectorAll('[data-mt-date]')];
+  if (!soon.length) return;
+  let y, m, d;
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(new Date());
+    const get = t => +parts.find(p => p.type === t).value; y = get('year'); m = get('month'); d = get('day');
+  } catch (e) { const n = new Date(); y = n.getFullYear(); m = n.getMonth() + 1; d = n.getDate(); }
+  const today = Date.UTC(y, m - 1, d);
+  soon.forEach(el => {
+    const [ey, em, ed] = el.dataset.mtDate.split('-').map(Number);
+    const days = Math.round((Date.UTC(ey, em - 1, ed) - today) / 864e5);
+    el.textContent = days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : days > 1 ? 'In ' + days + ' days' : '';
+  });
+})();
+
+// Home: the sun rises over the chapel once the This week heading comes into view.
+(function clArc() {
+  const arc = document.querySelector('[data-cl-arc]');
+  if (!arc || !('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  arc.classList.add('js-arc');
+  const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { arc.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.5 });
+  io.observe(arc);
+})();
+
+// Resources menu: the photo follows the link you point at or tab to.
+(function navResPic() {
+  document.querySelectorAll('.nav-res-panel').forEach(panel => {
+    const links = [...panel.querySelectorAll('[data-res]')], pics = [...panel.querySelectorAll('[data-res-pic]')];
+    const start = Math.max(0, links.findIndex(l => l.hasAttribute('aria-current')));
+    const show = i => { links.forEach((l, k) => l.classList.toggle('is-active', k === i)); pics.forEach((p, k) => p.classList.toggle('is-on', k === i)); };
+    links.forEach((l, i) => { l.addEventListener('pointerenter', () => show(i)); l.addEventListener('focus', () => show(i)); });
+    panel.addEventListener('pointerleave', () => show(start));
+    show(start);
+  });
+})();
