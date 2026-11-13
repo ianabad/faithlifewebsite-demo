@@ -2631,3 +2631,6 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 }
 @media (max-width:600px) { .hst-half { display:contents } }
 @media (min-width:601px) { .home-sunday-ticket .hst-half > * { align-self:flex-start!important } }
+/* About hero: the two lines of the heading always fit as two lines */
+.about-hero h1 { font-size:clamp(36px,4.6vw,66px) }
+@media (max-width:760px) { .about-hero h1 { font-size:min(44px,10.4vw) } }
