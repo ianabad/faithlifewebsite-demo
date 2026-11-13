@@ -2125,3 +2125,6 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 .home-announcements.paper-bulletin { border-radius:var(--card-r) }
 .story-image img, .story-image::after { border-radius:var(--frame-r) }
 .pastor-hero-photo img, .pastor-hero-photo::before { border-radius:var(--frame-r) }
+/* Home Spotify player box: rounded, its navy top line now curves with the corners */
+.player { border-top:0;border-radius:var(--card-r);box-shadow:inset 0 3px 0 var(--navy) }
+.player iframe { border-radius:14px }
