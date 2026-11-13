@@ -2310,3 +2310,5 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .cl-right .mt-body small { font-size:16px }
   .cl-right .mini-tickets { gap:14px }
 }
+/* This week: the heading grows so its top lines up with the top of the sun drawing */
+@media (min-width:761px) { .church-life .heading-row h2 { font-size:clamp(44px,4.65vw,67px) } }
