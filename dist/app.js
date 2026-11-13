@@ -1083,3 +1083,34 @@ document.addEventListener('click', e => {
     if (t && t.matches('[data-bf-belief]')) { t.classList.remove('is-arrived'); void t.offsetWidth; t.classList.add('is-arrived'); }
   }));
 })();
+
+// Easter: countdown chip, Add to calendar for Easter Sunday, and an invite that uses the phone's share sheet or copies the details.
+(function easterPage() {
+  const invites = document.querySelectorAll('[data-ea-invite]');
+  if (!invites.length) return;
+  const easter = { y: 2027, m: 3, d: 28 };
+  let today;
+  try { const p = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(new Date()); const g = t => +p.find(x => x.type === t).value; today = Date.UTC(g('year'), g('month') - 1, g('day')); } catch (e) { const n = new Date(); today = Date.UTC(n.getFullYear(), n.getMonth(), n.getDate()); }
+  const days = Math.round((Date.UTC(easter.y, easter.m - 1, easter.d) - today) / 864e5);
+  const chip = document.querySelector('[data-ea-chip]');
+  if (chip && days >= 0) { chip.querySelector('[data-ea-chip-text]').innerHTML = 'Easter Sunday: <strong>' + (days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in ' + days + ' days') + '</strong>'; chip.hidden = false; }
+  const status = document.querySelector('[data-ea-shared]');
+  const text = 'Join me for Easter Sunday at Faith Life Community Ministries: Sunday, March 28, 2027 at 1:30 PM, 427 Matheson Avenue, Winnipeg.';
+  invites.forEach(b => b.addEventListener('click', async () => {
+    const url = location.href.split('#')[0];
+    if (navigator.share) { try { await navigator.share({ title: 'Easter Sunday at Faith Life', text, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+    try { await navigator.clipboard.writeText(text + ' ' + url); if (status) status.textContent = 'Invitation copied. Paste it into a message to a friend.'; }
+    catch (e) { if (status) status.textContent = text; }
+    if (status && b.closest('.ea-hero')) document.querySelector('#sunday').scrollIntoView({ behavior: 'smooth' });
+  }));
+  const cal = document.querySelector('[data-ea-cal]');
+  if (cal) cal.addEventListener('click', () => {
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Faith Life Community Ministries//Website//EN', 'BEGIN:VEVENT', 'UID:easter-2027@flcmonline.com',
+      'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, ''), 'DTSTART;TZID=America/Winnipeg:20270328T133000', 'DTEND;TZID=America/Winnipeg:20270328T153000',
+      'SUMMARY:Easter Sunday at Faith Life', 'LOCATION:427 Matheson Avenue\\, Winnipeg\\, MB', 'DESCRIPTION:Celebrate the resurrection of Jesus with Faith Life Community Ministries. Come in through the school\'s front door.', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    const u = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+    const a = Object.assign(document.createElement('a'), { href: u, download: 'Easter-Sunday-Faith-Life.ics' });
+    document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000);
+    const label = cal.querySelector('span'); label.textContent = 'Added'; setTimeout(() => { label.textContent = 'Add to calendar'; }, 2500);
+  });
+})();
