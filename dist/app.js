@@ -990,3 +990,37 @@ document.addEventListener('click', e => {
     show(start);
   });
 })();
+
+// Contact: "I'd like to…" fills in the Subject and shows a short tip. Links from other pages arrive with ?topic= already chosen.
+(function contactPicker() {
+  const select = document.querySelector('[data-contact-select]');
+  if (!select) return;
+  const data = JSON.parse(document.querySelector('[data-contact-data]').textContent);
+  const subject = document.querySelector('[data-contact-subject]');
+  const note = document.querySelector('[data-contact-note]');
+  const title = note.querySelector('[data-contact-note-title]'), tip = note.querySelector('[data-contact-note-tip]');
+  let auto = '';
+  function apply(key, quiet) {
+    const t = data[key];
+    if (!t) return;
+    if (!subject.value || subject.value === auto) {
+      subject.value = t.subject; auto = t.subject;
+      subject.classList.remove('is-filled'); void subject.offsetWidth; subject.classList.add('is-filled');
+    }
+    title.textContent = t.subject; tip.textContent = t.tip;
+    note.classList.remove('is-changed'); void note.offsetWidth; note.classList.add('is-changed');
+    if (!quiet) { const box = note.getBoundingClientRect(); if (box.top > innerHeight || box.bottom < 0) {} }
+  }
+  select.addEventListener('change', () => apply(select.value));
+  const map = { 'growth track': 'growth', 'prayer meeting': 'prayer', 'baptism': 'baptism', 'bible studies': 'group' };
+  const asked = (new URLSearchParams(location.search).get('topic') || '').trim().slice(0, 80);
+  if (asked) {
+    let key = map[asked.toLowerCase()];
+    if (!key) {
+      key = 'asked';
+      data.asked = { subject: asked, tip: 'Tell us what you would like to know about ' + asked + ', and our team will help you connect.' };
+      const o = document.createElement('option'); o.value = 'asked'; o.textContent = 'ask about ' + asked; select.insertBefore(o, select.options[1]);
+    }
+    select.value = key; apply(key, true);
+  }
+})();

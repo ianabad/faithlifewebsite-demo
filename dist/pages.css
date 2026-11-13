@@ -2312,3 +2312,42 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
 }
 /* This week: the heading grows so its top lines up with the top of the sun drawing */
 @media (min-width:761px) { .church-life .heading-row h2 { font-size:clamp(44px,4.65vw,67px) } }
+
+/* ===== Contact ===== */
+.contact-picker { margin-top:8px;margin-bottom:34px;font-size:clamp(24px,2.3vw,34px) }
+.contact-hero .visit-hero2-lead { margin-bottom:26px }
+.contact-write { position:relative;overflow:hidden;background:#f4f6fc }
+.contact-write > .wrap { position:relative;z-index:1 }
+.contact-write.dot-field::before, .contact-write.dot-field::after { content:"";position:absolute;inset:0;pointer-events:none;background-size:24px 24px }
+.contact-write.dot-field::before { background-image:radial-gradient(#2635701a 1.2px,transparent 1.4px) }
+.contact-write.dot-field::after { background-image:radial-gradient(#263570 1.5px,transparent 1.7px);opacity:.35;-webkit-mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%);mask:radial-gradient(240px circle at var(--mx,-999px) var(--my,-999px),#000,#0000 72%) }
+.contact-write-grid { display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(40px,6vw,96px);align-items:start }
+.contact-write-side h2 { font-size:clamp(40px,5vw,72px);line-height:1.02;letter-spacing:-.04em;color:var(--navy) }
+.contact-write-side > p { margin-top:20px;max-width:38ch;font-size:clamp(18px,1.5vw,21px);line-height:1.6 }
+.contact-note { margin-top:30px;padding:24px 26px;border-radius:var(--card-r);background:var(--navy);color:#fff;box-shadow:0 30px 60px -36px #26357080 }
+.contact-note-label { display:block;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#f6c768 }
+.contact-note strong { display:block;margin-top:6px;font-size:clamp(22px,2vw,28px);font-weight:500;letter-spacing:-.02em;line-height:1.2 }
+.contact-note p { margin-top:8px;color:#c9d2ec;font-size:16.5px;line-height:1.6 }
+.contact-note.is-changed { animation:noteIn .5s cubic-bezier(.16,1,.3,1) }
+@keyframes noteIn { from { opacity:.3;transform:translateY(6px) } to { opacity:1;transform:none } }
+.contact-facts { list-style:none;margin:26px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:16px }
+.contact-facts li { padding-top:12px;border-top:2px solid #e3e8f6 }
+.contact-facts strong { display:block;font-weight:500;color:var(--navy) }
+.contact-facts span { display:block;font-size:15px;color:var(--muted) }
+.contact-form-card { padding:clamp(24px,3vw,40px);border-radius:var(--card-r);background:#fff;box-shadow:0 40px 80px -40px #26357059,0 0 0 1px #e3e8f6 }
+.contact-form label { font-size:15px;font-weight:500;color:var(--navy) }
+.contact-form input:not([type=hidden]), .contact-form textarea { background:#f8f9fd;border-color:#d5dcef!important;transition:border-color .25s,background .25s,box-shadow .25s }
+.contact-form input:not([type=hidden]):focus, .contact-form textarea:focus { background:#fff;border-color:var(--navy)!important;box-shadow:0 0 0 4px #bccaf255;outline:0 }
+.contact-form input.is-filled { animation:fieldFill .7s ease }
+@keyframes fieldFill { 0% { background:#fbefd4 } 100% { background:#f8f9fd } }
+.contact-form .button { justify-self:start }
+.contact-find-grid { display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(40px,6vw,96px);align-items:center }
+.contact-find-copy h2 { font-size:clamp(40px,5vw,72px);line-height:1.02;letter-spacing:-.04em;color:var(--navy) }
+.contact-find-copy address { margin-top:24px;font-style:normal;font-size:clamp(22px,2vw,28px);font-weight:500;line-height:1.35;color:var(--navy) }
+.contact-find-copy p { margin-top:16px;max-width:40ch }
+.contact-find-copy .actions { margin-top:30px }
+.contact-map { border-radius:var(--card-r);overflow:hidden;box-shadow:0 40px 80px -40px #26357059,0 0 0 1px #e3e8f6 }
+.contact-map .map-frame { display:block;width:100%;height:clamp(320px,40vw,460px);border:0;border-radius:0 }
+@media (max-width:900px) { .contact-write-grid, .contact-find-grid { grid-template-columns:1fr } }
+@media (max-width:600px) { .contact-facts { grid-template-columns:1fr } }
+@media (prefers-reduced-motion:reduce) { .contact-note.is-changed, .contact-form input.is-filled { animation:none } }
