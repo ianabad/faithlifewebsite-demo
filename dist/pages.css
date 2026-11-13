@@ -2055,3 +2055,76 @@ html.motion-paused .min-drawing [class*="loop-"] { animation-play-state:paused !
   .wo-seasons { grid-template-columns:1fr }
   .wo-weekly .text-link { margin-left:0 }
 }
+
+/* ===== One card system for the whole site =====
+   Cards and framed photos share one roundness. Buttons, full-width hero photos and section bands stay square.
+   On navy: a soft see-through fill with a hairline edge. On light: white, a hairline ring and a soft shadow.
+   Every card lifts a little on hover; photos inside it zoom gently. */
+:root { --card-r:22px; --frame-r:20px; --field-r:12px }
+
+/* Navy cards */
+.value-tile, .every-card, .wk-step, .min-serve.is-dark .serve-tile, .wo-season { border-radius:var(--card-r) }
+.every-card, .min-serve.is-dark .serve-tile { overflow:hidden }
+.value-tile { overflow:hidden;transition:background .3s ease,border-color .3s ease,transform .4s cubic-bezier(.16,1,.3,1) }
+.value-tile:hover, .wk-step:hover { transform:translateY(-3px) }
+
+/* Light cards */
+.pastor-card, .kids-steps li, .finder2-card, .chat-window, .visit-ticket, .podcast-shell, .serve-tile { border-radius:var(--card-r) }
+.pastor-card, .finder2-card, .podcast-shell { overflow:hidden }
+.pastor-card { border-color:#e3e8f6 }
+
+/* Framed photos and drawings inside sections */
+.story-media, .min-media, .story-split-photo, .map-frame, .map-frame iframe { border-radius:var(--frame-r) }
+.every-card .min-media { border-radius:0 }
+.story-media.is-pair img:first-child, .min-media.is-pair img:first-child { border-radius:var(--frame-r) 0 0 var(--frame-r) }
+.story-media.is-pair img:last-child, .min-media.is-pair img:last-child { border-radius:0 var(--frame-r) var(--frame-r) 0 }
+.paper-notice img { border-radius:8px }
+
+/* Home: ministry photo cards become full white cards */
+.ministry-grid article { display:flex;flex-direction:column;background:#fff;box-shadow:0 30px 60px -40px #26357059,0 0 0 1px #e3e8f6;border-radius:var(--card-r);overflow:hidden;padding-bottom:22px;transition:transform .35s cubic-bezier(.16,1,.3,1),background .35s }
+.ministry-grid article:hover { transform:translateY(-3px);box-shadow:0 36px 70px -40px #26357080,0 0 0 1px #d5dcef }
+.ministry-grid article > :not(.photo) { margin-left:24px;margin-right:24px }
+.ministry-grid article h3 { margin-top:22px }
+.ministry-grid article .text-link { align-self:flex-start;margin-top:auto }
+
+/* The Next Sunday ticket: rounded, with a tear line and two cut-out notches above the time */
+.visit-ticket { --tear:64%;
+  -webkit-mask:radial-gradient(circle 9px at 0 var(--tear),#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 9px at 100% var(--tear),#0000 98%,#000) right/51% 100% no-repeat;
+          mask:radial-gradient(circle 9px at 0 var(--tear),#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 9px at 100% var(--tear),#0000 98%,#000) right/51% 100% no-repeat }
+.visit-ticket-time { position:relative;margin-top:10px;padding-top:12px }
+.visit-ticket-time::before { content:"";position:absolute;left:-10px;right:-10px;top:0;border-top:2px dashed #dfe5f5 }
+
+/* Form fields */
+.church-inquiry input:not([type=hidden]):not([type=checkbox]):not([type=radio]), .church-inquiry textarea, .visit-form select { border-radius:var(--field-r) }
+
+/* Visit questions: the same conversation look as Growth Track */
+.chat-q { border-radius:999px;border-color:#c9d2ec;color:var(--navy);transition:transform .25s cubic-bezier(.16,1,.3,1),border-color .25s,background .25s,box-shadow .25s }
+.chat-q:hover { transform:translateY(-2px);box-shadow:0 10px 24px -16px #26357080 }
+.chat-q[aria-pressed="true"] { background:#e6ecfb;border-color:#c9d2ec;color:var(--navy) }
+.chat-q .site-icon { color:#b88a2a }
+.chat-window { overflow:hidden;box-shadow:0 40px 80px -40px #26357040,0 0 0 1px #e3e8f6 }
+.chat-head { border-bottom-color:#edf0f8 }
+.chat-avatar { width:40px;height:40px }
+.chat-head strong { color:var(--navy) }
+.chat-head span { color:#7f8bb0;font-size:13px }
+.bubble { font-size:17px;padding:13px 18px }
+.bubble-q { background:#e6ecfb;color:var(--navy);border-radius:22px 22px 6px 22px }
+.bubble-a { background:var(--navy);color:#e9edf8;border-radius:22px 22px 22px 6px }
+.bubble-a a { color:#fff;text-decoration-color:#f6c768 }
+.bubble-typing { background:var(--navy);border-radius:22px 22px 22px 6px }
+.bubble-typing i { background:#bccaf2 }
+
+/* Growth Track chat matches the card roundness */
+.gt-chat { border-radius:var(--card-r) }
+
+@media (max-width:760px) { .ministry-grid article > :not(.photo) { margin-left:20px;margin-right:20px } }
+
+/* Card system, part two: buttons, small controls and offset photo frames share the softer corners */
+.button, #menu, .gathering-cal, .week-day { border-radius:var(--field-r) }
+.nav-resources > div { border-radius:16px }
+.home-announcements.paper-bulletin { border-radius:var(--card-r) }
+.story-image img, .story-image::after { border-radius:var(--frame-r) }
+.pastor-hero-photo img, .pastor-hero-photo::before { border-radius:var(--frame-r) }
+/* Home Spotify player box: rounded, its navy top line now curves with the corners */
+.player { border-top:0;border-radius:var(--card-r);box-shadow:inset 0 3px 0 var(--navy) }
+.player iframe { border-radius:14px }

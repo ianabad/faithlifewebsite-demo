@@ -938,3 +938,11 @@ document.addEventListener('click', e => {
     io.observe(year);
   } else if (year) year.classList.add('is-in');
 })();
+
+// Next Sunday ticket: line the tear and its notches up with the dashed line above the time.
+(function ticketTear() {
+  const tickets = [...document.querySelectorAll('.visit-ticket')];
+  if (!tickets.length) return;
+  const place = () => tickets.forEach(t => { const time = t.querySelector('.visit-ticket-time'); if (time && t.offsetHeight) t.style.setProperty('--tear', time.offsetTop + 'px'); });
+  place(); addEventListener('resize', place); if (document.fonts) document.fonts.ready.then(place);
+})();
