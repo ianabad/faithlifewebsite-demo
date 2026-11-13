@@ -1114,3 +1114,62 @@ document.addEventListener('click', e => {
     const label = cal.querySelector('span'); label.textContent = 'Added'; setTimeout(() => { label.textContent = 'Add to calendar'; }, 2500);
   });
 })();
+
+// Forms: send to the church's Contact Form 7 form in the background, so visitors stay on the page.
+// They see a thank-you in place of the form, or a note under any field that needs fixing.
+(function sendForms() {
+  document.querySelectorAll('form[action*="wpcf7"]').forEach(form => {
+    const id = (form.querySelector('[name="_wpcf7"]') || {}).value;
+    if (!id) return;
+    const endpoint = new URL(form.getAttribute('action')).origin + '/wp-json/contact-form-7/v1/contact-forms/' + id + '/feedback';
+    const button = form.querySelector('[type="submit"]');
+    const status = document.createElement('p');
+    status.className = 'form-status'; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+    button.insertAdjacentElement('afterend', status);
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      form.querySelectorAll('.field-error').forEach(e => e.remove());
+      form.querySelectorAll('[aria-invalid]').forEach(e => e.removeAttribute('aria-invalid'));
+      const label = button.firstChild && button.firstChild.nodeType === 3 ? button.firstChild : null;
+      const original = label ? label.textContent : '';
+      if (label) label.textContent = 'Sending… ';
+      button.disabled = true; status.textContent = ''; status.classList.remove('is-error');
+      try {
+        const res = await fetch(endpoint, { method: 'POST', body: new FormData(form) });
+        const data = await res.json();
+        if (data.status === 'mail_sent') {
+          const name = ((form.querySelector('[name="your-name"]') || {}).value || '').trim().split(/\s+/)[0];
+          const sunday = (form.querySelector('[name="visit-date"]') || {}).value;
+          const done = document.createElement('div');
+          done.className = 'form-done'; done.setAttribute('role', 'status'); done.tabIndex = -1;
+          done.innerHTML = '<span class="form-done-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><h3></h3><p></p>';
+          done.querySelector('h3').textContent = 'Thank you' + (name ? ', ' + name : '') + '.';
+          done.querySelector('p').textContent = form.hasAttribute('data-rsvp')
+            ? (sunday && sunday !== 'Not sure yet' ? 'We have your details, and we look forward to welcoming you on ' + sunday + ' at 1:30 PM.' : 'We have your details, and we look forward to welcoming you on a Sunday at 1:30 PM.')
+            : 'Your message is on its way to our church team, and we will get back to you.';
+          form.replaceWith(done); done.focus();
+          return;
+        }
+        if (data.status === 'validation_failed' && Array.isArray(data.invalid_fields)) {
+          data.invalid_fields.forEach(f => {
+            const field = form.querySelector('[name="' + (f.field || f.into || '').replace(/^.*\./, '') + '"]');
+            if (!field) return;
+            field.setAttribute('aria-invalid', 'true');
+            const note = document.createElement('span'); note.className = 'field-error'; note.textContent = f.message;
+            (field.closest('label') || field).insertAdjacentElement('afterend', note);
+          });
+          const first = form.querySelector('[aria-invalid]'); if (first) first.focus();
+          status.textContent = 'Please check the highlighted field.';
+        } else {
+          status.textContent = data.message || 'Something went wrong. Please try again in a moment.';
+        }
+        status.classList.add('is-error');
+      } catch (e) {
+        status.textContent = 'We could not send that just now. Please check your connection and try again.';
+        status.classList.add('is-error');
+      } finally {
+        button.disabled = false; if (label) label.textContent = original;
+      }
+    });
+  });
+})();
