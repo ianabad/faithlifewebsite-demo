@@ -880,3 +880,61 @@ document.addEventListener('click', e => {
     if (open) { cta.href = form; cta.target = '_blank'; cta.rel = 'noopener'; }
   }
 })();
+
+// What's on: sorts the bulletin, drops past events, makes the soonest one the feature ticket,
+// counts down to each in Winnipeg time, and hands out calendar files.
+(function whatsOn() {
+  const list = document.querySelector('[data-events]');
+  if (!list) return;
+  const pad = n => String(n).padStart(2, '0');
+  let y, m, d;
+  try {
+    const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Winnipeg', year: 'numeric', month: 'numeric', day: 'numeric' }).formatToParts(new Date());
+    const get = t => +parts.find(p => p.type === t).value; y = get('year'); m = get('month'); d = get('day');
+  } catch (e) { const n = new Date(); y = n.getFullYear(); m = n.getMonth() + 1; d = n.getDate(); }
+  const today = Date.UTC(y, m - 1, d), todayKey = y + '-' + pad(m) + '-' + pad(d);
+  const wrap = list.querySelector('.wo-list');
+  const events = [...list.querySelectorAll('[data-event]')];
+  events.forEach(e => { if (e.dataset.date < todayKey) e.remove(); });
+  const live = events.filter(e => e.isConnected).sort((a, b) => a.dataset.date.localeCompare(b.dataset.date));
+  live.forEach(e => wrap.insertBefore(e, wrap.querySelector('.wo-notice')));
+  if (!live.length) list.querySelector('[data-empty]').hidden = false;
+  const label = days => days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : 'In ' + days + ' days';
+  live.forEach((e, i) => {
+    const [ey, em, ed] = e.dataset.date.split('-').map(Number);
+    const days = Math.round((Date.UTC(ey, em - 1, ed) - today) / 864e5);
+    e.querySelector('[data-soon]').textContent = label(days);
+    if (i === 0) {
+      e.classList.add('is-next');
+      const chip = document.querySelector('[data-next-chip]');
+      if (chip) { chip.href = '#' + e.id; chip.querySelector('[data-next-text]').innerHTML = 'Next up: <strong></strong> · ' + label(days); chip.querySelector('strong').textContent = e.dataset.title; chip.hidden = false; }
+    }
+    // Add to calendar: one event in Winnipeg time; no time given means an all-day entry.
+    e.querySelector('[data-cal]').addEventListener('click', ev => {
+      const day = e.dataset.date.replace(/-/g, '');
+      const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Faith Life Community Ministries//Website//EN', 'BEGIN:VEVENT',
+        'UID:' + e.id + '-' + day + '@flcmonline.com', 'DTSTAMP:' + new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '')];
+      if (e.dataset.time) {
+        const [h, mi] = e.dataset.time.split(':').map(Number), end = h * 60 + mi + (+e.dataset.minutes || 120);
+        lines.push('DTSTART;TZID=America/Winnipeg:' + day + 'T' + pad(h) + pad(mi) + '00', 'DTEND;TZID=America/Winnipeg:' + day + 'T' + pad(Math.floor(end / 60) % 24) + pad(end % 60) + '00');
+      } else {
+        const next = new Date(Date.UTC(ey, em - 1, ed + 1));
+        lines.push('DTSTART;VALUE=DATE:' + day, 'DTEND;VALUE=DATE:' + next.getUTCFullYear() + pad(next.getUTCMonth() + 1) + pad(next.getUTCDate()));
+      }
+      const esc = t => t.replace(/([,;\\])/g, '\\$1');
+      lines.push('SUMMARY:' + esc(e.dataset.title), 'LOCATION:' + esc(e.dataset.where), 'DESCRIPTION:' + esc(e.dataset.desc), 'END:VEVENT', 'END:VCALENDAR');
+      const url = URL.createObjectURL(new Blob([lines.join('\r\n')], { type: 'text/calendar' }));
+      const a = Object.assign(document.createElement('a'), { href: url, download: e.id + '-faith-life.ics' });
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      const btn = ev.currentTarget, text = btn.querySelector('span');
+      btn.classList.add('is-added'); text.textContent = 'Added';
+      setTimeout(() => { btn.classList.remove('is-added'); text.textContent = 'Add to calendar'; }, 2500);
+    });
+  });
+  const year = document.querySelector('.wo-year');
+  if (year && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { year.classList.add('is-in'); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(year);
+  } else if (year) year.classList.add('is-in');
+})();
